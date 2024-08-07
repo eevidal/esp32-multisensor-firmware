@@ -4,6 +4,7 @@
 #include "logs.h"
 #include <stdint.h>
 #include <stdbool.h>
+#include "i2c_module.h"
 
 typedef void *apds9960_t;
 
@@ -11,6 +12,29 @@ typedef struct{
 
 } i2c_bus_t;
 
+/* Acceptable parameters for setMode */
+typedef enum {
+    APDS9960_POWER              = 0,
+    APDS9960_AMBIENT_LIGHT      = 1,
+    APDS9960_PROXIMITY          = 2,
+    APDS9960_WAIT               = 3,
+    APDS9960_AMBIENT_LIGHT_INT  = 4,
+    APDS9960_PROXIMITY_INT      = 5,
+    APDS9960_GESTURE            = 6,
+    APDS9960_ALL                = 7,
+} apds9960_mode_t;
+
+/* Gesture wait time values */
+typedef enum {
+    APDS9960_GWTIME_0MS     = 0b00000000,  
+    APDS9960_GWTIME_2_8MS   = 0b00000001,
+    APDS9960_GWTIME_5_6MS   = 0b00000010,
+    APDS9960_GWTIME_8_4MS   = 0b00000011,
+    APDS9960_GWTIME_14_0MS  = 0b00000100,
+    APDS9960_GWTIME_22_4MS  = 0b00000101,
+    APDS9960_GWTIME_30_8MS  = 0b00000110,
+    APDS9960_GWTIME_39_2MS  = 0b00000111
+} apds9960_gwtime_t;
 
 
 typedef enum{
@@ -22,14 +46,46 @@ typedef enum{
     NEAR,
     FAR,
     ALL
-} gesture_t;
+} apds9960_gesture_t;
 
 apds9960_t *sensor apds9960_init(i2c_bus_t *i2c_params);
 err_t apds9960_delete(apds9960_t *sensor); // RNF.4
 err_t apds9960_setup(apds9960_t *sensor, *sensor_params);
-err_t apds9960_proximity_set_mode(apds9960_t *sensor, uint8_t mode);
-err_t apds9960_proximity_get_mode(apds9960_t *sensor, uint8_t* mode);
+
+/**
+ * @brief Configure work mode
+ *
+ * @param sensor object handle of apds9960
+ * @param mode one of apds9960_mode_t struct
+ *
+ * @return
+ *     - OK Success
+ *     - FAIL on Fail
+ */
+err_t apds9960_set_mode(apds9960_t *sensor, apds9960_mode_t mode);
+
+
+/**
+ * @brief Get work mode
+ *
+ * @param sensor object handle of apds9960
+ * @param mode one pointer to a apds9960_mode_t struct
+ * @return
+ *     - OK Success
+ *     - FAIL on Fail
+ */
+err_t apds9960_get_mode(apds9960_t *sensor, apds9960_mode_t* mode);
+
+/**
+ * @brief Sets the time in low power mode between gesture detections
+ * 
+ * @param sensor 
+ * @param time 
+ * @return err_t 
+ */
 err_t apds9960_set_wait_time(apds9960_t sensor, uint8_t time);
+
+
 err_t apds9960_set_threshold(apds9960_t *sensor, uint8_t gesture, uint8_t threshold);
 err_t apds9960_set_again(apds9960_t *sensor, uint8_t again);
 err_t apds9960_set_ggain(apds9960_t *sensor, uint8_t ggain);
