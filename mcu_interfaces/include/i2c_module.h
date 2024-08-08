@@ -5,7 +5,7 @@
 #include "error_module.h"
 
 
-typedef struct 
+typedef struct w_i2c_config_t
 {
     int sda_num;      
     int scl_num; 

@@ -2,12 +2,10 @@
 #ifndef _ERROR_MODULE_H
 
 
+#define OK 0
+#define FAIL !=OK
 
-
-typedef enum {
-    OK = 0,
-    FAIL = 1
- } err_t;
+typedef int err_t;
 
 
 

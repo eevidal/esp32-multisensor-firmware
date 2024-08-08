@@ -1,10 +1,9 @@
 
 #include "error_module.h"
 
-unsigned long int time;
 
-err_t delay(time);
+void delay(unsigned long );
 
-err_t now(void);
+uint32_t  now(void);
 
-err_t elapsed_time(unsigned long time);
+unsigned long elapsed_time(uint32_t time);

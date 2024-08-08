@@ -1,3 +1,2 @@
 idf_component_register(SRCS "hcrs04.c" "apds9960.c" "mpu6050.c"
-                        INCLUDE_DIRS "include" "../mcu_interfaces
-                        ")
+                        INCLUDE_DIRS "include" "../mcu_interfaces")

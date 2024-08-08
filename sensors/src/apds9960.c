@@ -34,7 +34,7 @@ typedef struct{
 }apds9960_dev_t;
 
 
-apds9960_t * apds9960_init(i2c_bus_t *i2c_params)
+apds9960_t * apds9960_init(w_i2c_config_t *i2c_params)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *) malloc(sizeof(apds9960_dev_t));
     if ((void *)sens == NULL) 

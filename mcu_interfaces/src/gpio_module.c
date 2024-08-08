@@ -1,7 +1,7 @@
 #include "gpio_module.h"
 #include "driver/gpio.h"
 
-#include "logs.h"
+#include "error_module.h"
 
 
 #define LOW 0

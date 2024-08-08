@@ -2,12 +2,11 @@
 #include <stdio.h>
 
 #include "gpio_module.h"
-#include "logs.h"
 #include "time.h"
 #include "hcrs04.h"
 
 
-#define TIMEOUT   ///calcular tiempo máximo para 4 metros a 20ºC
+#define TIMEOUT   1200 // ms
 #define DSOUND_SPEED 2.91*2   // mm / micros
 
 
@@ -43,7 +42,7 @@ err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor){
     _delay(10);
     gpio_stop(sens->trigger_pin);
     
-    unsigned long int init_time = now();
+    u_int32_t init_time = now();
     while(!gpio_read(sensor) && time_lapse(init_time) <= sens->timeout); // wait for the echo pin HIGH or timeout
     init_time = now();
     while(gpio_read(sensor) && time_lapse(init_time) <= sens->timeout); // wait for the echo pin LOW or timeout
@@ -52,17 +51,17 @@ err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor){
 
 };
 
-err_t hcrs04_get_distance_m(hcrs04_t *sensor, float distance){ 
+err_t hcrs04_get_distance_m(hcrs04_t *sensor, float *distance){ 
     hcrs04_send_pulse_and_wait(sensor);
     _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
-    distance = sens-> (elapsed / DSOUND_SPEED) * 1000;  // return in meters
+    (*distance) = (sens-> elapsed / DSOUND_SPEED) * 1000;  // return in meters
     return OK;
 }; 
 
-err_t hcrs04_get_time(hcrs04_t *sensor, float pulse_width){
+err_t hcrs04_get_time(hcrs04_t *sensor, float *pulse_width){
     hcrs04_send_pulse_and_wait(sensor);
     _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
-    pulse_width = sens->elapsed ; 
+    (*pulse_width) = sens->elapsed ; 
     return OK;
 }
 err_t hcrs04_delete(hcrs04_t *sensor){
