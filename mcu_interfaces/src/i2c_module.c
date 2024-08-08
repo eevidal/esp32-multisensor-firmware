@@ -4,6 +4,12 @@
 #include "error_module.h"
 
 
+#define ERROR_CHECK(x)   do 
+{
+     esp_err_t rc = (x); 
+     if (rc != ESP_OK) { return FAIL } 
+     while(0);
+}
 #define I2C_NUM I2C_NUM_0
 
 
@@ -23,8 +29,8 @@ err_t  i2c_init(w_i2c_config_t *params){
     conf.master.clk_speed = params->clk_speed;
     conf.clk_flags = 0;
     
-    i2c_param_config(I2C_NUM, &conf);
-    return check(i2c_driver_install(I2C_NUM, conf.mode, 0, 0, ESP_INTR_FLAG_LEVEL1));
+    ERROR_CHECK(i2c_param_config(I2C_NUM, &conf));
+    ERROR_CHECK(i2c_driver_install(I2C_NUM, conf.mode, 0, 0, ESP_INTR_FLAG_LEVEL1));
 }
 
 
