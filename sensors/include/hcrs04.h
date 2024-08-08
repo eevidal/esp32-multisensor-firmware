@@ -1,7 +1,6 @@
 #ifndef _HCRS04_H_
 #define _HCRS04_H_
 
-#include <sdtint.h>
 #include "logs.h"
 
 

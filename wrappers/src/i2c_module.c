@@ -1,10 +1,10 @@
 #include "freertos/FreeRTOS.h"
 #include "driver/i2c.h"
 #include "i2c_module.h"
-#include "logs.h"
+#include "error_module.h"
 
 
-
+#define I2C_NUM I2C_NUM_0
 
 
 typedef struct{
@@ -13,7 +13,7 @@ typedef struct{
 } i2c_dev_t;
 
 
-i2c_bus_t * i2c_init(w_i2c_config_t *params){
+err_t  i2c_init(w_i2c_config_t *params){
     i2c_config_t conf ; 
     conf.mode = I2C_MODE_MASTER;
     conf.sda_io_num = params->sda_num;
@@ -23,25 +23,29 @@ i2c_bus_t * i2c_init(w_i2c_config_t *params){
     conf.master.clk_speed = params->clk_speed;
     conf.clk_flags = 0;
     
-    i2c_param_config(I2C_NUM_0, &conf);
-    return (i2c_bus_t *)i2c_driver_install(I2C_NUM_0, conf.mode, 0, 0, ESP_INTR_FLAG_LEVEL1);
+    i2c_param_config(I2C_NUM, &conf);
+    return check(i2c_driver_install(I2C_NUM, conf.mode, 0, 0, ESP_INTR_FLAG_LEVEL1));
 }
 
 
 
 err_t i2c_read_byte(uint8_t dev_addr, uint8_t *data, uint16_t timeout){
-    return i2c_master_read_from_device(I2C_NUM_0, dev_addr, &data , 1, pdMS_TO_TICKS(timeout));
+    return i2c_master_read_from_device(I2C_NUM, dev_addr, &data , 1, pdMS_TO_TICKS(timeout));
 }
 
 err_t i2c_read(uint8_t dev_addr, uint8_t length, uint8_t *data, uint16_t timeout){
-     return i2c_master_read_from_device(I2C_NUM_0, dev_addr, &data , length, pdMS_TO_TICKS(timeout));
+     return i2c_master_read_from_device(I2C_NUM, dev_addr, &data , length, pdMS_TO_TICKS(timeout));
 }
 
 
 err_t i2c_write_byte(uint8_t dev_addr, uint8_t *data){
-    return i2c_master_write_to_device(I2C_NUM_0, dev_addr, data, 1, pdMS_TO_TICKS(timeout));
+    return i2c_master_write_to_device(I2C_NUM, dev_addr, data, 1, pdMS_TO_TICKS(timeout));
 }
 
 err_t i2c_write(uint8_t dev_addr, uint8_t length, uint8_t *data){
-    return i2c_master_write_to_device(I2C_NUM_0, dev_addr, data, length, pdMS_TO_TICKS(timeout));
+    return i2c_master_write_to_device(I2C_NUM, dev_addr, data, length, pdMS_TO_TICKS(timeout));
+}
+
+err_t i2c_deinit(void){
+    i2c_driver_delete(I2C_NUM);
 }

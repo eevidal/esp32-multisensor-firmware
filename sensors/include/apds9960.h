@@ -46,7 +46,7 @@ typedef enum{
     ALL
 } apds9960_gesture_t;
 
-apds9960_t *sensor apds9960_init(i2c_bus_t *i2c_params);
+apds9960_t * apds9960_init(i2c_bus_t *i2c_params);
 err_t apds9960_delete(apds9960_t *sensor); // RNF.4
 err_t apds9960_setup(apds9960_t *sensor, *sensor_params);
 

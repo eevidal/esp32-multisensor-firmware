@@ -1,4 +1,4 @@
-#include "logs.h"
+#include "error_module.h"
 
 typedef void* mpu6050_t;
 

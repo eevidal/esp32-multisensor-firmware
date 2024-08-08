@@ -2,7 +2,7 @@
 #define _I2C_MODULE_H_
 
 #include <stdint.h>
-#include "logs.h"
+#include "error_module.h"
 
 
 typedef struct 
@@ -28,7 +28,16 @@ typedef void* i2c_bus_t;
  *   - params->clk_speed: I2C clock speed in Hz.
  * @return A pointer to the initialized I2C bus, or NULL on failure.
  */
-i2c_bus_t * i2c_init_master_mode(w_i2c_config_t *params);
+i2c_bus_t * i2c_init(w_i2c_config_t *params);
+
+/**
+ * @brief Initializes an I2C bus in slave mode.
+ *
+ * Not implemented yet.
+ * This function must configure the specified I2C pins with pull-up resistors and initializes
+ * the I2C driver in slave mode. 
+ */
+i2c_bus_t * i2c_init_slave_mode(w_i2c_config_t *params, uint16_t addr, bool ten_bit, uint8_t rx_length, uint8_t tx_length);
 
 /**
  * @brief Reads a byte from an I2C slave device.

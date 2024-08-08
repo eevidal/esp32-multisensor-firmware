@@ -10,7 +10,7 @@
 typedef struct{
     i2c_bus_t *i2c_dev;
     uint8_t dev_addr;
-    uint32_t timeout;
+   
     // apds9960_control_t _control_t; /*< config control register>*/
     // apds9960_enable_t _enable_t;   /*< config enable register>*/
     // apds9960_config1_t _config1_t; /*< config config1 register>*/
@@ -33,34 +33,38 @@ typedef struct{
 
 }apds9960_dev_t;
 
-apds9960_t *sensor apds9960_init(i2c_bus_t *i2c_params){
 
-
-};
-
-//i2c_bus_t
-
-apds9960_t apds9960_create(i2c_bus_t *i2c_params)
+apds9960_t * apds9960_init(i2c_bus_t *i2c_params)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *) malloc(sizeof(apds9960_dev_t));
     if ((void *)sens == NULL) 
-        return NULL;
-    
-    sens->i2c_dev = (i2c_bus_t *)i2c_init_master_mode(i2c_params);
+        return NULL; 
+    sens->i2c_dev = (i2c_bus_t *)i2c_init(i2c_params);
     if (sens->i2c_dev == NULL) {
         free(sens);
         return NULL;
     }
     sens->dev_addr = APDS9960_I2C_ADDRESS; 
-    sens->timeout = APDS9960_TIMEOUT_MS_DEFAULT;
 
 
 
-    return (apds9960_handle_t) sens;
+
+    return (apds9960_t) sens;
 }
-err_t apds9960_delete(apds9960_t *sensor); // RNF.4
-err_t apds9960_setup(apds9960_t *sensor, *sensor_params);
 
+err_t apds9960_delete(apds9960_t *sensor){
+    if (*sensor == NULL) {
+        return OK;
+    }
+
+    apds9960_dev_t *sens = (apds9960_dev_t *)(*sensor);
+    i2c_bus_device_delete(&sens->i2c_dev);
+    free(sens);
+    *sensor = NULL;
+    return OK;
+}// RNF.4
+
+err_t apds9960_setup(apds9960_t *sensor, *sensor_params);
 
 err_t apds9960_gesture_init(apds9960_t *sensor)
 {

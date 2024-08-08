@@ -2,7 +2,7 @@
 #define _GPIO_MODULE_H
 
 
-#include "logs.h"
+#include "error_module.h"
 
 
 typedef enum{
