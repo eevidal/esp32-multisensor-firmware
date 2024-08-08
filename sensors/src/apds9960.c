@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "apds9960.h"
 
 #define APDS9960_I2C_ADDRESS    (0x39) 
@@ -6,9 +8,9 @@
 
 
 typedef struct{
-    i2c_bus_t i2c_dev;
+    i2c_bus_t *i2c_dev;
     // uint8_t dev_addr;
-    // uint32_t timeout;
+    uint32_t timeout;
     // apds9960_control_t _control_t; /*< config control register>*/
     // apds9960_enable_t _enable_t;   /*< config enable register>*/
     // apds9960_config1_t _config1_t; /*< config config1 register>*/
@@ -41,11 +43,10 @@ apds9960_t *sensor apds9960_init(i2c_bus_t *i2c_params){
 apds9960_t apds9960_create(i2c_bus_t *i2c_params)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *) malloc(sizeof(apds9960_dev_t));
-    if (sens == NULL) 
+    if ((void *)sens == NULL) 
         return NULL;
-
     
-    sens->i2c_dev = (i2c_bus_t *)i2c_init(i2c_params);
+    sens->i2c_dev = (i2c_bus_t *)i2c_init_master_mode(i2c_params);
     if (sens->i2c_dev == NULL) {
         free(sens);
         return NULL;

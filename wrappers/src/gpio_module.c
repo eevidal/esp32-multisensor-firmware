@@ -1,6 +1,6 @@
 #include "gpio_module.h"
 #include "driver/gpio.h"
-#include <sdtbool.h>
+
 #include "logs.h"
 
 
@@ -16,7 +16,7 @@
  * 
  */
 
-err_t _gpio_init(uint pin, direction_t mode){
+err_t _gpio_init(uint8_t pin, direction_t mode){
     gpio_config_t gpio_conf;
     gpio_conf.pin_bit_mask = (1ULL << pin);  /*!< GPIO pin: set with bit mask, each bit maps to a GPIO */
     gpio_conf.mode = mode;

@@ -1,2 +1,2 @@
-idf_component_register(SRCS "gpio_module.c"
+idf_component_register(SRCS "gpio_module.c" "i2c_module.c"
                         INCLUDE_DIRS "include" )

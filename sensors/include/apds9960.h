@@ -8,9 +8,7 @@
 
 typedef void *apds9960_t;
 
-typedef struct{
 
-} i2c_bus_t;
 
 /* Acceptable parameters for setMode */
 typedef enum {
