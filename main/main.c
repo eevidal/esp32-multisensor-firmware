@@ -6,6 +6,8 @@
 #include "apds9960.h"
 #include "mpu6050.h"
 
+#define CONFIG_FREERTOS_HZ=100 
+
 TaskHandle_t distance_task_handle = NULL;
 TaskHandle_t gesture_task_handle = NULL;
 TaskHandle_t position_task_handle = NULL;
@@ -28,22 +30,45 @@ static void ultrasonic_task(hcrs04_t* sens){
     while (true)
     {
         hcrs04_get_distance_m(sens, &distance);
-        printf("Distancia medida %d", distance);
-        vTaskDelay(pdMS_TO_TICKS(10));
-        
+        printf("Distance %d", distance);
+        delay(10);      
     }
 }
 
 static void gesture_task(apds9960_t * sens){
-     while (true)
-    {
-
+    apds9960_gesture_t *gesture;
+    while (true) {
+        uint8_t gesture = apds9960_read_gesture(sens, &gesture);
+        if (gesture == DOWN) {
+            printf("DOWN!\n");
+        } else if (gesture == UP) {
+            printf("UP!\n");
+        } else if (gesture == LEFT) {
+            printf("LEFT!\n");
+        } else if (gesture == RIGHT) {
+            printf("RIGHT!\n"); 
+        } 
+        delay(100);
     }
-    
 };
+    
+
 static void position_task(mpu6050_t * sens){
-    
-};
+{
+    mpu6050_acce_t acce;
+    mpu6050_gyro_t gyro;
+    mpu6050_wake_up(sens);
+    mpu6050_set_acce_fs(sens, ACCE_FS_4G);
+    mpu6050_set_gyro_fs(sens, GYRO_FS_500DPS);
+
+    while (true) { 
+        mpu6050_get_acce(sens, &acce);
+        printf("acce x:%.2f, y:%.2f, z:%.2f\n", acce.x, acce.y, acce.z);
+        mpu6050_get_gyro(sens, &gyro);
+        printf("gyro x:%.2f, y:%.2f, z:%.2f\n", gyro.x, gyro.y, gyro.z);
+        delay(100);
+    }
+}
 
 
 main()
