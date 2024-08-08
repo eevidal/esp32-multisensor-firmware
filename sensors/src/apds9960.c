@@ -9,7 +9,7 @@
 
 typedef struct{
     i2c_bus_t *i2c_dev;
-    // uint8_t dev_addr;
+    uint8_t dev_addr;
     uint32_t timeout;
     // apds9960_control_t _control_t; /*< config control register>*/
     // apds9960_enable_t _enable_t;   /*< config enable register>*/
@@ -51,7 +51,7 @@ apds9960_t apds9960_create(i2c_bus_t *i2c_params)
         free(sens);
         return NULL;
     }
-    
+    sens->dev_addr = APDS9960_I2C_ADDRESS; 
     sens->timeout = APDS9960_TIMEOUT_MS_DEFAULT;
 
 

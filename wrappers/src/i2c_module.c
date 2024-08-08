@@ -13,7 +13,6 @@ typedef struct{
 } i2c_dev_t;
 
 
-
 i2c_bus_t * i2c_init(w_i2c_config_t *params){
     i2c_config_t conf ; 
     conf.mode = I2C_MODE_MASTER;
