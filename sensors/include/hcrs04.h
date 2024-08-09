@@ -32,7 +32,7 @@ hcrs04_t* hcrs04_create(uint8_t  trigger_pin, uint8_t echo_pin, int timeout);
  *     - OK Success
  *     - FAIL Fail
  */
-float  hcrs04_get_distance_m(hcrs04_t *sensor);
+double  hcrs04_get_distance_m(hcrs04_t *sensor);
 
 /**
  * @brief Gets the pulse width (time of flight) from the HC-SR04 sensor.

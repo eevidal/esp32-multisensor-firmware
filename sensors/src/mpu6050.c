@@ -6,7 +6,7 @@
 typedef struct {
     i2c_bus_t *i2c_dev;
     uint8_t dev_addr;
-
+    
 } mpu6050_dev_t;
 
 

@@ -10,7 +10,6 @@
 #include "apds9960.h"
 #include "mpu6050.h"
 
-//#define CONFIG_FREERTOS_HZ=100 
 
 #define ECHO_PIN 4
 #define TRIGGER_PIN 5
@@ -19,17 +18,17 @@
 
 static const char* dtag = "Ultrasonic";
 
-//apds9960_t* sensor2;
-//mpu6050_t* sensor3;
 
+hcrs04_t sensor = NULL;
+apds9960_t sensor2 = NULL;
+//mpu6050_t sensor3 = NULL;
 //i2c
-//w_i2c_config_t*  i2c_params; 
+w_i2c_config_t i2c_params = {
+    .sda_num = 26,
+    .scl_num = 29,
+    .clk_speed = 400000, //40Kz#include "esp_system.h"
+}; 
 
-  //  i2c_params->sda_num = 26;
-   // .scl_num = 29,
-  //  .clk_speed = 400000, //40Kz#include "esp_system.h"
-
- hcrs04_t sensor =NULL;
 
 static void ultrasonic_task(void* sens){
     float distance;
@@ -45,17 +44,12 @@ static void ultrasonic_task(void* sens){
     }
 }
 
-/* static void task1(void* param){
-    while(1){
-        printf("en la tarea\n");
-        delay(10);
-
-    }
-} */
-/* static void gesture_task(apds9960_t * sens){
-    apds9960_gesture_t *gesture;
+ static void gesture_task(apds9960_t * sens){
+    sensor2 = apds9960_init(&i2c_params);
+    apds9960_gesture_t* gesture;
     while (true) {
-        uint8_t gesture = apds9960_read_gesture(sens, &gesture);
+        ESP_LOGI(dtag, "Obteniendo Gesto\n");
+        apds9960_read_gesture(sens, &gesture);
         if (gesture == DOWN) {
             printf("DOWN!\n");
         } else if (gesture == UP) {
@@ -67,8 +61,7 @@ static void ultrasonic_task(void* sens){
         } 
         delay(100);
     }
-}; */
-    
+};    
 
 /* static void position_task(mpu6050_t * sens){
 {
@@ -100,8 +93,9 @@ void app_main(void)
  //   i2c_params->clk_speed = 400000;
  //   sensor2 = apds9960_init(i2c_params);
  //   sensor3 = mpu6050_init(i2c_params);
-    printf("hola\n");
-     xTaskCreate(&ultrasonic_task, "Ultrasonic", 1024, NULL, 4, NULL);
+   
+    xTaskCreate(&ultrasonic_task, "Ultrasonic", 1024, NULL, 4, NULL);
+    xTaskCreate(&gesture_task, "Gesture", 1024, NULL, 4, NULL);
   //   xTaskCreate(&task1,"task", 1024, NULL, 5, &handler);
 
 }

@@ -1,10 +1,8 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include <esp_err.h>
-#include "driver/gpio.h"
 
-
+#include "error_module.h"
 #include "gpio_module.h"
 #include "time_module.h"
 
@@ -23,55 +21,52 @@
  * measured pulse width.
  */
 typedef struct{
-    gpio_num_t echo_pin;     /**< GPIO pin number for the echo input. */
-    gpio_num_t trigger_pin;  /**< GPIO pin number for the trigger output. */
+    int echo_pin;     /**< GPIO pin number for the echo input. */
+    int trigger_pin;  /**< GPIO pin number for the trigger output. */
     int timeout; /**< Timeout value in microseconds for the sensor measurement. */
-    int elapsed;  /**< Measured pulse width (time of flight) in microseconds. */
 } _hcrs04_dev_t;
 
 
 hcrs04_t* hcrs04_create(uint8_t trigger_pin, uint8_t echo_pin, int timeout){
     _hcrs04_dev_t *sensor = malloc(sizeof(_hcrs04_dev_t));
-    sensor->echo_pin = (gpio_num_t)echo_pin;
-    sensor->trigger_pin = (gpio_num_t)trigger_pin; 
+    sensor->echo_pin = echo_pin;
+    sensor->trigger_pin = trigger_pin; 
     sensor->timeout = timeout > 0 ? timeout : TIMEOUT;
-    sensor->elapsed = 0;
-    ESP_ERROR_CHECK(gpio_set_direction(sensor->echo_pin, GPIO_MODE_INPUT));
-    ESP_ERROR_CHECK(gpio_set_direction(sensor->trigger_pin, GPIO_MODE_OUTPUT));  
+ 
+    CHECK(gpio_set_direction(sensor->echo_pin, GPIO_INPUT));
+    CHECK(gpio_set_direction(sensor->trigger_pin, GPIO_OUTPUT));  
     return (hcrs04_t *)sensor;
 }; 
 
-err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor){
+err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor, uint32_t *elapsed){
     _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
     printf("envio trigger\n");
-    ESP_ERROR_CHECK((esp_err_t)gpio_send((uint8_t)sens->trigger_pin));
+    CHECK(gpio_send((uint8_t)sens->trigger_pin));
     delay(10);
-    ESP_ERROR_CHECK((esp_err_t)gpio_stop((uint8_t)sens->trigger_pin));
+    CHECK(gpio_stop((uint8_t)sens->trigger_pin));
   
     printf("pido el tiempo\n");
     int init_time = now();
     while(!gpio_read(sens->echo_pin) && (elapsed_time(init_time) <= sens->timeout)); // wait for the echo pin HIGH or timeout
     init_time = now();
     while(gpio_read(sens->echo_pin) && (elapsed_time(init_time) <= sens->timeout)); // wait for the echo pin LOW or timeout
-    sens->elapsed = elapsed_time(init_time);
+    elapsed = elapsed_time(init_time);
     return OK;
 
 };
 
 float hcrs04_get_distance_m(hcrs04_t *sensor){ 
     printf("a enviar y esperar\n");
-    hcrs04_send_pulse_and_wait(sensor);
+    uint32_t elapsed;
+    CHECK(hcrs04_send_pulse_and_wait(sensor, &elapsed));
     printf("ya leí\n");
-    _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
-    return (sens-> elapsed / DSOUND_SPEED) * 1000;  // return in meters
-}; 
+    return ( elapsed / DSOUND_SPEED) * 1000;  // return in meters
+};
 
 err_t hcrs04_get_time(hcrs04_t *sensor, int *pulse_width){
-    hcrs04_send_pulse_and_wait(sensor);
-    _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
-    (*pulse_width) = sens->elapsed ; 
-    return OK;
-}
+    return hcrs04_send_pulse_and_wait(sensor, &pulse_width);
+};
+
 err_t hcrs04_delete(hcrs04_t *sensor){
     _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
     free(sens);
