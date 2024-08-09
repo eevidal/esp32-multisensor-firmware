@@ -17,7 +17,7 @@ typedef void * hcrs04_t;
  * @param timeout Timeout value in microseconds for the sensor measurement.
  * @return Pointer to the newly created HC-SR04 sensor instance, or NULL on failure.
  */
-hcrs04_t* hcrs04_create(int  trigger_pin, int echo_pin, unsigned long timeout);
+hcrs04_t* hcrs04_create(int  trigger_pin, int echo_pin, int timeout);
 
 /**
  * @brief Gets the distance from the HC-SR04 sensor in meters.
@@ -32,7 +32,7 @@ hcrs04_t* hcrs04_create(int  trigger_pin, int echo_pin, unsigned long timeout);
  *     - OK Success
  *     - FAIL Fail
  */
-err_t hcrs04_get_distance_m(hcrs04_t *sensor, float *distance);
+float  hcrs04_get_distance_m(hcrs04_t *sensor);
 
 /**
  * @brief Gets the pulse width (time of flight) from the HC-SR04 sensor.
@@ -46,7 +46,7 @@ err_t hcrs04_get_distance_m(hcrs04_t *sensor, float *distance);
  *     - OK Success
  *     - FAIL Fail
  */
-err_t hcrs04_get_time(hcrs04_t *sensor, float *pulse_width); 
+err_t hcrs04_get_time(hcrs04_t *sensor, int *pulse_width); 
 
 /**
  * @brief Delete and release the sensor handle

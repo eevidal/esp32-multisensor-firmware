@@ -7,10 +7,17 @@
 typedef void* mpu6050_t;
 
 typedef enum{
-
+    ACCE_2G  = 0,     /*!< Accelerometer full scale range is +/- 2g */
+    ACCE_4G  = 1,     /*!< Accelerometer full scale range is +/- 4g */
+    ACCE_8G  = 2,     /*!< Accelerometer full scale range is +/- 8g */
+    ACCE_16G = 3,     /*!< Accelerometer full scale range is +/- 16g */
 } acel_range;
 
 typedef enum{
+    GYRO_250DPS  = 0,     /*!< Gyroscope full scale range is +/- 250 degree per second */
+    GYRO_500DPS  = 1,     /*!< Gyroscope full scale range is +/- 500 degree per second */
+    GYRO_1000DPS = 2,     /*!< Gyroscope full scale range is +/- 1000 degree per second */
+    GYRO_2000DPS = 3,     /*!< Gyroscope full scale range is +/- 2000 degree per second */
 
 } gyro_range;
 

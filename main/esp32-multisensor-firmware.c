@@ -1,21 +1,23 @@
+#include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/timers.h"
 
+#include "time_module.h"
 #include "hcrs04.h"
 #include "apds9960.h"
 #include "mpu6050.h"
 
-#define CONFIG_FREERTOS_HZ=100 
+//#define CONFIG_FREERTOS_HZ=100 
 
 TaskHandle_t distance_task_handle = NULL;
-TaskHandle_t gesture_task_handle = NULL;
-TaskHandle_t position_task_handle = NULL;
+//TaskHandle_t gesture_task_handle = NULL;
+//TaskHandle_t position_task_handle = NULL;
 
 
-hcrs04_t* sensor1;
-apds9960_t* sensor2;
-mpu6050_t* sensor3;
+
+//apds9960_t* sensor2;
+//mpu6050_t* sensor3;
 
 //i2c
 w_i2c_config_t*  i2c_params; 
@@ -25,17 +27,19 @@ w_i2c_config_t*  i2c_params;
   //  .clk_speed = 400000, //40Kz
 
 
-static void ultrasonic_task(hcrs04_t* sens){
+static void ultrasonic_task(void* sens){
     float distance;
+    hcrs04_t *sensor = hcrs04_create(5, 4, 10000);
     while (true)
     {
-        hcrs04_get_distance_m(sens, &distance);
-        printf("Distance %d", distance);
-        delay(10);      
+       distance = hcrs04_get_distance_m(sensor);
+       printf("Distance %f", distance);
+       delay(1000);   
+       printf("estoy \n");   
     }
 }
 
-static void gesture_task(apds9960_t * sens){
+/* static void gesture_task(apds9960_t * sens){
     apds9960_gesture_t *gesture;
     while (true) {
         uint8_t gesture = apds9960_read_gesture(sens, &gesture);
@@ -50,10 +54,10 @@ static void gesture_task(apds9960_t * sens){
         } 
         delay(100);
     }
-};
+}; */
     
 
-static void position_task(mpu6050_t * sens){
+/* static void position_task(mpu6050_t * sens){
 {
     mpu6050_acce_t acce;
     mpu6050_gyro_t gyro;
@@ -68,22 +72,19 @@ static void position_task(mpu6050_t * sens){
         printf("gyro x:%.2f, y:%.2f, z:%.2f\n", gyro.x, gyro.y, gyro.z);
         delay(100);
     }
-}
+} */
 
 
-main()
+void app_main(void)
 {
-    sensor1 = hcrs04_create(23, 20, 10000); //echo 20 trigger 23
-    i2c_params->sda_num = 26;
-    i2c_params->sda_num = 29;
-    i2c_params->sda_num = 400000;
-    sensor2 = apds9960_init(i2c_params);
+    delay(10);
+     //echo 20 trigger 23
+ //   i2c_params->sda_num = 21;
+ //   i2c_params->scl_num= 22;
+ //   i2c_params->clk_speed = 400000;
+ //   sensor2 = apds9960_init(i2c_params);
  //   sensor3 = mpu6050_init(i2c_params);
+    printf("hola\n");
+    xTaskCreate(&ultrasonic_task, "Ultrasonic", 512, NULL, 5, &distance_task_handle);
 
-    xTaskCreate(&ultrasonic_task, "Ultrasonic", 512, NULL, 2, &distance_task_handle);
-
-};
-
-
-//scl 29
-// sda 26
+}

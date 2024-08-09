@@ -33,20 +33,20 @@ err_t  i2c_init(w_i2c_config_t *params){
 
 
 err_t i2c_read_byte(uint8_t dev_addr, uint8_t *data, uint16_t timeout){
-    return (err_t)i2c_master_read_from_device(I2C_NUM, dev_addr, &data , 1, pdMS_TO_TICKS(timeout));
+    return (err_t)i2c_master_read_from_device(I2C_NUM, dev_addr, data , 1, pdMS_TO_TICKS(timeout));
 }
 
 err_t i2c_read(uint8_t dev_addr, uint8_t length, uint8_t *data, uint16_t timeout){
-     return (err_t)i2c_master_read_from_device(I2C_NUM, dev_addr, &data , length, pdMS_TO_TICKS(timeout));
+     return (err_t)i2c_master_read_from_device(I2C_NUM, dev_addr, data , length, pdMS_TO_TICKS(timeout));
 }
 
 
 err_t i2c_write_byte(uint8_t dev_addr, uint8_t *data, uint16_t timeout){
-    return (err_t)i2c_master_write_to_device(I2C_NUM, dev_addr, &data, 1, pdMS_TO_TICKS(timeout));
+    return (err_t)i2c_master_write_to_device(I2C_NUM, dev_addr, data, 1, pdMS_TO_TICKS(timeout));
 }
 
 err_t i2c_write(uint8_t dev_addr, uint8_t length, uint8_t *data, uint16_t timeout){
-    return (err_t)i2c_master_write_to_device(I2C_NUM, dev_addr, &data, length, pdMS_TO_TICKS(timeout));
+    return (err_t)i2c_master_write_to_device(I2C_NUM, dev_addr, data, length, pdMS_TO_TICKS(timeout));
 }
 
 err_t i2c_deinit(void){

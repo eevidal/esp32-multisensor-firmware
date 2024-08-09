@@ -1,8 +1,8 @@
 
 #include <stdio.h>
-
+#include <stdint.h>
 #include "gpio_module.h"
-#include "time.h"
+#include "time_module.h"
 #include "hcrs04.h"
 
 
@@ -20,12 +20,12 @@
 typedef struct{
     int echo_pin;     /**< GPIO pin number for the echo input. */
     int trigger_pin;  /**< GPIO pin number for the trigger output. */
-    unsigned long timeout; /**< Timeout value in microseconds for the sensor measurement. */
-    unsigned long elapsed;  /**< Measured pulse width (time of flight) in microseconds. */
+    int timeout; /**< Timeout value in microseconds for the sensor measurement. */
+    int elapsed;  /**< Measured pulse width (time of flight) in microseconds. */
 } _hcrs04_dev_t;
 
 
-hcrs04_t* hcrs04_create(int trigger_pin, int echo_pin, unsigned long timeout){
+hcrs04_t* hcrs04_create(int trigger_pin, int echo_pin, int timeout){
     _hcrs04_dev_t *sensor = malloc(sizeof(_hcrs04_dev_t));
     sensor->echo_pin = echo_pin;
     sensor->trigger_pin = trigger_pin; 
@@ -39,26 +39,26 @@ hcrs04_t* hcrs04_create(int trigger_pin, int echo_pin, unsigned long timeout){
 err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor){
     _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
     gpio_send(sens->trigger_pin);
-    _delay(10);
+    delay(10);
     gpio_stop(sens->trigger_pin);
+  
     
-    u_int32_t init_time = now();
-    while(!gpio_read(sensor) && time_lapse(init_time) <= sens->timeout); // wait for the echo pin HIGH or timeout
+    int init_time = now();
+    while(!gpio_read(sens->echo_pin) && (elapsed_time(init_time) <= sens->timeout)); // wait for the echo pin HIGH or timeout
     init_time = now();
-    while(gpio_read(sensor) && time_lapse(init_time) <= sens->timeout); // wait for the echo pin LOW or timeout
-    sens->elapsed = time_lapse(init_time);
+    while(gpio_read(sens->echo_pin) && (elapsed_time(init_time) <= sens->timeout)); // wait for the echo pin LOW or timeout
+    sens->elapsed = elapsed_time(init_time);
     return OK;
 
 };
 
-err_t hcrs04_get_distance_m(hcrs04_t *sensor, float *distance){ 
+float hcrs04_get_distance_m(hcrs04_t *sensor){ 
     hcrs04_send_pulse_and_wait(sensor);
     _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
-    (*distance) = (sens-> elapsed / DSOUND_SPEED) * 1000;  // return in meters
-    return OK;
+    return (sens-> elapsed / DSOUND_SPEED) * 1000;  // return in meters
 }; 
 
-err_t hcrs04_get_time(hcrs04_t *sensor, float *pulse_width){
+err_t hcrs04_get_time(hcrs04_t *sensor, int *pulse_width){
     hcrs04_send_pulse_and_wait(sensor);
     _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
     (*pulse_width) = sens->elapsed ; 

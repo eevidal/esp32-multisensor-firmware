@@ -11,13 +11,13 @@ void delay(unsigned long time){
     vTaskDelay(pdMS_TO_TICKS(time));
 };
 
-uint32_t now(void){
-    return  xTaskGetTickCount();
+int now(void){
+    return  (int)xTaskGetTickCount();
 
 };
 
-unsigned long elapsed_time(uint32_t star_time){
-    uint32_t _now = xTaskGetTickCount();
-    return (star_time - _now)/portTICK_PERIOD_MS;
+int elapsed_time(int star_time){
+    int _now = (int)xTaskGetTickCount();
+    return (int)(star_time - _now)/portTICK_PERIOD_MS;
 
 };
