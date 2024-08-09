@@ -17,7 +17,7 @@ typedef void * hcrs04_t;
  * @param timeout Timeout value in microseconds for the sensor measurement.
  * @return Pointer to the newly created HC-SR04 sensor instance, or NULL on failure.
  */
-hcrs04_t* hcrs04_create(int  trigger_pin, int echo_pin, int timeout);
+hcrs04_t* hcrs04_create(uint8_t  trigger_pin, uint8_t echo_pin, int timeout);
 
 /**
  * @brief Gets the distance from the HC-SR04 sensor in meters.

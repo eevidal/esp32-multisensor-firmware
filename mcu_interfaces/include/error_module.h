@@ -3,7 +3,7 @@
 
 
 #define OK 0
-#define FAIL !=OK
+#define FAIL -1
 
 typedef int err_t;
 

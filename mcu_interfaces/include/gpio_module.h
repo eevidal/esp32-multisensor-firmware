@@ -5,8 +5,8 @@
 #include "error_module.h"
 
 typedef enum {
-    GPIO_INPUT = 0,
-    GPIO_OUTPUT = 1
+    GPIO_INPUT = 1,
+    GPIO_OUTPUT = 2
 } direction_t;
 
 err_t gpio_init(uint8_t gpio_pin, direction_t mode);
