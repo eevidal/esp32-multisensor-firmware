@@ -17,7 +17,7 @@
 
 #if TARGET_IS_ESP32
 void delay(int time){
-    ets_delay_us(time);
+    ets_delay_us(time*1000);
 };
 
 uint64_t now(void){
@@ -26,8 +26,8 @@ uint64_t now(void){
    
 };
 
-uint64_t elapsed_time(uint64_t star_time){
-   return (star_time - esp_timer_get_time());
+uint64_t elapsed_time(uint64_t start_time){
+   return ( esp_timer_get_time() - start_time);
 
 };
 #endif

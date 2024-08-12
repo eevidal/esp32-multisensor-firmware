@@ -36,8 +36,8 @@ hcrs04_t* hcrs04_create(uint8_t trigger_pin, uint8_t echo_pin, int timeout){
     sensor->timeout = timeout > 0 ? timeout : TIMEOUT;
     sensor->mutex = mutex_init();
  
-  //  gpio_set_direction(sensor->echo_pin, GPIO_INPUT);
-   // gpio_set_direction(sensor->trigger_pin, GPIO_OUTPUT);  
+    gpio_set(sensor->echo_pin, GPIO_INPUT);
+    gpio_set(sensor->trigger_pin, GPIO_OUTPUT);  
     return (hcrs04_t *)sensor;
 }; 
 
@@ -49,24 +49,25 @@ err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor, uint64_t *elapsed){
     if (sens->mutex == NULL) 
         return E_FAIL;
 
-    printf("envio trigger\n");
-    mutex_lock(sens->mutex ); //enter critical region    printf("envio trigger\n");
-        printf("critical region\n");
-      //  gpio_stop((uint8_t)sens->trigger_pin);
-    //    delay(4);
+   
+   // mutex_lock(sens->mutex ); //enter critical region    printf("envio trigger\n");
+     
+        gpio_stop((uint8_t)sens->trigger_pin);
+        delay(4);
         gpio_send((uint8_t)sens->trigger_pin);
         delay(10);
         gpio_stop((uint8_t)sens->trigger_pin);
-    
-        printf("pido el tiempo\n");
+        init_time = now();       
+        while(!gpio_read(sens->echo_pin)&& (elapsed_time(init_time) <= sens->timeout)) ; // wait for the echo pin HIGH or timeout
         init_time = now();
-        while(!gpio_read(sens->echo_pin) && (elapsed_time(init_time) <= sens->timeout)); // wait for the echo pin HIGH or timeout
-        init_time = now();
+        printf("init time %lld\n", init_time);
         while(gpio_read(sens->echo_pin) && (elapsed_time(init_time) <= sens->timeout)); // wait for the echo pin LOW or timeout
         stop_time = now();
+         printf("stop time %lld\n", stop_time);
 
-    mutex_unlock(sens->mutex );    
-    *elapsed =  stop_time - init_time;
+  //  mutex_unlock(sens->mutex ); 
+    printf("elapsed %0.04f\n",(float)elapsed_time(init_time) );   
+    *elapsed =  elapsed_time(init_time);
    
     return E_OK;
 
@@ -74,11 +75,11 @@ err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor, uint64_t *elapsed){
 
 
 err_t hcrs04_get_distance_m(hcrs04_t *sensor,  uint64_t* distance){ 
-    printf("a enviar y esperar\n");
+
     uint64_t elapsed;
-     hcrs04_send_pulse_and_wait(sensor, &elapsed);
-    printf("ya leí\n");
-    *distance = ( elapsed / DSOUND_SPEED) * 1000;  // return in meters
+    hcrs04_send_pulse_and_wait(sensor, &elapsed);
+   
+    *distance = ( elapsed / DSOUND_SPEED) ;  // return in cm
     return E_OK;
 };
 

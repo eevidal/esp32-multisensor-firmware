@@ -19,26 +19,29 @@
         gpio_conf.mode = (gpio_mode_t)mode;
         gpio_conf.pull_up_en = GPIO_PULLUP_DISABLE;
         gpio_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
-        ESP_ERROR_CHECK(gpio_config(&gpio_conf));
+        ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_config(&gpio_conf));
         return E_OK;
     };
 
+    err_t gpio_set(uint8_t pin, direction_t mode){
+        ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_set_direction((gpio_num_t)pin, (gpio_mode_t)mode));
+        return E_OK;
+    }
+
     err_t gpio_send(uint8_t gpio_pin)
     {
-        printf("start\n");
         ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_set_level((gpio_num_t)gpio_pin, (uint32_t)HIGH));
         return E_OK;
     };
 
     err_t gpio_stop(uint8_t gpio_pin)
     {
-        printf("stop\n");
         ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_set_level((gpio_num_t)gpio_pin, LOW));
         return E_OK;
     };
 
     int gpio_read(uint8_t gpio_pin)
     {
-        return gpio_get_level((gpio_num_t)gpio_pin);
+           return gpio_get_level((gpio_num_t)gpio_pin);
     };
 
