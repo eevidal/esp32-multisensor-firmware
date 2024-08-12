@@ -17,7 +17,7 @@
 //TaskHandle_t gesture_task_handle = NULL;
 //TaskHandle_t position_task_handle = NULL;
 
-//static const char* dtag = "Ultrasonic";
+static const char* dtag = "Ultrasonic";
 
 
 hcrs04_t sensor = NULL;
@@ -90,10 +90,10 @@ void app_main(void)
     while (1)
     {
         float distance;
-      //  ESP_LOGI(dtag, "Obteniendo Distancia\n");
+        ESP_LOGI(dtag, "Obteniendo Distancia\n");
         hcrs04_get_distance_m(sensor, &distance);
-      //  ESP_LOGI(dtag, "Distancia %lu", distance);
-       printf("distancia %0.04f\n", distance*100);
+        ESP_LOGI(dtag, "Distancia %0.04f\n", distance);
+
        vTaskDelay(pdMS_TO_TICKS(500)); 
       
     }

@@ -10,7 +10,7 @@
 #include "gpio_module.h"
 #include "time_module.h"
 
-#define TIMEOUT   1200 // ms
+#define TIMEOUT   6000 // ms
 #define DSOUND_SPEED 2.91*2   // mm / micros
 
 
@@ -43,9 +43,9 @@ hcrs04_t* hcrs04_create(uint8_t trigger_pin, uint8_t echo_pin, int timeout){
 
 err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor, uint64_t *elapsed){
     _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
-    uint64_t init_time ;
     
-    uint64_t stop_time ;
+    
+   
     if (sens->mutex == NULL) 
         return E_FAIL;
 
@@ -57,17 +57,18 @@ err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor, uint64_t *elapsed){
         gpio_send((uint8_t)sens->trigger_pin);
         delay(10);
         gpio_stop((uint8_t)sens->trigger_pin);
-        init_time = now();       
+        uint64_t init_time  = now();       
         while(!gpio_read(sens->echo_pin)&& (elapsed_time(init_time) <= sens->timeout)) ; // wait for the echo pin HIGH or timeout
-        init_time = now();
+        uint64_t start_echo  = now();
+        uint64_t stop_time ;
         printf("init time %lld\n", init_time);
-        while(gpio_read(sens->echo_pin) && (elapsed_time(init_time) <= sens->timeout)); // wait for the echo pin LOW or timeout
-        stop_time = now();
+        while(gpio_read(sens->echo_pin) && (elapsed_time(init_time) <= sens->timeout)) // wait for the echo pin LOW or timeout
+            stop_time = now();
          printf("stop time %lld\n", stop_time);
 
   //  mutex_unlock(sens->mutex ); 
-    printf("elapsed %0.04f\n",(float)elapsed_time(init_time) );   
-    *elapsed =  elapsed_time(init_time);
+    printf("elapsed %0.04f\n",(float)elapsed_time(start_echo) );   
+    *elapsed =  stop_time - start_echo;
    
     return E_OK;
 
