@@ -13,7 +13,8 @@
 
 
 #define ECHO_PIN GPIO_NUM_4
-#define TRIGGER_PIN GPIO_NUM_2
+#define TRIGGER_PIN GPIO_NUM_5
+
 //TaskHandle_t gesture_task_handle = NULL;
 //TaskHandle_t position_task_handle = NULL;
 
@@ -86,15 +87,15 @@ hcrs04_t sensor = NULL;
 void app_main(void)
 {
 
-    sensor = hcrs04_create(TRIGGER_PIN, ECHO_PIN, 1000);
+    sensor = hcrs04_create(TRIGGER_PIN, ECHO_PIN, 6000);
     while (1)
     {
         float distance;
         ESP_LOGI(dtag, "Obteniendo Distancia\n");
         hcrs04_get_distance_m(sensor, &distance);
-        ESP_LOGI(dtag, "Distancia %0.04f\n", distance);
+        ESP_LOGI(dtag, "Distancia %0.5fcm\n", distance*100);
 
-       vTaskDelay(pdMS_TO_TICKS(500)); 
+       vTaskDelay(pdMS_TO_TICKS(1000)); 
       
     }
    // TaskHandle_t distance_task_handle = NULL;

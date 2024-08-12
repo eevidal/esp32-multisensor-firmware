@@ -9,7 +9,7 @@
  * 
  * @param time 
  */
-void delay(int time);
+void delay_us(int time);
 
 uint64_t  now(void);
 

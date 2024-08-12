@@ -16,8 +16,9 @@
 #endif
 
 #if TARGET_IS_ESP32
-void delay(int time){
-    ets_delay_us(time*1000);
+void delay_us(int time){
+  //  ets_delay_us(time);
+    esp_rom_delay_us(time);
 };
 
 uint64_t now(void){

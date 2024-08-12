@@ -32,7 +32,7 @@ hcrs04_t* hcrs04_create(uint8_t  trigger_pin, uint8_t echo_pin, int timeout);
  *     - OK Success
  *     - FAIL Fail
  */
-err_t  hcrs04_get_distance_m(hcrs04_t *sensor, uint64_t *distance);
+err_t  hcrs04_get_distance_m(hcrs04_t *sensor, float *distance);
 
 /**
  * @brief Gets the pulse width (time of flight) from the HC-SR04 sensor.
@@ -46,7 +46,7 @@ err_t  hcrs04_get_distance_m(hcrs04_t *sensor, uint64_t *distance);
  *     - OK Success
  *     - FAIL Fail
  */
-err_t hcrs04_get_time(hcrs04_t *sensor, uint64_t *pulse_width); 
+err_t hcrs04_get_time(hcrs04_t *sensor, uint32_t *pulse_width); 
 
 /**
  * @brief Delete and release the sensor handle
