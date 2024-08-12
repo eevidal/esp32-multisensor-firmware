@@ -4,11 +4,15 @@
 #include "error_module.h"
 
 
+/**
+ * @brief 
+ * 
+ * @param time 
+ */
+void delay(int time);
 
-void delay(unsigned long );
+uint64_t  now(void);
 
-int  now(void);
-
-int elapsed_time(int time);
+uint64_t elapsed_time(uint64_t time);
 
 #endif

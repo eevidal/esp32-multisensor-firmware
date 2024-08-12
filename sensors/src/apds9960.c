@@ -2,6 +2,7 @@
 
 #include "apds9960.h"
 #include "apds9960_internals.h"
+#include "error_module.h"
 
 #define APDS9960_I2C_ADDRESS    (0x39) 
 
@@ -48,15 +49,16 @@ apds9960_t * apds9960_init(w_i2c_config_t *i2c_params)
 
 err_t apds9960_delete(apds9960_t *sensor){
     if (*sensor == NULL) {
-        return OK;
+        return E_OK;
     }
+
 
     apds9960_dev_t *sens = (apds9960_dev_t *)(*sensor);
     i2c_deinit();
     free(sens);
     *sensor = NULL;
-    return OK;
-}// RNF.4
+    return E_OK;
+};// RNF.4
 
 // err_t apds9960_setup(apds9960_t *sensor, *sensor_params);
 
@@ -77,7 +79,7 @@ err_t apds9960_delete(apds9960_t *sensor){
 //     apds9960_set_gesture_fifo_threshold(sensor, APDS9960_GFIFO_4);
 //     apds9960_set_gesture_gain(sensor, APDS9960_GGAIN_4X);
 //     apds9960_set_gesture_proximity_threshold(sensor, 50, 0);
-apds9960_reset_counts(sensor);
+//apds9960_reset_counts(sensor);
 //     apds9960_set_led_drive_boost(sensor, APDS9960_LEDDRIVE_100MA, APDS9960_LEDBOOST_100PCNT);
 //     apds9960_set_gesture_waittime(sensor, APDS9960_GWTIME_2_8MS);
 //     apds9960_set_gesture_pulse(sensor, APDS9960_GPULSELEN_32US, 8);
@@ -132,14 +134,15 @@ apds9960_reset_counts(sensor);
 // err_t apds9960_proximity_set_wait(apds9960_t *sensor, uint8_t time);
 
 // err_t apds9960_read_raw_data(uint8_t *gesture_data);
-apds9960_gesture_t gesture apds9960_read_gesture(apds9960_t *sensor){ 
+/* apds9960_gesture_t gesture apds9960_read_gesture(apds9960_t *sensor)
 {
     uint8_t toRead;
     uint8_t buf[256];
     unsigned long t = 0;
     uint8_t gestureReceived;
-    apds9960_dev_t *sens = (apds9960_dev_t *) sensor;
+    apds9960_dev_t *sens = (apds9960_dev_t *) sensor; */
 
+/* 
     while (1) {
         int up_down_diff = 0;
         int left_right_diff = 0;
@@ -149,7 +152,7 @@ apds9960_gesture_t gesture apds9960_read_gesture(apds9960_t *sensor){
             return 0;
         }
 
-        vTaskDelay(30 / portTICK_RATE_MS);
+        delay(30);
         i2c_bus_read_byte(sens->i2c_dev, GFLVL, &toRead);
         i2c_bus_read_bytes(sens->i2c_dev, GFIFO_U, toRead, buf);
 
@@ -201,17 +204,19 @@ apds9960_gesture_t gesture apds9960_read_gesture(apds9960_t *sensor){
             apds9960_reset_counts(sensor);
             return gestureReceived;
         }
-    }
-};
+    } */
+//};
 
-bool apds9960_gesture_valid(sensor){
-    uint8_t data;
-    apds9960_dev_t *sens = (apds9960_dev_t *) sensor;
+//bool apds9960_gesture_valid(sensor){
+ //   uint8_t data = 1;
+  /* apds9960_dev_t *sens = (apds9960_dev_t *) sensor;
     i2c_bus_read_byte(sens->i2c_dev, GSTATUS, &data);
     sens->_gstatus_t.gfov = (data >> 1) & 0x01;
     sens->_gstatus_t.gvalid = data & 0x01;
-    return sens->_gstatus_t.gvalid;
-}
+    return sens->_gstatus_t.gvalid;*/
+//    return true;
+
+//}
 // err_t apds9960_set_gesture_offset(apds9960_t *sensor,
 // uint8_t offset_up, uint8_t offset_down, uint8_t offset_left, uint8_t offset_right);
 // err_t apds9960_proximity_init(apds9960_t *sensor);

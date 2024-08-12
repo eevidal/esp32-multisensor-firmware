@@ -2,7 +2,7 @@
 #define _HCRS04_H_
 
 #include "error_module.h"
-
+#include <stdint.h>
 
 typedef void * hcrs04_t;
 
@@ -32,7 +32,7 @@ hcrs04_t* hcrs04_create(uint8_t  trigger_pin, uint8_t echo_pin, int timeout);
  *     - OK Success
  *     - FAIL Fail
  */
-double  hcrs04_get_distance_m(hcrs04_t *sensor);
+err_t  hcrs04_get_distance_m(hcrs04_t *sensor, uint64_t *distance);
 
 /**
  * @brief Gets the pulse width (time of flight) from the HC-SR04 sensor.
@@ -46,7 +46,7 @@ double  hcrs04_get_distance_m(hcrs04_t *sensor);
  *     - OK Success
  *     - FAIL Fail
  */
-err_t hcrs04_get_time(hcrs04_t *sensor, int *pulse_width); 
+err_t hcrs04_get_time(hcrs04_t *sensor, uint64_t *pulse_width); 
 
 /**
  * @brief Delete and release the sensor handle
