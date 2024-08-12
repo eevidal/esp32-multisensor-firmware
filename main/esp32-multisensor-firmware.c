@@ -4,6 +4,7 @@
 #include "freertos/timers.h"
 #include "esp_system.h"
 #include "esp_log.h"
+#include "driver/gpio.h"
 
 #include "time_module.h"
 #include "hcrs04.h"
@@ -11,8 +12,8 @@
 //#include "mpu6050.h"
 
 
-#define ECHO_PIN 4
-#define TRIGGER_PIN 2
+#define ECHO_PIN GPIO_NUM_4
+#define TRIGGER_PIN GPIO_NUM_2
 //TaskHandle_t gesture_task_handle = NULL;
 //TaskHandle_t position_task_handle = NULL;
 
@@ -32,7 +33,7 @@ hcrs04_t sensor = NULL;
 //static portMUX_TYPE mutex = portMUX_INITIALIZER_UNLOCKED;
 static void ultrasonic_task(void* sens){
    
-    sensor = hcrs04_create(TRIGGER_PIN, ECHO_PIN, 1000);
+    sensor = hcrs04_create(TRIGGER_PIN, ECHO_PIN, 100);
     while (1)
     {
         uint64_t distance;
