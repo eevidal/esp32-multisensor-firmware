@@ -26,6 +26,7 @@ mutex_t mutex_init() {
     
 }
 
+
 void mutex_lock(mutex_t* mutex){
 
   xSemaphoreTake(*(sem_t*)mutex, portMAX_DELAY);
