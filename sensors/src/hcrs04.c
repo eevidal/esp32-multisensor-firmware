@@ -43,6 +43,11 @@ hcrs04_t* hcrs04_create(uint8_t trigger_pin, uint8_t echo_pin, int timeout){
     return (hcrs04_t *)sensor;
 }; 
 
+int hcrs04_echo_pin(hcrs04_t *sensor)
+{
+    return ((_hcrs04_dev_t *)sensor)->echo_pin;
+    };
+
 err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor, uint32_t *elapsed){
     _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
     

@@ -57,5 +57,5 @@ err_t hcrs04_get_time(hcrs04_t *sensor, uint32_t *pulse_width);
  *     - FAIL Fail
  */
 err_t hcrs04_delete(hcrs04_t *sensor);
-
+int hcrs04_echo_pin(hcrs04_t *sensor);
 #endif

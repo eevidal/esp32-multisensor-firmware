@@ -32,17 +32,20 @@ hcrs04_t sensor = NULL;
 }; */
 
 //static portMUX_TYPE mutex = portMUX_INITIALIZER_UNLOCKED;
- static void ultrasonic_task(void* sens){
-   
-    sensor = hcrs04_create(TRIGGER_PIN, ECHO_PIN, 6000);
+ static void ultrasonic_task(void* sens)
+ {
+   hcrs04_t * sensor = (hcrs04_t * )sens;
+ //   static portMUX_TYPE mutex = portMUX_INITIALIZER_UNLOCKED;
     while (1)
     {
         float distance;
         ESP_LOGI(dtag, "Obteniendo Distancia\n");
+      //  portENTER_CRITICAL_SAFE(&mutex);
         hcrs04_get_distance_m(sensor, &distance);
+   //     portEXIT_CRITICAL_SAFE(&mutex);
         ESP_LOGI(dtag, "Distancia %0.5fcm\n", distance*100);
-
-       vTaskDelay(pdMS_TO_TICKS(1000)); 
+        ESP_LOGD(dtag, "tigger %d", hcrs04_echo_pin(sensor));
+       vTaskDelay(pdMS_TO_TICKS(500)); 
       
     }
 } 
@@ -87,12 +90,14 @@ hcrs04_t sensor = NULL;
 void app_main(void)
 {
 
-    static uint8_t ucParameterToPass;
+
     TaskHandle_t xHandle = NULL;    
+    sensor = hcrs04_create(TRIGGER_PIN, ECHO_PIN, 6000);
+  
    // TaskHandle_t distance_task_handle = NULL;
    // TaskHandle_t handler = NULL;
    
-   // vTaskDelay(100);
+  
      //echo 20 trigger 23
  //   i2c_params->sda_num = 21;
  //   i2c_params->scl_num= 22;
@@ -100,13 +105,15 @@ void app_main(void)
  //   sensor2 = apds9960_init(i2c_params);
  //   sensor3 = mpu6050_init(i2c_params);
    
-   xTaskCreate(&ultrasonic_task, "Ultrasonic", 1024, &ucParameterToPass, 8, &xHandle);
+   xTaskCreate( &ultrasonic_task, "Ultrasonic",2048,(void *)sensor, 5, &xHandle);
     configASSERT( xHandle );
  //   xTaskCreate(&gesture_task, "Gesture", 1024, NULL, 4, NULL);
   //   xTaskCreate(&task1,"task", 1024, NULL, 5, &handler);
+   while(1) vTaskDelay(100);
    if( xHandle != NULL )
     {
+         ESP_LOGI(dtag, "DELETING...");
      vTaskDelete( xHandle );
     }
-
+  
 }

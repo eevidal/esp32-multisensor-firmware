@@ -3,13 +3,12 @@
 #include "gpio_module.h"
 #include "driver/gpio.h"
 #include "esp_err.h"
-
+#include "freertos/FreeRTOS.h"
 #include <stdint.h>
+#include "esp_log.h"
 
 #define LOW 0
 #define HIGH 1
-
-
 
 
     err_t gpio_init(uint8_t pin, direction_t mode)
@@ -24,19 +23,23 @@
     };
 
     err_t gpio_set(uint8_t pin, direction_t mode){
-        ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_set_direction((gpio_num_t)pin, (gpio_mode_t)mode));
+        ESP_ERROR_CHECK(gpio_set_direction((gpio_num_t)pin, (gpio_mode_t)mode));
         return E_OK;
     }
 
     err_t gpio_send(uint8_t gpio_pin)
-    {
-        ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_set_level((gpio_num_t)gpio_pin, (uint32_t)HIGH));
+    {   
+ 
+
+        ESP_ERROR_CHECK(gpio_set_level((gpio_num_t)gpio_pin, (uint32_t)HIGH));
+
+
         return E_OK;
     };
 
     err_t gpio_stop(uint8_t gpio_pin)
     {
-        ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_set_level((gpio_num_t)gpio_pin, LOW));
+        ESP_ERROR_CHECK(gpio_set_level((gpio_num_t)gpio_pin, (uint32_t)LOW));
         return E_OK;
     };
 
