@@ -87,7 +87,8 @@ hcrs04_t sensor = NULL;
 void app_main(void)
 {
 
-    
+    static uint8_t ucParameterToPass;
+    TaskHandle_t xHandle = NULL;    
    // TaskHandle_t distance_task_handle = NULL;
    // TaskHandle_t handler = NULL;
    
@@ -99,8 +100,13 @@ void app_main(void)
  //   sensor2 = apds9960_init(i2c_params);
  //   sensor3 = mpu6050_init(i2c_params);
    
-   xTaskCreate(&ultrasonic_task, "Ultrasonic", 1024, NULL, 4, NULL);
+   xTaskCreate(&ultrasonic_task, "Ultrasonic", 1024, &ucParameterToPass, 8, &xHandle);
+    configASSERT( xHandle );
  //   xTaskCreate(&gesture_task, "Gesture", 1024, NULL, 4, NULL);
   //   xTaskCreate(&task1,"task", 1024, NULL, 5, &handler);
+   if( xHandle != NULL )
+    {
+     vTaskDelete( xHandle );
+    }
 
 }
