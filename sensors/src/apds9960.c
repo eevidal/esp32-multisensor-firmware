@@ -10,7 +10,6 @@
 
 
 typedef struct{
-    w_i2c_config_t *i2c_dev;
     uint8_t  dev_addr;
    
     // apds9960_control_t _control_t; /*< config control register>*/
@@ -36,12 +35,12 @@ typedef struct{
 }apds9960_dev_t;
 
 
-apds9960_t * apds9960_init(w_i2c_config_t *i2c_params)
+apds9960_t * apds9960_init(void)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *) malloc(sizeof(apds9960_dev_t));
     if ((void *)sens == NULL) 
         return NULL; 
-    i2c_init(i2c_params);
+   
 
     sens->dev_addr = APDS9960_I2C_ADDRESS; 
     return (apds9960_t) sens;
@@ -51,10 +50,8 @@ err_t apds9960_delete(apds9960_t *sensor){
     if (*sensor == NULL) {
         return E_OK;
     }
-
-
     apds9960_dev_t *sens = (apds9960_dev_t *)(*sensor);
-    i2c_deinit();
+  
     free(sens);
     *sensor = NULL;
     return E_OK;
@@ -134,19 +131,21 @@ err_t apds9960_delete(apds9960_t *sensor){
 // err_t apds9960_proximity_set_wait(apds9960_t *sensor, uint8_t time);
 
 // err_t apds9960_read_raw_data(uint8_t *gesture_data);
-/* apds9960_gesture_t gesture apds9960_read_gesture(apds9960_t *sensor)
+
+
+
+err_t apds9960_read_gesture(apds9960_t *sensor, apds9960_gesture_t *gesture)
 {
     uint8_t toRead;
     uint8_t buf[256];
     unsigned long t = 0;
-    uint8_t gestureReceived;
-    apds9960_dev_t *sens = (apds9960_dev_t *) sensor; */
+    uint8_t gesture_r;
+    apds9960_dev_t *sens = (apds9960_dev_t *) sensor; 
 
-/* 
     while (1) {
         int up_down_diff = 0;
         int left_right_diff = 0;
-        gestureReceived = 0;
+        gesture_r = 0;
 
         if (!apds9960_gesture_valid(sensor)) {
             return 0;
@@ -155,6 +154,7 @@ err_t apds9960_delete(apds9960_t *sensor){
         delay(30);
         i2c_bus_read_byte(sens->i2c_dev, GFLVL, &toRead);
         i2c_bus_read_bytes(sens->i2c_dev, GFIFO_U, toRead, buf);
+        i2c_read_byte(sens->dev_addr,);
 
         if (abs((int) buf[0] - (int) buf[1]) > 13) {
             up_down_diff += (int) buf[0] - (int) buf[1];
@@ -204,8 +204,8 @@ err_t apds9960_delete(apds9960_t *sensor){
             apds9960_reset_counts(sensor);
             return gestureReceived;
         }
-    } */
-//};
+    } 
+};
 
 //bool apds9960_gesture_valid(sensor){
  //   uint8_t data = 1;

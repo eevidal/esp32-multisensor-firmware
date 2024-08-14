@@ -4,22 +4,17 @@
 #define MPU6050_I2C_ADDRESS 0x38
 
 typedef struct {
-    i2c_bus_t *i2c_dev;
     uint8_t dev_addr;
     
 } mpu6050_dev_t;
 
 
 
-mpu6050_t * mpu6050_init(w_i2c_config_t *i2c_params){
+mpu6050_t * mpu6050_init(void){
     mpu6050_dev_t *sens = (mpu6050_dev_t *) malloc(sizeof(mpu6050_dev_t));
     if ((void *)sens == NULL) 
         return NULL; 
-    sens->i2c_dev = (i2c_bus_t *)i2c_init(i2c_params);
-    if (sens->i2c_dev == NULL) {
-        free(sens);
-        return NULL;
-    }
+
     sens->dev_addr = MPU6050_I2C_ADDRESS; 
     return (mpu6050_t *)sens;
 

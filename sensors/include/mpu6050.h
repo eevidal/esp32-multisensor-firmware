@@ -48,7 +48,7 @@ typedef struct{
 
 typedef void * mpu6050_t;
 
-mpu6050_t *mpu6050_init(w_i2c_config_t *i2c_params);
+mpu6050_t *mpu6050_init(void);
 err_t mpu6050_setup(mpu6050_t sensor,imu_t *sensor_params);
 err_t mpu6050_get_acce_raw(mpu6050_t *sensor,acce_raw *accel_data);
 err_t mpu6050_get_gyro_raw(mpu6050_t *sensor,gyro_raw *gyro_data);

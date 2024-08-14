@@ -95,7 +95,10 @@ err_t apds9960_proximity_set_threshold(apds9960_t *sensor,uint8_t threshold);
 err_t apds9960_proximity_set_wait(apds9960_t *sensor, uint8_t time);
 err_t apds9960_gesture_init(apds9960_t *sensor);
 err_t apds9960_read_raw_data(uint8_t *gesture_data);
+
+
 err_t apds9960_read_gesture(apds9960_t *sensor, apds9960_gesture_t *gesture);
+
 err_t apds9960_set_gesture_offset(apds9960_t *sensor,
 uint8_t offset_up, uint8_t offset_down, uint8_t offset_left, uint8_t offset_right);
 err_t apds9960_proximity_init(apds9960_t *sensor);
