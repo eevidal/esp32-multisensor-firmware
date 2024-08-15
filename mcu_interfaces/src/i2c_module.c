@@ -45,6 +45,7 @@ err_t i2c_add_master_device(uint8_t is_seven, uint16_t dev_addr, uint32_t cl_spe
 };
 
 
+
 err_t i2c_write(void * dev_handler, uint8_t reg_addr, const uint8_t *data, uint8_t length)
 {
     uint8_t reg_and_data[length + 1];

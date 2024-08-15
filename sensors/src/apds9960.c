@@ -5,13 +5,15 @@
 #include "error_module.h"
 
 #define APDS9960_I2C_ADDRESS    (0x39) 
+#define MAX_CLK  400000
 
 #define  ID             0x92
 
 
 typedef struct{
     uint8_t  dev_addr;
-   
+    i2c_dev_t * i2c_dev_hadler;
+    uint32_t i2c_clk;
     // apds9960_control_t _control_t; /*< config control register>*/
     // apds9960_enable_t _enable_t;   /*< config enable register>*/
     // apds9960_config1_t _config1_t; /*< config config1 register>*/
@@ -35,14 +37,19 @@ typedef struct{
 }apds9960_dev_t;
 
 
-apds9960_t * apds9960_init(void)
+apds9960_t * apds9960_init(i2c_bus_t* i2c_bus)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *) malloc(sizeof(apds9960_dev_t));
-    if ((void *)sens == NULL) 
+    if ((void *)sens == NULL || (void *)i2c_bus == NULL ) 
         return NULL; 
-   
+    
+    sens->dev_addr = APDS9960_I2C_ADDRESS;
+    sens->i2c_clk = MAX_CLK;
+    i2c_dev_t  dev;
+    i2c_add_master_device(1,sens->dev_addr,sens->i2c_clk,i2c_bus,&dev);
+    
 
-    sens->dev_addr = APDS9960_I2C_ADDRESS; 
+    
     return (apds9960_t) sens;
 }
 

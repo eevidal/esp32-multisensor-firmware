@@ -10,19 +10,22 @@ typedef void *apds9960_t;
 
 
 
-/* Acceptable parameters for setMode */
+/** Acceptable parameters for setMode */
 typedef enum {
-    APDS9960_POWER              = 0,
-    APDS9960_AMBIENT_LIGHT      = 1,
-    APDS9960_PROXIMITY          = 2,
-    APDS9960_WAIT               = 3,
-    APDS9960_AMBIENT_LIGHT_INT  = 4,
-    APDS9960_PROXIMITY_INT      = 5,
-    APDS9960_GESTURE            = 6,
-    APDS9960_ALL                = 7,
+    APDS9960_POWER              = 0b00000001,   /** Power on*/
+    APDS9960_AEN                = 0b00000010,   /**ALS Enable*/
+    APDS9960_PEN                = 0b00000100,   /**Proximity Detect Enable*/
+    APDS9960_WEN                = 0b00001000,   /**Wait Enable*/
+    APDS9960_AIEN               = 0b00010000,   /**ALS Interrupt Enable.*/
+    APDS9960_PIEN               = 0b00100000,   /**Proximity Interrupt Enable. */
+    APDS9960_GEN                = 0b01000000,   /**Gesture Enable.*/
+    APDS9960_ALL                = 0b01111111,   /**ALL Enable*/
 } apds9960_mode_t;
 
-/* Gesture wait time values */
+/** Gesture wait time values  */
+/** The GWTIME controls the amount of time in a low power mode between
+gesture detection cycles. Address 0xA3<2:0>*/ 
+
 typedef enum {
     APDS9960_GWTIME_0MS     = 0b00000000,  
     APDS9960_GWTIME_2_8MS   = 0b00000001,
@@ -33,6 +36,23 @@ typedef enum {
     APDS9960_GWTIME_30_8MS  = 0b00000110,
     APDS9960_GWTIME_39_2MS  = 0b00000111
 } apds9960_gwtime_t;
+
+
+/** ADC gain settings */
+typedef enum {
+  APDS9960_AGAIN_1X = 0x00,  /**< No gain */
+  APDS9960_AGAIN_4X = 0x01,  /**< 2x gain */
+  APDS9960_AGAIN_16X = 0x02, /**< 16x gain */
+  APDS9960_AGAIN_64X = 0x03  /**< 64x gain */
+} apds9960_again_t;
+
+/** Proxmity gain settings */
+typedef enum {
+  APDS9960_PGAIN_1X = 0x00, /**< 1x gain */
+  APDS9960_PGAIN_2X = 0x01, /**< 2x gain */
+  APDS9960_PGAIN_4X = 0x02, /**< 4x gain */
+  APDS9960_PGAIN_8X = 0x03  /**< 8x gain */
+} apds9960_pgain_t;
 
 
 typedef enum{
@@ -46,8 +66,13 @@ typedef enum{
     ALL
 } apds9960_gesture_t;
 
-apds9960_t * apds9960_init(w_i2c_config_t* i2c_params);
+apds9960_t * apds9960_init(i2c_bus_t* i2c_bus);
+
+
+
 err_t apds9960_delete(apds9960_t *sensor); // RNF.4
+
+
 //err_t apds9960_setup(apds9960_t *sensor, *sensor_params);
 
 /**

@@ -22,7 +22,7 @@ TaskHandle_t ultrasonic_task_handle = NULL;
 hcrs04_t sensor_u = NULL;
 apds9960_t sensor_a = NULL;
 mpu6050_t sensor_m = NULL;
-i2c_master_bus_handle_t* i2c_bus = NULL;
+i2c_bus_t* i2c_bus = NULL;
 
 
 static const char* dtagu = "Ultrasonic";
@@ -47,8 +47,8 @@ void app_main(void)
     
     sensor_u = hcrs04_create(TRIGGER_PIN, ECHO_PIN, 6000);
     i2c_bus =  i2c_init_bus(&i2c_params);
-    sensor_a = apds9960_init();
-    sensor_m = mpu6050_init();
+    sensor_a = apds9960_init(i2c_bus);
+    sensor_m = mpu6050_init(i2c_bus);
   
     xTaskCreate( &ultrasonic_task, "Ultrasonic",2048,(void *)sensor_u, 5, &ultrasonic_task_handle);
     xTaskCreate( &gesture_task, "Gesture",2048,(void *)sensor_a, 5, &gesture_task_handle);

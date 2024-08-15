@@ -29,7 +29,7 @@ typedef void* i2c_dev_t;
  *   - params->clk_speed: I2C clock speed in Hz.
  * @return A pointer to the initialized I2C bus handle, or NULL on error.
  */
-i2c_bus_t * i2c_init_bus(w_i2c_config_t *params);
+i2c_bus_t * i2c_init_bus(const w_i2c_config_t *params);
 
 /**
  * Adds a master device to an I2C bus.
@@ -43,7 +43,7 @@ i2c_bus_t * i2c_init_bus(w_i2c_config_t *params);
  * @param dev A pointer to store the device handle.
  * @return E_OK on success, error code otherwise.
  */
-err_t i2c_add_master_device(uint8_t is, uint16_t dev_addr, uint32_t cl_speed, void* bus_handle,void *dev);
+err_t i2c_add_master_device(uint8_t is_seven, uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t* bus_handle, i2c_dev_t *dev);
 
 /**
  * Reads data from an I2C device register.
@@ -59,6 +59,9 @@ err_t i2c_add_master_device(uint8_t is, uint16_t dev_addr, uint32_t cl_speed, vo
  * @note The function currently overwrites the input data pointer with the internal buffer address.
  *       Consider using a separate buffer for storing the read data to avoid unexpected behavior.
  */
+
+uint32_t i2c_get_clk(i2c_dev_t *dev);
+
 err_t i2c_read(void * dev_handler, uint8_t reg_addr,  uint8_t length, uint8_t *data);
 
 
