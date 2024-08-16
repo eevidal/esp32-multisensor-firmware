@@ -14,6 +14,7 @@ typedef struct{
     uint8_t  dev_addr;
     i2c_dev_t * i2c_dev_hadler;
     uint32_t i2c_clk;
+    uint8_t enable; /** enable register 0x80*/
     // apds9960_control_t _control_t; /*< config control register>*/
     // apds9960_enable_t _enable_t;   /*< config enable register>*/
     // apds9960_config1_t _config1_t; /*< config config1 register>*/
@@ -45,11 +46,17 @@ apds9960_t * apds9960_init(i2c_bus_t* i2c_bus)
     
     sens->dev_addr = APDS9960_I2C_ADDRESS;
     sens->i2c_clk = MAX_CLK;
-    i2c_dev_t  dev;
+    i2c_dev_t  dev = NULL;
     i2c_add_master_device(1,sens->dev_addr,sens->i2c_clk,i2c_bus,&dev);
+    if (dev == NULL)
+        return NULL;
     
+    sens->i2c_dev_hadler = dev;
+    sens->enable = 0x00;
 
     
+
+
     return (apds9960_t) sens;
 }
 
@@ -58,11 +65,18 @@ err_t apds9960_delete(apds9960_t *sensor){
         return E_OK;
     }
     apds9960_dev_t *sens = (apds9960_dev_t *)(*sensor);
-  
+    i2c_del_master_device(sens->i2c_dev_hadler);
     free(sens);
     *sensor = NULL;
     return E_OK;
 };// RNF.4
+
+err_t apds9960_on(apds9960_t *sensor){
+    apds9960_dev_t *sens = (apds9960_dev_t *)(*sensor);
+    sens->enable |= PON;
+    return E_OK;
+}
+
 
 // err_t apds9960_setup(apds9960_t *sensor, *sensor_params);
 

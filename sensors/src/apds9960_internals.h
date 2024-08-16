@@ -1,8 +1,8 @@
 /* APDS-9960 register addresses */
 #define APDS9960_I2C_ADDRESS    (0x39) 
 
-#define  MODE_ENABLE    0x80
-#define  ID             0x92
+#define  ENABLE    0x80             /**Enable register*/
+#define  ID        0x92             /**Id device register*/
 
 // Proximity register
 #define  PILT           0x89
@@ -69,6 +69,7 @@
 #define AIEN                      0b00010000
 #define PIEN                      0b00100000
 #define GEN                       0b01000000
+#define ALL                       0b01111111
 #define GVALID                    0b00000001
 
 /* On/Off definitions */

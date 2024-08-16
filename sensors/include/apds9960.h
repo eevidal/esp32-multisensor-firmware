@@ -12,13 +12,13 @@ typedef void *apds9960_t;
 
 /** Acceptable parameters for setMode */
 typedef enum {
-    APDS9960_POWER              = 0b00000001,   /** Power on*/
-    APDS9960_AEN                = 0b00000010,   /**ALS Enable*/
-    APDS9960_PEN                = 0b00000100,   /**Proximity Detect Enable*/
-    APDS9960_WEN                = 0b00001000,   /**Wait Enable*/
-    APDS9960_AIEN               = 0b00010000,   /**ALS Interrupt Enable.*/
-    APDS9960_PIEN               = 0b00100000,   /**Proximity Interrupt Enable. */
-    APDS9960_GEN                = 0b01000000,   /**Gesture Enable.*/
+    APDS9960_POWER              = 1,   /** Power on*/
+    APDS9960_ALS                = 2,   /**ALS Enable*/
+    APDS9960_PROXIMIMTY         = 3,   /**Proximity Detect Enable*/
+    APDS9960_WAIT               = 4,   /**Wait Enable*/
+    APDS9960_AINT               = 5,   /**ALS Interrupt Enable.*/
+    APDS9960_PINT               = 6,   /**Proximity Interrupt Enable. */
+    APDS9960_GESTURE            = 7,   /**Gesture Enable.*/
     APDS9960_ALL                = 0b01111111,   /**ALL Enable*/
 } apds9960_mode_t;
 
