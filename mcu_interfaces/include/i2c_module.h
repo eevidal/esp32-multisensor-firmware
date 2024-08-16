@@ -52,8 +52,8 @@ err_t i2c_add_master_device(uint8_t is_seven, uint16_t dev_addr, uint32_t cl_spe
  *
  * @param dev_handler A pointer to the device handle.
  * @param reg_addr The register address to read from.
- * @param length The number of bytes to read.
  * @param data A pointer to the buffer where the read data will be stored.
+ * @param length The number of bytes to read.
  * @return E_OK on success, error code otherwise.
  *
  * @note The function currently overwrites the input data pointer with the internal buffer address.
@@ -62,7 +62,7 @@ err_t i2c_add_master_device(uint8_t is_seven, uint16_t dev_addr, uint32_t cl_spe
 
 uint32_t i2c_get_clk(i2c_dev_t *dev);
 
-err_t i2c_read(void * dev_handler, uint8_t reg_addr,  uint8_t length, uint8_t *data);
+err_t i2c_read(void * dev_handler, uint8_t reg_addr, uint8_t *data, uint8_t length);
 
 
 /**

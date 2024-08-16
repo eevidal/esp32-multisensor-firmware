@@ -56,7 +56,7 @@ err_t i2c_write(void * dev_handler, uint8_t reg_addr, const uint8_t *data, uint8
     return E_OK;
 };
 
-err_t i2c_read(void * dev_handler, uint8_t reg_addr,  uint8_t length, uint8_t *data)
+err_t i2c_read(void * dev_handler, uint8_t reg_addr, uint8_t *data, uint8_t length)
 {
     uint8_t reg_and_data[length + 1];
     reg_and_data[0] = reg_addr;

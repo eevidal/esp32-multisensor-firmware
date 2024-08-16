@@ -12,14 +12,14 @@ typedef void *apds9960_t;
 
 /** Acceptable parameters for setMode */
 typedef enum {
-    APDS9960_POWER              = 1,   /** Power on*/
-    APDS9960_ALS                = 2,   /**ALS Enable*/
-    APDS9960_PROXIMIMTY         = 3,   /**Proximity Detect Enable*/
-    APDS9960_WAIT               = 4,   /**Wait Enable*/
-    APDS9960_AINT               = 5,   /**ALS Interrupt Enable.*/
-    APDS9960_PINT               = 6,   /**Proximity Interrupt Enable. */
-    APDS9960_GESTURE            = 7,   /**Gesture Enable.*/
-    APDS9960_ALL                = 0b01111111,   /**ALL Enable*/
+    APDS9960_POWER              = 0,   /** Power on*/
+    APDS9960_ALS                = 1,   /**ALS Enable*/
+    APDS9960_PROXIMIMTY         = 2,   /**Proximity Detect Enable*/
+    APDS9960_WAIT               = 3,   /**Wait Enable*/
+    APDS9960_AINT               = 4,   /**ALS Interrupt Enable.*/
+    APDS9960_PINT               = 5,   /**Proximity Interrupt Enable. */
+    APDS9960_GESTURE            = 6,   /**Gesture Enable.*/
+    APDS9960_ALL                = 7,   /**ALL Enable*/
 } apds9960_mode_t;
 
 /** Gesture wait time values  */
@@ -46,13 +46,22 @@ typedef enum {
   APDS9960_AGAIN_64X = 0x03  /**< 64x gain */
 } apds9960_again_t;
 
-/** Proxmity gain settings */
+/** Gain settings. For Proximity ang Gesture */
 typedef enum {
-  APDS9960_PGAIN_1X = 0x00, /**< 1x gain */
-  APDS9960_PGAIN_2X = 0x01, /**< 2x gain */
-  APDS9960_PGAIN_4X = 0x02, /**< 4x gain */
-  APDS9960_PGAIN_8X = 0x03  /**< 8x gain */
-} apds9960_pgain_t;
+  APDS9960_GAIN_1X = 0x00, /**< 1x gain */
+  APDS9960_GAIN_2X = 0x01, /**< 2x gain */
+  APDS9960_GAIN_4X = 0x02, /**< 4x gain */
+  APDS9960_GAIN_8X = 0x03  /**< 8x gain */
+} apds9960_gain_t;
+
+/** LED Drive Strength */
+typedef enum {
+  APDS9960_LDRIVE_100MA = 0x00, /**< 100ma */
+  APDS9960_LDRIVE_50MA = 0x01,   /**< 50ma*/
+  APDS9960_LDRIVE_25MA = 0x02,   /**< 25ma */
+  APDS9960_LDRIVE_12_5MA = 0x03  /**< 12.5ma */
+} apds9960_ldrive_t;
+
 
 
 typedef enum{

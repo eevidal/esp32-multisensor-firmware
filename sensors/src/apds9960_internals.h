@@ -61,7 +61,7 @@
 #define  GFIFO_L        0xFE
 #define  GFIFO_R        0xFF
 
-/* Bit fields */
+/* Bit fields Enable register */
 #define PON                       0b00000001
 #define AEN                       0b00000010
 #define PEN                       0b00000100
