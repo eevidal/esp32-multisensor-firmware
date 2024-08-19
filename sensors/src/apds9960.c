@@ -28,6 +28,11 @@ typedef struct
     uint8_t gconfig3; /**0xAA*/
     uint8_t gconfig4; /**0xAB*/
     uint8_t pers;     /**0x8C*/
+    uint8_t wtime;    /**0x8D*/
+    uint8_t atime;    /**0x8C*/
+    uint8_t ppulse;   /**0x8E*/
+    uint8_t gpulse;   /**0xA6*/
+    uint8_t gmode;     /**0xAB<0>*/
 
     // apds9960_propulse_t _ppulse_t; /*< config pro pulse register>*/
     // apds9960_gespulse_t _gpulse_t; /*< config ges pulse register>*/
@@ -57,7 +62,7 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus)
     sens->enable = 0x00;
     sens->status = 0x00;
     sens->gstatus = 0x00;
-    sens->config1 = 0x40;
+    sens->config1 = 0x60; // Bit 6 and 5 are reserved, and are automatically set to 1 at POR.
     sens->config2 = 0x01;
     sens->config3 = 0x00;
     sens->gconfig1 = 0x00;
@@ -65,6 +70,10 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus)
     sens->gconfig3 = 0x00;
     sens->gconfig4 = 0x00;
     sens->pers = 0x00;
+    sens->wtime = 0xFF;
+    sens->atime = 0xFF;
+    sens->ppulse = 0x40;
+    sens->gmode = 0x00;
 
     /**.........continuara.....*/
     return (apds9960_t)sens;
@@ -199,7 +208,6 @@ err_t apds9960_gesture_set_threshold(apds9960_t *sensor, uint8_t gpenth, uint8_t
     return E_OK;
 }
 
-
 // err_t apds9960_setup(apds9960_t *sensor, *sensor_params);
 
 // err_t apds9960_gesture_init(apds9960_t *sensor)
@@ -264,61 +272,273 @@ err_t apds9960_gesture_set_threshold(apds9960_t *sensor, uint8_t gpenth, uint8_t
 
 // }
 
-//CONTROL Register
+// CONTROL Register
 
- err_t apds9960_set_again(apds9960_t *sensor, apds9960_again_t again){
+err_t apds9960_set_again(apds9960_t *sensor, apds9960_again_t again)
+{
     apds9960_dev_t *sens = CAST(sensor);
     uint8_t temp = 0x03 & again;
     sens->control |= temp;
     temp = sens->control;
-    return(apds9960_write(sens,CONTROL,&temp,1));
- }
+    return (apds9960_write(sens, CONTROL, &temp, 1));
+}
 
- err_t apds9960_set_pgain(apds9960_t *sensor, apds9960_gain_t pgain){
+err_t apds9960_set_pgain(apds9960_t *sensor, apds9960_gain_t pgain)
+{
     apds9960_dev_t *sens = CAST(sensor);
     uint8_t temp = 0x0C & pgain;
     sens->control |= temp;
     temp = sens->control;
-    return(apds9960_write(sens,CONTROL,&temp,1));
- };
+    return (apds9960_write(sens, CONTROL, &temp, 1));
+};
 
-  err_t apds9960_set_ldrive(apds9960_t *sensor, apds9960_ldrive_t ldrive){
+err_t apds9960_set_ldrive(apds9960_t *sensor, apds9960_ldrive_t ldrive)
+{
     apds9960_dev_t *sens = CAST(sensor);
     uint8_t temp = 0xC0 & ldrive;
     sens->control |= temp;
     temp = sens->control;
-    return(apds9960_write(sens,CONTROL,&temp,1));
- };
+    return (apds9960_write(sens, CONTROL, &temp, 1));
+};
 
-//CONFIG2
- err_t apds9960_set_ggain(apds9960_t *sensor, apds9960_gain_t  ggain){
+// CONFIG2
+err_t apds9960_set_ggain(apds9960_t *sensor, apds9960_gain_t ggain)
+{
     apds9960_dev_t *sens = CAST(sensor);
     uint8_t temp = 0x60 & ggain;
     sens->gconfig2 |= temp;
     temp = sens->gconfig2;
-    return(apds9960_write(sens,GCONF2,&temp,1));
- };
+    return (apds9960_write(sens, GCONF2, &temp, 1));
+};
 
- err_t apds9960_set_gldrive(apds9960_t *sensor, apds9960_ldrive_t gldrive){
+err_t apds9960_set_gldrive(apds9960_t *sensor, apds9960_ldrive_t gldrive)
+{
     apds9960_dev_t *sens = CAST(sensor);
     uint8_t temp = 0x14 & gldrive;
     sens->gconfig2 |= temp;
     temp = sens->gconfig2;
-    return(apds9960_write(sens,GCONF2,&temp,1));
- };
+    return (apds9960_write(sens, GCONF2, &temp, 1));
+};
 
-  err_t apds9960_set_gwtime(apds9960_t *sensor, apds9960_gwtime_t gwtime){
+err_t apds9960_set_gwtime(apds9960_t *sensor, apds9960_gwtime_t gwtime)
+{
     apds9960_dev_t *sens = CAST(sensor);
     uint8_t temp = 0x07 & gwtime;
     sens->gconfig2 |= temp;
     temp = sens->gconfig2;
-    return(apds9960_write(sens,GCONF2,&temp,1));
- };
+    return (apds9960_write(sens, GCONF2, &temp, 1));
+};
+
+// WTIME
+err_t apds9960_set_wtime(apds9960_t *sensor, uint8_t wtime)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    sens->wtime = wtime;
+    return (apds9960_write(sens, WTIME, &wtime, 1));
+}
+
+// ATIME
+err_t apds9960_set_atime(apds9960_t *sensor, uint8_t atime)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    sens->atime = atime;
+    return (apds9960_write(sens, ATIME, &atime, 1));
+}
+
+// WLONG
+err_t apds9960_enable_wlong(apds9960_t *sensor)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    uint8_t config1 = 0x61;
+    sens->config1 = config1;
+    return (apds9960_write(sens, CONFIG1, &config1, 1));
+}
+err_t apds9960_disable_wlong(apds9960_t *sensor)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    uint8_t config1 = 0x60;
+    sens->config1 = config1;
+    return (apds9960_write(sens, CONFIG1, &config1, 1));
+}
+
+// PPULSE
+err_t apds9960_set_proximity_pulse(apds9960_t *sensor, apds9960_pulse_len_t len, uint8_t pulses)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    uint8_t tmp = 0;
+    if (pulses < 1)
+        pulses = 1;
+    if (pulses > 64)
+        pulses = 64;
+    pulses--;
+    sens->ppulse = pulses | len;
+    pulses = sens->ppulse;
+    return (apds9960_write(sens, GPULSE, &tmp, 1));
+}
+
+// CONFIG2
+err_t apds9960_set_proximity_sat_int_(apds9960_t *sensor, apds9960_psat_int_t sat)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    uint8_t config2 = 0x00;
+    config2 |= sat;
+    sens->config2 = config2;
+    return (apds9960_write(sens, CONFIG2, &config2, 1));
+}
+
+err_t apds9960_set_proximity_clear_int_(apds9960_t *sensor, apds9960_pclear_int_t clear)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    uint8_t config2 = 0x00;
+    config2 |= clear;
+    sens->config2 = config2;
+    return (apds9960_write(sens, CONFIG2, &config2, 1));
+}
+
+err_t apds9960_set_ledboost(apds9960_t *sensor, apds9960_ledboost_t boost)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    uint8_t config2 = 0x00;
+    config2 |= boost;
+    sens->config2 = config2;
+    return (apds9960_write(sens, CONFIG2, &config2, 1));
+}
+
+// P_OFFSETS
+err_t apds9960_set_poffset_ur(apds9960_t *sensor, uint8_t offset)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    return (apds9960_write(sens, POFFSET_UR, &offset, 1));
+}
+err_t apds9960_set_poffset_dl(apds9960_t *sensor, uint8_t offset)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    return (apds9960_write(sens, POFFSET_DL, &offset, 1));
+}
+
+//CONFIG3
+err_t apds9960_set_proximity_pcmp(apds9960_t *sensor, apds9960_pcmp_t pcmd_val)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    sens->config3 |= pcmd_val;
+    uint8_t config3 = sens->config3;
+    return (apds9960_write(sens, CONFIG3, &config3, 1));
+}
+
+err_t apds9960_set_proximity_sai(apds9960_t *sensor, apds9960_psai_t sai_val)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    sens->config3 |= sai_val;
+    uint8_t config3 = sens->config3;
+    return (apds9960_write(sens, CONFIG3, &config3, 1));
+}
+
+err_t apds9960_set_proximity_mask(apds9960_t *sensor, apds9960_pmask_t mask);
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    sens->config3 |= mask;
+    uint8_t config3 = sens->config3;
+    return (apds9960_write(sens, CONFIG3, &config3, 1));
+}
+//GCONFIG1
+
+err_t apds9960_set_gestrure_gexmsk(apds9960_t *sensor, apds9960_gexmsk_t mask);
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    sens->gconfig1 |= mask;
+    uint8_t gconfig1 = sens->gconfig1;
+    return (apds9960_write(sens, GCONFIG1, &gconfig1, 1));
+}
+
+err_t apds9960_set_gestrure_fifoth(apds9960_t *sensor, apds9960_gfifoth_t fifoth);
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    sens->gconfig1 |= fifoth;
+    uint8_t gconfig1 = sens->gconfig1;
+    return (apds9960_write(sens, GCONFIG1, &gconfig1, 1));
+}
+err_t apds9960_set_gestrure_gexpers(apds9960_t *sensor, apds9960_gexpers_t gexper);
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    sens->gconfig1 |= gexper;
+    uint8_t gconfig1 = sens->gconfig1;
+    return (apds9960_write(sens, GCONFIG1, &gconfig1, 1));
+}
+
+//CONFIG GOFFSET
+err_t apds9960_set_gestrure_offsets(apds9960_t *sensor, uint8_t offset_up, uint8_t offset_down, uint8_t offset_left, uint8_t offset_right);
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    apds9960_write(sens, GOFFSET_D, &offset_down,1);
+    apds9960_write(sens, GOFFSET_U, &offset_up,1);
+    apds9960_write(sens, GOFFSET_L, &offset_left,1);
+    apds9960_write(sens, GOFFSET_R, &offset_right,1);
+    return E_OK;
+}
+
+//GPULSE
+err_t apds9960_set_gesture_pulse(apds9960_t *sensor, apds9960_pulse_len_t len, uint8_t pulses)
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    uint8_t tmp = 0;
+    if (pulses < 1)
+        pulses = 1;
+    if (pulses > 64)
+        pulses = 64;
+    pulses--;
+    sens->gpulse = pulses | len;
+    pulses = sens->gpulse;
+    return (apds9960_write(sens, GPULSE, &tmp, 1));
+}
+
+//GCONF3
+err_t apds9960_set_gestrure_gdims(apds9960_t *sensor, apds9960_gdims_t gdim);
+{
+    apds9960_dev_t *sens = CAST(sensor);
+    sens->gconfig3 |= gdim;
+    uint8_t gconfig3 = sens->gconfig3;
+    return (apds9960_write(sens, GCONF3, &gconfig3, 1));
+}
 
 
- err_t apds9960_get_again(apds9960_t *sensor, uint8_t *again);
- err_t apds9960_get_ggain(apds9960_t *sensor, uint8_t *ggain);
- err_t apds9960_get_pgain(apds9960_t *sensor, uint8_t *pgain);
+err_t apds9960_set_gesture_int_on(apds9960_t *sensor){
+    apds9960_dev_t *sens = CAST(sensor);
+     sens->gconfig4 |=  0b00000010;
+    uint8_t gconfig4 = sens->gconfig4;
+    return (apds9960_write(sens, GCONF4, &gconfig4, 1));
+
+}
+
+err_t apds9960_set_gesture_int_off(apds9960_t *sensor){
+    apds9960_dev_t *sens = CAST(sensor);
+     sens->gconfig4 &=  0b11111101;
+    uint8_t gconfig4 = sens->gconfig4;
+    return (apds9960_write(sens, GCONF4, &gconfig4, 1));
+
+}
+
+//INTERRUPS
+err_t apds9960_set_force_interrupt(apds9960_t *sensor, uint8_t iforce){
+     apds9960_dev_t *sens = CAST(sensor);
+    return (apds9960_write(sens, IFORCE, &iforce, 1));
+}
+err_t apds9960_set_proximity_clear_int(apds9960_t *sensor, uint8_t piclear){
+     apds9960_dev_t *sens = CAST(sensor);
+    return (apds9960_write(sens, PICLEAR, &piclear, 1));
+}
+err_t apds9960_set_color_clear_int(apds9960_t *sensor, uint8_t ciclear){
+     apds9960_dev_t *sens = CAST(sensor);
+    return (apds9960_write(sens, CICLEAR, &ciclear, 1));
+}
+err_t apds9960_set_als_clear_int(apds9960_t *sensor, uint8_t aiclear){
+     apds9960_dev_t *sens = CAST(sensor);
+    return (apds9960_write(sens, AICLEAR, &aiclear, 1));
+}
+
+
+err_t apds9960_get_again(apds9960_t *sensor, uint8_t *again);
+err_t apds9960_get_ggain(apds9960_t *sensor, uint8_t *ggain);
+err_t apds9960_get_pgain(apds9960_t *sensor, uint8_t *pgain);
 
 // err_t apds9960_proximity_set_threshold(apds9960_t *sensor,uint8_t threshold);
 // err_t apds9960_proximity_set_wait(apds9960_t *sensor, uint8_t time);
@@ -435,14 +655,7 @@ err_t apds9960_read_gesture(apds9960_t *sensor, apds9960_gesture_t *gesture)
 
 //}
 
-err_t apds9960_set_gesture_offset(apds9960_t *sensor, uint8_t offset_up, uint8_t offset_down, uint8_t offset_left, uint8_t offset_right){
-    apds9960_dev_t *sens = (apds9960_dev_t *) sensor;
-    apds9960_write(sens->i2c_dev_hadler, GOFFSET_U, offset_up, 1);
-    apds9960_write(sens->i2c_dev_hadler, GOFFSET_D, offset_down, 1);
-    apds9960_write(sens->i2c_dev_hadler, GOFFSET_L, offset_left, 1);
-    apds9960_write(sens->i2c_dev_hadler, GOFFSET_R, offset_right, 1);
-    return E_OK;
-}
+
 // err_t apds9960_proximity_init(apds9960_t *sensor);
 // err_t apds9960_read_raw_proximity(apds9960_t *sensor, uint8_t *proximity);
 // err_t apds9960_read_proximity(apds9960_t *sensor, uint8_t *proximity);
