@@ -31,16 +31,16 @@ i2c_bus_t * i2c_init_bus(const w_i2c_config_t *params)
 };
 
 
-err_t i2c_add_master_device(uint8_t is_seven, uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t* bus_handle, i2c_dev_t *dev)
+err_t i2c_add_master_device( uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t* bus_handle, i2c_dev_t *dev)
 {
     i2c_device_config_t cfg;
-    cfg.dev_addr_length = (is_seven!=0) ? I2C_ADDR_BIT_LEN_7 : I2C_ADDR_BIT_LEN_10;
+    cfg.dev_addr_length =  I2C_ADDR_BIT_LEN_7;
     cfg.device_address = dev_addr;
     cfg.scl_speed_hz = cl_speed;
-    i2c_master_dev_handle_t dev_handle;
+    i2c_master_dev_handle_t *dev_handle;
     i2c_master_bus_handle_t * bus = (i2c_master_bus_handle_t *) bus_handle;
-    ESP_ERROR_CHECK(i2c_master_bus_add_device(bus, &cfg, &dev_handle));
-    i2c_dev_t* dev = &dev_handle;
+    ESP_ERROR_CHECK(i2c_master_bus_add_device(bus, &cfg, dev_handle));
+    dev = (i2c_dev_t *)dev_handle;
     return E_OK;
 };
 

@@ -289,7 +289,7 @@ err_t apds9960_set_again(apds9960_t *sensor, apds9960_again_t again);
  * @param ggain The desired gesture gain value.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_ggain(apds9960_t *sensor, uint8_t ggain);
+err_t apds9960_set_ggain(apds9960_t *sensor, apds9960_gain_t ggain);
 
 /**
  * Sets the proximity gain for the APDS9960 sensor.
@@ -298,7 +298,7 @@ err_t apds9960_set_ggain(apds9960_t *sensor, uint8_t ggain);
  * @param pgain The desired proximity gain value.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_pgain(apds9960_t *sensor, uint8_t pgain);
+err_t apds9960_set_pgain(apds9960_t *sensor, apds9960_gain_t pgain);
 
 /**
  * Sets the gesture LED drive current for the APDS9960 sensor.

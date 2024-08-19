@@ -36,14 +36,13 @@ i2c_bus_t * i2c_init_bus(const w_i2c_config_t *params);
  *
  * This function adds a master device to the specified I2C bus.
  *
- * @param is_seven Indicates whether to use a 7-bit or 10-bit device address.
  * @param dev_addr The device address.
  * @param cl_speed The clock speed in Hz.
  * @param bus_handle A pointer to the I2C bus handle.
  * @param dev A pointer to store the device handle.
  * @return E_OK on success, error code otherwise.
  */
-err_t i2c_add_master_device(uint8_t is_seven, uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t* bus_handle, i2c_dev_t *dev);
+err_t i2c_add_master_device( uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t* bus_handle, i2c_dev_t *dev);
 
 /**
  * Reads data from an I2C device register.
@@ -62,7 +61,7 @@ err_t i2c_add_master_device(uint8_t is_seven, uint16_t dev_addr, uint32_t cl_spe
 
 uint32_t i2c_get_clk(i2c_dev_t *dev);
 
-err_t i2c_read(void * dev_handler, uint8_t reg_addr, uint8_t *data, uint8_t length);
+err_t i2c_read(void * dev_handler, uint8_t reg_addr,const uint8_t *data, uint8_t length);
 
 
 /**

@@ -1,5 +1,4 @@
 #include <stdio.h>
-
 #include "apds9960.h"
 #include "apds9960_internals.h"
 #include "error_module.h"
@@ -7,9 +6,7 @@
 
 #define APDS9960_I2C_ADDRESS (0x39)
 #define MAX_CLK 400000
-
 #define ID 0x92
-
 #define CAST(X) ((apds9960_dev_t *)(*X))
 
 typedef struct
@@ -47,7 +44,6 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus)
     apds9960_dev_t *sens = (apds9960_dev_t *)malloc(sizeof(apds9960_dev_t));
     if ((void *)sens == NULL || (void *)i2c_bus == NULL)
         return NULL;
-
     sens->dev_addr = APDS9960_I2C_ADDRESS;
     sens->i2c_clk = MAX_CLK;
     i2c_dev_t dev = NULL;
@@ -56,7 +52,6 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus)
         return NULL;
 
     sens->i2c_dev_hadler = dev;
-
     sens->enable = 0x00;
     sens->status = 0x00;
     sens->gstatus = 0x00;
@@ -72,7 +67,6 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus)
     sens->atime = 0xFF;
     sens->ppulse = 0x40;
     sens->gmode = 0x00;
-
     sens->up_cnt = 0x00;
     sens->down_cnt = 0x00;
     sens->left_cnt = 0x00;
@@ -84,9 +78,8 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus)
 err_t apds9960_delete(apds9960_t *sensor)
 {
     if (*sensor == NULL)
-    {
         return E_OK;
-    }
+
     apds9960_dev_t *sens = (apds9960_dev_t *)(*sensor);
     i2c_del_master_device(sens->i2c_dev_hadler);
     free(sens);
@@ -219,13 +212,10 @@ err_t apds9960_set_proximity_threshold(apds9960_t *sensor, uint8_t threshold, ui
     apds9960_dev_t *sens = CAST(sensor);
     apds9960_write(sens, PILT, (threshold & 0xFF), 1);
     apds9960_write(sens, PIHT, (threshold >> 8), 1);
-
     if (persistence > 7)
         persistence = 7;
-
     sens->pers &= 0x0F;
     sens->pers |= (persistence << 4);
-
     apds9960_write(sens, PERS, persistence, 1);
     return E_OK;
 }
@@ -516,7 +506,6 @@ uint8_t apds9960_gesture_valid(apds9960_t *sensor)
 void apds9960_reset_counts(apds9960_t *sensor)
 {
     apds9960_dev_t *sens = CAST(sensor);
-
     sens->up_cnt = 0;
     sens->down_cnt = 0;
     sens->left_cnt = 0;
@@ -545,50 +534,33 @@ err_t apds9960_read_gesture(apds9960_t *sensor, apds9960_gesture_t *gesture)
         apds9960_read(sens, GFIFO_U, buf, 4); // page read
 
         if (abs((int)buf[0] - (int)buf[1]) > 13)
-        {
             up_down_diff += (int)buf[0] - (int)buf[1];
-        }
 
         if (abs((int)buf[2] - (int)buf[3]) > 13)
-        {
             left_right_diff += (int)buf[2] - (int)buf[3];
-        }
 
         if (up_down_diff != 0)
         {
             if (up_down_diff < 0)
-            {
                 (sens->down_cnt > 0) ? gesture_r = UP : sens->up_cnt++;
-            }
             else
-            {
                 (sens->up_cnt > 0) ? gesture_r = DOWN : sens->down_cnt++;
-            }
         }
 
         if (left_right_diff != 0)
         {
             if (left_right_diff < 0)
-            {
                 (sens->right_cnt > 0) ? gesture_r = LEFT : sens->left_cnt++;
-            }
             else // if (left_right_diff > 0)
-            {
                 (sens->left_cnt > 0) ? gesture_r = RIGHT : sens->right_cnt++;
-            }
         }
-
         if (up_down_diff == 0 && left_right_diff == 0)
         {
             gesture = NONE;
             return E_OK;
         }
-
         if (up_down_diff != 0 || left_right_diff != 0)
-        {
             t = now();
-        }
-
         if (gesture_r || elapsed_time(t) > sens->timeout)
         {
             apds9960_reset_counts(sensor);
@@ -609,7 +581,6 @@ err_t apds9960_read_color(apds9960_t *sensor, uint8_t data,  uint16_t *color_dat
 {
     uint8_t read_data[2];
     apds9960_dev_t *sens = CAST(sensor);
-
     switch (data)
     {
     case CDATA:
@@ -628,7 +599,6 @@ err_t apds9960_read_color(apds9960_t *sensor, uint8_t data,  uint16_t *color_dat
         apds9960_read(sens, BDATAL, &read_data[0], 1);
         apds9960_read(sens, BDATAH, &read_data[1], 1);
         break;
-
     default:
         break;
     } 
@@ -641,46 +611,36 @@ err_t apds9960_read_color(apds9960_t *sensor, uint8_t data,  uint16_t *color_dat
 err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint16_t *b, uint16_t *c)
 {
     apds9960_dev_t *sens = CAST(sensor);
-
     apds9960_read_color(sens, CDATA, c);
     apds9960_read_color(sens, RDATA, r);
     apds9960_read_color(sens, GDATA, g);
     apds9960_read_color(sens, BDATA, b);
-
     return E_OK;
 }
 
-
-
 err_t apds9960_gesture_init(apds9960_t *sensor)
 {
-    /* Set default values for ambient light and proximity registers */
-    
+    /* Set default values for ambient light and proximity registers */ 
     apds9960_set_atime(sensor, 10); 
     apds9960_set_again(sensor, APDS9960_AGAIN_4X);
-
     apds9960_disable_engine(sensor, APDS9960_GESTURE);
     apds9960_disable_engine(sensor, APDS9960_PROXIMIMTY);
     apds9960_disable_engine(sensor, APDS9960_ALS);
     apds9960_disable_engine(sensor, APDS9960_AINT);
     apds9960_disable_engine(sensor, APDS9960_PINT);
-
     apds9960_set_als_clear_int(sensor, AICLEAR);
-
     apds9960_enable_engine(sensor, APDS9960_POWER);
     apds9960_set_gesture_gdims(sensor, APDS9960_GDIM_ALL); 
     apds9960_set_gestrure_fifoth(sensor, APDS9960_GFIFOTH_4);
-    apds9960_set_ggain(sensor,APDS9960_AGAIN_4X); 
+    apds9960_set_ggain(sensor,APDS9960_GAIN_4X); 
     apds9960_set_gesture_threshold(sensor, 50,0); 
     apds9960_reset_counts(sensor);
     apds9960_set_ldrive(sensor, APDS9960_LDRIVE_100MA);
     apds9960_set_ledboost(sensor, APDS9960_LBOOST_100P);
     apds9960_set_gwtime(sensor,APDS9960_GWTIME_2_8MS);
     apds9960_set_gesture_pulse(sensor, APDS9960_LEN_32US, 8);
-
     apds9960_enable_engine(sensor, APDS9960_PROXIMIMTY);
     apds9960_enable_engine(sensor, APDS9960_GESTURE);
-
     return E_OK;
 }
 // Private Functions
