@@ -34,6 +34,17 @@ typedef struct
     uint8_t gpulse;   /**0xA6*/
     uint8_t gmode;     /**0xAB<0>*/
 
+    uint16_t cdata;
+    uint16_t rdata;
+    uint16_t gdata;
+    uint16_t bdata;
+
+    uint8_t gfifo_u;
+    uint8_t gfifo_d|;
+    uint8_t gfifo_l;
+    uint8_t gfifo_r;
+
+
     // apds9960_propulse_t _ppulse_t; /*< config pro pulse register>*/
     // apds9960_gespulse_t _gpulse_t; /*< config ges pulse register>*/
 
@@ -74,6 +85,15 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus)
     sens->atime = 0xFF;
     sens->ppulse = 0x40;
     sens->gmode = 0x00;
+
+    sens->cdata = 0x00;
+    sens->rdata = 0x00;
+    sens->gdata = 0x00;
+    sens->bdata = 0x00;
+    sens->gfifo_u = 0x00;
+    sens->gfifo_d = 0x00;
+    sens->gfifo_l = 0x00;
+    sens->gfifo_r = 0x00;
 
     /**.........continuara.....*/
     return (apds9960_t)sens;
@@ -540,8 +560,7 @@ err_t apds9960_get_again(apds9960_t *sensor, uint8_t *again);
 err_t apds9960_get_ggain(apds9960_t *sensor, uint8_t *ggain);
 err_t apds9960_get_pgain(apds9960_t *sensor, uint8_t *pgain);
 
-// err_t apds9960_proximity_set_threshold(apds9960_t *sensor,uint8_t threshold);
-// err_t apds9960_proximity_set_wait(apds9960_t *sensor, uint8_t time);
+
 
 // err_t apds9960_read_raw_data(uint8_t *gesture_data);
 
