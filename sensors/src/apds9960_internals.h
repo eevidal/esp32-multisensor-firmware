@@ -7,7 +7,7 @@
 // Proximity register
 #define  PILT           0x89
 #define  PIHT           0x8B
-#define  PERS           0x8C
+#define  PERS           0x8C   //Persistence filter 
 #define  CONFIG1        0x8D  //proximity and color/ACL
 #define  PPULSE         0x8E
 #define  CONTROL        0x8F
@@ -31,18 +31,18 @@
 #define  AGAIN          0x8F //<1:0>
 #define  CDATAL         0x94
 #define  CDATAH         0x95
-#define  CDATA          0x01
 #define  RDATAL         0x96
 #define  RDATAH         0x97
-#define  RDATA          0x02
 #define  GDATAL         0x98
 #define  GDATAH         0x99
 #define  BDATAL         0x9A
 #define  BDATAH         0x9B
 #define  CICLEAR        0xE5
 
-#define GDATA   0x03
-#define BDATA   0x04
+#define CDATA 0x00
+#define RDATA 0x01
+#define GDATA 0x02
+#define BDATA 0x03
 
 // Gesture control
 #define  GPENTH         0xA0

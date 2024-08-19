@@ -98,6 +98,7 @@ void app_main(void)
 
  static void gesture_task(void * sens){
     apds9960_t * sensor = (apds9960_t *)sens;
+    apds9960_gesture_init(sensor);
     apds9960_gesture_t* gesture;
     while (true) {
         ESP_LOGI(dtaga, "Obteniendo Gesto\n");
