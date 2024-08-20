@@ -4,3 +4,5 @@
 #include "esp_err.h"
 
 
+#define CHECK(X)  ESP_ERROR_CHECK(X)
+

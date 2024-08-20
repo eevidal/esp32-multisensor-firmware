@@ -10,7 +10,7 @@ typedef struct {
 
 
 
-mpu6050_t * mpu6050_init(void){
+mpu6050_t * mpu6050_init(i2c_bus_t* i2c_bus){
     mpu6050_dev_t *sens = (mpu6050_dev_t *) malloc(sizeof(mpu6050_dev_t));
     if ((void *)sens == NULL) 
         return NULL; 

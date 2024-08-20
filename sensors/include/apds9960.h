@@ -142,8 +142,8 @@ typedef enum
 /**Gesture Exit Persistence. When a number of consecutive “gesture end” occurrences become
 equal or greater to the GEPERS value, the Gesture state machine is exited.
 FIELD VALUEPERSISTENCE
+ Gesture Exit Persistence */
 
-/** Gesture Exit Persistence */
 typedef enum
 {
     APDS9960_GEXPERS_1 = 0x00, /**< 1st 'gesture end' occurrence results in gesture state machine exit. */

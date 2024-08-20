@@ -42,7 +42,7 @@ i2c_bus_t * i2c_init_bus(const w_i2c_config_t *params);
  * @param dev A pointer to store the device handle.
  * @return E_OK on success, error code otherwise.
  */
-err_t i2c_add_master_device( uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t* bus_handle, i2c_dev_t *dev);
+i2c_dev_t * i2c_add_master_device( uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t* bus_handle);
 
 /**
  * Reads data from an I2C device register.
@@ -61,7 +61,7 @@ err_t i2c_add_master_device( uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t* bu
 
 uint32_t i2c_get_clk(i2c_dev_t *dev);
 
-err_t i2c_read(void * dev_handler, uint8_t reg_addr,const uint8_t *data, uint8_t length);
+err_t i2c_read(void * dev_handler, uint8_t reg_addr, uint8_t *data, uint8_t length);
 
 
 /**
@@ -75,7 +75,7 @@ err_t i2c_read(void * dev_handler, uint8_t reg_addr,const uint8_t *data, uint8_t
  * @param length The number of bytes to write.
  * @return E_OK on success, error code otherwise.
  */
-err_t i2c_write(void * dev_handler, uint8_t reg_addr, uint8_t *data, uint8_t length);
+err_t i2c_write(void * dev_handler, uint8_t reg_addr, uint8_t data, uint8_t length);
 
 
 /**
