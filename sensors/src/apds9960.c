@@ -160,7 +160,7 @@ err_t apds9960_enable_engine(apds9960_t *sensor, apds9960_mode_t mode)
     apds9960_reset_counts(sensor);
     return E_OK;
 
-
+}
 
 err_t apds9960_disable_engine(apds9960_t *sensor, apds9960_mode_t mode)
 {
@@ -185,7 +185,7 @@ err_t apds9960_disable_engine(apds9960_t *sensor, apds9960_mode_t mode)
     case APDS9960_PINT:
         sens->enable &= ~PIEN;
         break;
-    case 6:
+    case APDS9960_GESTURE:
         sens->enable &= ~GEN;
         break;
     case APDS9960_ALL:
