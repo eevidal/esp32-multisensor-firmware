@@ -95,7 +95,7 @@ void app_main(void)
    //     portEXIT_CRITICAL_SAFE(&mutex);
         ESP_LOGI(dtagu, "Distancia %0.5fcm\n", distance*100);
         ESP_LOGD(dtagu, "tigger %d", hcrs04_echo_pin(sensor));
-       vTaskDelay(pdMS_TO_TICKS(500));    
+       vTaskDelay(pdMS_TO_TICKS(1500));    
     }
 } 
 
@@ -105,7 +105,7 @@ void app_main(void)
     apds9960_gesture_init(sensor);
     apds9960_gesture_t gesture;
     while (true) {
-        ESP_LOGI(dtaga, "Obteniendo Gesto\n");
+        ESP_LOGD(dtaga, "Obteniendo Gesto\n");
          //  portENTER_CRITICAL_SAFE(&mutex);
         apds9960_read_gesture(sensor, &gesture);
          //     portEXIT_CRITICAL_SAFE(&mutex);

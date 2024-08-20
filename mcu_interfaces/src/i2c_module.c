@@ -54,8 +54,8 @@ err_t i2c_write(void * dev_handler, uint8_t reg_addr, uint8_t data, uint8_t leng
     uint8_t reg_and_data[length + 1];
     reg_and_data[0] = reg_addr;
     reg_and_data[1] = data;
-    ESP_LOGI(tag, "escribiendo en el device\n");
-    ESP_ERROR_CHECK(i2c_master_transmit(( i2c_master_dev_handle_t )dev_handler, reg_and_data, length + 1,-1));
+    ESP_LOGI(tag, "escribiendo en el device %d \n", data);
+    ESP_ERROR_CHECK(i2c_master_transmit(( i2c_master_dev_handle_t )dev_handler, &reg_and_data, length + 1,-1));
     return E_OK;
 };
 

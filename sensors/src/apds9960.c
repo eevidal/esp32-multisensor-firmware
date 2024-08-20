@@ -54,6 +54,7 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus)
     sens->i2c_dev_hadler = dev;
     sens->enable = 0x00;
     sens->status = 0x00;
+    sens->control = 0x00;
     sens->gstatus = 0x00;
     sens->config1 = 0x60; // Bit 6 and 5 are reserved, and are automatically set to 1 at POR.
     sens->config2 = 0x01;
@@ -96,8 +97,10 @@ err_t apds9960_delete(apds9960_t *sensor)
  */
 err_t apds9960_write(apds9960_dev_t *sensor, uint8_t addr, uint8_t buf, uint8_t len)
 {
-    if (sensor->i2c_dev_hadler ==NULL)
+    if (sensor->i2c_dev_hadler ==NULL){
         printf("12c dev hadler no inicializado");
+        return E_FAIL;
+    }
     i2c_dev_t * handler = *sensor->i2c_dev_hadler;
     return (i2c_write(handler, addr, buf, len));
 }
@@ -236,8 +239,9 @@ err_t apds9960_set_again(apds9960_t *sensor, apds9960_again_t again)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
     uint8_t temp = 0x03 & again;
-    sens->control |= temp;
-    temp = sens->control;
+
+    temp |= sens->control;
+    sens->control = temp;
     return (apds9960_write(sens, CONTROL, temp, 1));
 }
 
@@ -508,6 +512,15 @@ uint8_t apds9960_gesture_valid(apds9960_t *sensor)
     return data;
 }
 
+uint8_t apds9960_id(apds9960_t *sensor)
+{
+    apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
+    uint8_t data = 0;
+    apds9960_read(sens, ID, &data, 1);
+    printf("ID %d\n",data);
+    return data;
+}
+
 
 void apds9960_reset_counts(apds9960_t *sensor)
 {
@@ -533,14 +546,18 @@ err_t apds9960_read_gesture(apds9960_t *sensor, apds9960_gesture_t *gesture)
         int up_down_diff = 0;
         int left_right_diff = 0;
         gesture = NONE;
+        apds9960_id(sensor);
         if (!apds9960_gesture_valid(sensor))
         {
             gesture = NONE;
+            printf("NONE");
             return E_OK;
         }
         delay_us(30);
         apds9960_read(sens, GFLVL, &cant, 1);
         apds9960_read(sens, GFIFO_U, buf, 4); // page read
+        printf("GFLV, %d\n", cant);
+        printf("GFIFO, %d\n", (int)buf);
 
         if (abs((int)buf[0] - (int)buf[1]) > 13)
             up_down_diff += (int)buf[0] - (int)buf[1];
@@ -628,15 +645,15 @@ err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint
 err_t apds9960_gesture_init(apds9960_t *sensor)
 {
     /* Set default values for ambient light and proximity registers */ 
-    printf("Seteando atime\n");
     apds9960_set_atime(sensor, 10); 
-      printf("Seteando againn");
     apds9960_set_again(sensor, APDS9960_AGAIN_4X);
+        printf("Disable Engine");
     apds9960_disable_engine(sensor, APDS9960_GESTURE);
     apds9960_disable_engine(sensor, APDS9960_PROXIMIMTY);
     apds9960_disable_engine(sensor, APDS9960_ALS);
     apds9960_disable_engine(sensor, APDS9960_AINT);
     apds9960_disable_engine(sensor, APDS9960_PINT);
+      printf("ALL Disable Engine");
     apds9960_set_als_clear_int(sensor, AICLEAR);
     apds9960_enable_engine(sensor, APDS9960_POWER);
     apds9960_set_gesture_gdims(sensor, APDS9960_GDIM_ALL); 
