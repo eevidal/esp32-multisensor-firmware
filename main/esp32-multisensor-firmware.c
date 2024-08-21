@@ -95,17 +95,19 @@ void app_main(void)
    //     portEXIT_CRITICAL_SAFE(&mutex);
         ESP_LOGI(dtagu, "Distancia %0.5fcm\n", distance*100);
         ESP_LOGD(dtagu, "tigger %d", hcrs04_echo_pin(sensor));
-       vTaskDelay(pdMS_TO_TICKS(1500));    
+       vTaskDelay(pdMS_TO_TICKS(500));    
     }
 } 
 
  static void gesture_task(void * sens){
     apds9960_t * sensor = (apds9960_t *)sens;
     ESP_LOGI(dtaga, "Iniciando Engine de Gestos\n");
+    apds9960_diagnose(sensor);
     apds9960_gesture_init(sensor);
+       apds9960_diagnose(sensor);
     apds9960_set_timeout(sensor, 300);
     uint8_t gesture = 0;
-    while(1) {
+    while(0) {
         ESP_LOGD(dtaga, "Obteniendo Gesto\n");
          //  portENTER_CRITICAL_SAFE(&mutex);
         gesture = apds9960_read_gesture(sensor);
@@ -120,7 +122,7 @@ void app_main(void)
         } else if (gesture == RIGHT) {
             printf("RIGHT!\n"); 
         } 
-        vTaskDelay(pdMS_TO_TICKS(200)); 
+        vTaskDelay(pdMS_TO_TICKS(1500));
     }
 };     
 

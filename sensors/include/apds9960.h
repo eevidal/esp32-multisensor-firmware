@@ -605,6 +605,7 @@ err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint
 err_t apds9960_gesture_init(apds9960_t *sensor);
 
 err_t apds9960_set_timeout(apds9960_t *sensor, uint64_t timeout);
+void apds9960_diagnose(apds9960_t *sensor);
 /**NOT IMPLEMENTED YET*/
 err_t apds9960_read_proximity(apds9960_t *sensor, uint8_t *proximity);
 err_t apds9960_get_ambient_light(apds9960_t *sensor, uint16_t *l);

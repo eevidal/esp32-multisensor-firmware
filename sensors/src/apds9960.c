@@ -4,9 +4,8 @@
 #include "error_module.h"
 #include "time_module.h"
 
-#define APDS9960_I2C_ADDRESS (0x39)
+
 #define MAX_CLK 400000
-#define ID 0x92
 
 
 typedef struct
@@ -656,10 +655,34 @@ err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint
     return E_OK;
 }
 
+void apds9960_diagnose(apds9960_t *sensor){
+
+     uint8_t reg;
+  
+    uint8_t *val = malloc(sizeof(uint8_t));
+     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
+    for(reg = 0x80; reg <= 0xAF; reg++) {
+        if( (reg != 0x82) && \
+            (reg != 0x8A) && \
+            (reg != 0x91) && \
+            (reg != 0xA8) && \
+            (reg != 0xAC) && \
+            (reg != 0xAD) )
+        {
+            i2c_read(sens->i2c_dev_hadler, reg, val,1);
+            printf("Register 0x%X value 0x%X \n",reg, *val);
+            *val = 0x00;
+        
+        }
+    }
+
+}
+
 err_t apds9960_gesture_init(apds9960_t *sensor)
 {
     /* Set default values for ambient light and proximity registers */ 
-    apds9960_set_atime(sensor, 10); 
+    apds9960_set_atime(sensor, 219); 
+    apds9960_set_wtime(sensor, 249);
     apds9960_set_again(sensor, APDS9960_AGAIN_4X);
     apds9960_set_proximity_pulse(sensor,2,7);
     apds9960_set_gesture_pulse(sensor,2,9);
