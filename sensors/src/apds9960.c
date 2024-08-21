@@ -10,7 +10,7 @@
 
 typedef struct
 {
-    uint8_t dev_addr;
+    uint16_t dev_addr;
     i2c_dev_t *i2c_dev_hadler;
     uint32_t i2c_clk;
     uint64_t timeout;
@@ -26,8 +26,7 @@ typedef struct
     uint8_t gconfig3; /**0xAA*/
     uint8_t gconfig4; /**0xAB*/
     uint8_t pers;     /**0x8C*/
- //   uint8_t wtime;    /**0x8D*/
- //   uint8_t atime;    /**0x8C*/
+
     uint8_t ppulse;   /**0x8E*/
     uint8_t gpulse;   /**0xA6*/
     uint8_t gmode;    /**0xAB<0>*/
@@ -656,12 +655,10 @@ err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint
 }
 
 void apds9960_diagnose(apds9960_t *sensor){
-
-     uint8_t reg;
   
     uint8_t *val = malloc(sizeof(uint8_t));
      apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    for(reg = 0x80; reg <= 0xAF; reg++) {
+    for(uint8_t reg = 0x80; reg <= 0xAF; reg++) {
         if( (reg != 0x82) && \
             (reg != 0x8A) && \
             (reg != 0x91) && \
@@ -675,6 +672,7 @@ void apds9960_diagnose(apds9960_t *sensor){
         
         }
     }
+    free(val);
 
 }
 
