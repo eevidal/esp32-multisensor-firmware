@@ -103,12 +103,14 @@ void app_main(void)
     apds9960_t * sensor = (apds9960_t *)sens;
     ESP_LOGI(dtaga, "Iniciando Engine de Gestos\n");
     apds9960_gesture_init(sensor);
-    apds9960_gesture_t gesture;
-    while (true) {
+    apds9960_set_timeout(sensor, 300);
+    uint8_t gesture = 0;
+    while(1) {
         ESP_LOGD(dtaga, "Obteniendo Gesto\n");
          //  portENTER_CRITICAL_SAFE(&mutex);
-        apds9960_read_gesture(sensor, &gesture);
+        gesture = apds9960_read_gesture(sensor);
          //     portEXIT_CRITICAL_SAFE(&mutex);
+         printf("gesto %d",gesture);
         if (gesture == DOWN) {
             printf("DOWN!\n");
         } else if (gesture == UP) {

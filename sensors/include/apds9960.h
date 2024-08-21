@@ -561,7 +561,7 @@ void apds9960_reset_counts(apds9960_t *sensor);
  * @param gesture Pointer to store the detected gesture.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_read_gesture(apds9960_t *sensor, apds9960_gesture_t *gesture);
+uint8_t apds9960_read_gesture(apds9960_t *sensor);
 
 /**
  * Reads the raw proximity data from the APDS9960 sensor.
@@ -604,7 +604,7 @@ err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint
  */
 err_t apds9960_gesture_init(apds9960_t *sensor);
 
-
+err_t apds9960_set_timeout(apds9960_t *sensor, uint64_t timeout);
 /**NOT IMPLEMENTED YET*/
 err_t apds9960_read_proximity(apds9960_t *sensor, uint8_t *proximity);
 err_t apds9960_get_ambient_light(apds9960_t *sensor, uint16_t *l);
