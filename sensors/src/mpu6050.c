@@ -4,37 +4,30 @@
 #include "error_module.h"
 #include "time_module.h"
 
-
-#define MPU6050_I2C_ADDRESS 0x38
-
-typedef struct {
+typedef struct
+{
     uint8_t dev_addr;
-    i2c_dev_t* i2c_dev_hadler;
+    i2c_dev_t *i2c_dev_hadler;
     uint32_t i2c_clk;
-
-    
 } mpu6050_dev_t;
 
-
-
-mpu6050_t * mpu6050_init(i2c_bus_t* i2c_bus)
+mpu6050_t *mpu6050_init(i2c_bus_t *i2c_bus)
 {
-    mpu6050_dev_t *sens = (mpu6050_dev_t *) malloc(sizeof(mpu6050_dev_t));
+    mpu6050_dev_t *sens = (mpu6050_dev_t *)malloc(sizeof(mpu6050_dev_t));
     if ((void *)sens == NULL || (void *)i2c_bus == NULL)
         return NULL;
 
-    sens->dev_addr = MPU6050_I2C_ADDRESS; 
+    sens->dev_addr = MPU6050_I2C_ADDRESS;
     sens->i2c_clk = MAX_CLK;
 
-    i2c_dev_t* dev;
-    dev = i2c_add_master_device( MPU6050_I2C_ADDRESS,  MAX_CLK, i2c_bus);
+    i2c_dev_t *dev;
+    dev = i2c_add_master_device(MPU6050_I2C_ADDRESS, MAX_CLK, i2c_bus);
     if (dev == NULL)
         printf("Algo salio mal seteando handler i2c\n");
     sens->i2c_dev_hadler = dev;
 
     return (mpu6050_t *)sens;
 }
-
 
 err_t mpu6050_delete(mpu6050_t *sensor)
 {
@@ -58,11 +51,12 @@ err_t mpu6050_delete(mpu6050_t *sensor)
  */
 err_t mpu6050_write(mpu6050_dev_t *sensor, uint8_t addr, uint8_t buf, uint8_t len)
 {
-    if (sensor->i2c_dev_hadler ==NULL){
+    if (sensor->i2c_dev_hadler == NULL)
+    {
         printf("12c dev hadler no inicializado");
         return E_FAIL;
     }
-    i2c_dev_t * handler = *sensor->i2c_dev_hadler;
+    i2c_dev_t *handler = *sensor->i2c_dev_hadler;
     return (i2c_write(handler, addr, buf, len));
 }
 
@@ -80,54 +74,130 @@ err_t mpu6050_read(mpu6050_dev_t *sensor, uint8_t addr, uint8_t *buf, uint8_t le
     return (i2c_read(sensor->i2c_dev_hadler, addr, buf, len));
 }
 
-
-err_t mpu6050_setup_default(mpu6050_t* sensor)
+err_t mpu6050_setup_default(mpu6050_t *sensor)
 {
     mpu6050_set_pwr_clock(sensor, CLK_PLL_XGYRO_C);
     mpu6050_set_acce_range(sensor, ACCE_2G);
     mpu6050_set_gyro_range(sensor, GYRO_250DPS);
     return E_OK;
 }
-  
+
 err_t mpu6050_set_pwr_clock(mpu6050_t *sensor, mpu6050_pwr_clk_t mode)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
-   
+
     mpu6050_write(sens, PWR_MGMT_1, (uint8_t)mode, 1);
     return E_OK;
-}  
+}
 
 err_t mpu6050_set_acce_range(mpu6050_t *sensor, acel_range_t range)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
-     // read first and do |=mode to preserve self-test?
+    // read first and do |=mode to preserve self-test?
     mpu6050_write(sens, ACCEL_CONFIG, (uint8_t)range, 1);
     return E_OK;
 }
 
-
-err_t mpu6050_set_gyro_range(mpu6050_t *sensor, gyro_range_t range){
+err_t mpu6050_set_gyro_range(mpu6050_t *sensor, gyro_range_t range)
+{
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
-     // read first and do |=mode to preserve self-test?
+    // read first and do |=mode to preserve self-test?
     mpu6050_write(sens, ACCEL_CONFIG, (uint8_t)range, 1);
     return E_OK;
 }
 
-err_t mpu6050_get_id(mpu6050_t *sensor){
-     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
-     uint8_t *val = malloc(sizeof(uint8_t));
-    mpu6050_read(sens,WHO_AM_I,val,1);
+err_t mpu6050_get_id(mpu6050_t *sensor)
+{
+    mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
+    uint8_t *val = malloc(sizeof(uint8_t));
+    mpu6050_read(sens, WHO_AM_I, val, 1);
     return E_OK;
 }
 
+uint16_t mpu_get_acce_x(mpu6050_dev_t *sensor_dev)
+{
+    uint8_t x_0;
+    uint8_t x_1;
+    mpu6050_read(sensor_dev, ACCEL_XOUT_H, &x_1, 1);
+    mpu6050_read(sensor_dev, ACCEL_XOUT_L, &x_0, 1);
+    uint16_t x = (((uint16_t)x_1) << 8) | (uint16_t)x_0;
+    return x;
+}
 
-// err_t mpu6050_get_acce_raw(mpu6050_t *sensor,acce_raw *accel_data);
-// err_t mpu6050_get_gyro_raw(mpu6050_t *sensor,gyro_raw *gyro_data);
+uint16_t mpu_get_acce_y(mpu6050_dev_t *sensor_dev)
+{
+    uint8_t y_0;
+    uint8_t y_1;
+    mpu6050_read(sensor_dev, ACCEL_YOUT_H, &y_1, 1);
+    mpu6050_read(sensor_dev, ACCEL_YOUT_L, &y_0, 1);
+    uint16_t y = (((uint16_t)y_1) << 8) | (uint16_t)y_0;
+    return y;
+}
+
+uint16_t mpu_get_acce_z(mpu6050_dev_t *sensor_dev)
+{
+    uint8_t z_0;
+    uint8_t z_1;
+    mpu6050_read(sensor_dev, ACCEL_ZOUT_H, &z_1, 1);
+    mpu6050_read(sensor_dev, ACCEL_ZOUT_L, &z_0, 1);
+    uint16_t z = (((uint16_t)z_1) << 8) | (uint16_t)z_0;
+    return z;
+}
+
+err_t mpu6050_get_acce_raw(mpu6050_t *sensor, acce_raw_t *accel_data)
+{
+    mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
+    accel_data->x = mpu_get_acce_x(sens);
+    accel_data->y = mpu_get_acce_y(sens);
+    accel_data->z = mpu_get_acce_z(sens);
+    return E_OK;
+}
+
+uint16_t mpu_get_gyro_x(mpu6050_dev_t *sensor_dev)
+{
+    uint8_t x_0;
+    uint8_t x_1;
+    mpu6050_read(sensor_dev, GYRO_XOUT_H, &x_1, 1);
+    mpu6050_read(sensor_dev, GYRO_XOUT_L, &x_0, 1);
+    uint16_t x = (((uint16_t)x_1) << 8) | (uint16_t)x_0;
+    return x;
+}
+
+uint16_t mpu_get_gyro_y(mpu6050_dev_t *sensor_dev)
+{
+    uint8_t y_0;
+    uint8_t y_1;
+    mpu6050_read(sensor_dev, GYRO_YOUT_H, &y_1, 1);
+    mpu6050_read(sensor_dev, GYRO_YOUT_L, &y_0, 1);
+    uint16_t y = (((uint16_t)y_1) << 8) | (uint16_t)y_0;
+    return y;
+}
+
+uint16_t mpu_get_gyro_z(mpu6050_dev_t *sensor_dev)
+{
+    uint8_t z_0;
+    uint8_t z_1;
+    mpu6050_read(sensor_dev, GYRO_ZOUT_H, &z_1, 1);
+    mpu6050_read(sensor_dev, GYRO_ZOUT_L, &z_0, 1);
+    uint16_t z = (((uint16_t)z_1) << 8) | (uint16_t)z_0;
+    return z;
+}
+
+err_t mpu6050_get_gyro_raw(mpu6050_t *sensor, gyro_raw_t *gyro_data)
+{
+    mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
+    gyro_data->x = mpu_get_gyro_x(sens);
+    gyro_data->y = mpu_get_gyro_y(sens);
+    gyro_data->z = mpu_get_gyro_z(sens);
+    return E_OK;
+}
+
 // err_t mpu6050_get_acce_sensitivity(mpu6050_t *sensor,float *acce_sensitivity);
 // err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor,float *gyro_sensitivity);
 
 // err_t mpu6050_get_acce_range(mpu6050_t *sensor, acel_range *range);
 // err_t mpu6050_get_gyro_range(mpu6050_t *sensor, gyro_range *range);
 // err_t mpu6050_get_gyro(mpu6050_t sensor, float *ax, float *ay, float *az);
+
 // err_t mpu6050_get_vel(mpu6050_t sensor, float *gx, float *gy, float *gz);
 // err_t mpu6050_get_orientation(mpu6050_t sensor, float *roll, float *pitch, float *yaw);

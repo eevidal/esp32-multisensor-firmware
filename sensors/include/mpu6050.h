@@ -39,12 +39,18 @@ typedef enum{
 } gyro_range_t;
 
 typedef struct {
+    int16_t x;
+    int16_t y;
+    int16_t z;
 
-} acce_raw;
+} acce_raw_t;
 
 typedef struct{
+    int16_t x;
+    int16_t y;
+    int16_t z;
     
-} gyro_raw;
+} gyro_raw_t;
 
 typedef struct {
     float x;
@@ -72,8 +78,8 @@ err_t mpu6050_delete(mpu6050_t *sensor);
 err_t mpu6050_get_id(mpu6050_t *sensor);
 err_t mpu6050_setup_default(mpu6050_t* sensor);// mov to aplication layer
 err_t mpu6050_set_pwr_clock(mpu6050_t *sensor, mpu6050_pwr_clk_t mode);
-err_t mpu6050_get_acce_raw(mpu6050_t *sensor,acce_raw *accel_data);
-err_t mpu6050_get_gyro_raw(mpu6050_t *sensor,gyro_raw *gyro_data);
+err_t mpu6050_get_acce_raw(mpu6050_t *sensor,acce_raw_t *accel_data);
+err_t mpu6050_get_gyro_raw(mpu6050_t *sensor,gyro_raw_t *gyro_data);
 err_t mpu6050_get_acce_sensitivity(mpu6050_t *sensor,float *acce_sensitivity);
 err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor,float *gyro_sensitivity);
 err_t mpu6050_set_acce_range(mpu6050_t *sensor, acel_range_t range);
