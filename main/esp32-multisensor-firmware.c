@@ -54,7 +54,7 @@ void app_main(void)
 
     ESP_LOGI(dtag, "Creando Tareas\n");
     xTaskCreate( &ultrasonic_task, "Ultrasonic",2048,(void *)sensor_u, 5, &ultrasonic_task_handle);
-    xTaskCreate( &gesture_task, "Gesture",2048,(void *)sensor_a, 10, &gesture_task_handle);
+    xTaskCreate( &gesture_task, "Gesture",2048,(void *)sensor_a, 4, &gesture_task_handle);
     xTaskCreate( &imu_task, "Position",2048,(void *)sensor_m, 5, &imu_task_handle);
 
     configASSERT(ultrasonic_task_handle);
@@ -102,7 +102,7 @@ void app_main(void)
  static void gesture_task(void * sens){
     apds9960_t * sensor = (apds9960_t *)sens;
     ESP_LOGI(dtaga, "Iniciando Engine de Gestos\n");
-    apds9960_diagnose(sensor);
+  //  apds9960_diagnose(sensor);
     apds9960_gesture_init(sensor);
     apds9960_diagnose(sensor);
     apds9960_set_timeout(sensor, 300);
@@ -110,7 +110,7 @@ void app_main(void)
     while(1) {
         ESP_LOGD(dtaga, "Obteniendo Gesto\n");
          //  portENTER_CRITICAL_SAFE(&mutex);
-/*         gesture = apds9960_read_gesture(sensor);
+        gesture = apds9960_read_gesture(sensor);
          //     portEXIT_CRITICAL_SAFE(&mutex);
          printf("gesto %d",gesture);
         if (gesture == DOWN) {
@@ -121,8 +121,8 @@ void app_main(void)
             printf("LEFT!\n");
         } else if (gesture == RIGHT) {
             printf("RIGHT!\n"); 
-        }  */
-        vTaskDelay(pdMS_TO_TICKS(1500));
+        }  
+        vTaskDelay(pdMS_TO_TICKS(15000));
     }
 };     
 
@@ -130,14 +130,14 @@ void app_main(void)
 {
     mpu6050_t * sensor = (mpu6050_t *)sens;
     mpu6050_setup_default(sensor);
-
+    acce_raw_t *acce = malloc(sizeof(acce_raw_t));
     while (true) { 
-      /*  mpu6050_get_acce(sensor, &acce);
-        printf("acce x:%.2f, y:%.2f, z:%.2f\n", acce.x, acce.y, acce.z);
-        mpu6050_get_gyro(sensor, &gyro);
-        printf("gyro x:%.2f, y:%.2f, z:%.2f\n", gyro.x, gyro.y, gyro.z);*/
-        mpu6050_get_id(sensor);
-        vTaskDelay(pdMS_TO_TICKS(3000)); 
+        mpu6050_get_acce_raw(sensor, acce);
+        printf("acce x:%X, y:%X, z:%X\n", acce->x, acce->y, acce->z);
+       // mpu6050_get_gyro(sensor, &gyro);
+        //printf("gyro x:%.2f, y:%.2f, z:%.2f\n", gyro.x, gyro.y, gyro.z);*/
+      //  mpu6050_get_id(sensor);
+        vTaskDelay(pdMS_TO_TICKS(300)); 
     }
 } 
  
