@@ -90,6 +90,29 @@ err_t mpu6050_set_pwr_clock(mpu6050_t *sensor, mpu6050_pwr_clk_t mode)
     return E_OK;
 }
 
+err_t mpu6050_set_dlpf(mpu6050_t *sensor, dlpf_t filter)
+{
+    mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
+    uint8_t config;
+    mpu6050_read(sens, CONFIG, &config, 1);
+    config &= 0b11111000;
+    config |= filter;
+    mpu6050_write(sens, CONFIG, config, 1);
+    return E_OK;
+}
+
+err_t mpu6050_set_sample_rate(mpu6050_t *sensor, int16_t rate){
+    mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
+    if (rate < 4)
+        rate = 4;
+    if (rate > 1000)
+        rate = 1000;
+    uint8_t smprt_div;
+    smprt_div = (1000 / rate ) - 1;
+    mpu6050_write(sens, SMPLRT_DIV, smprt_div, 1);
+    return E_OK;
+}
+
 err_t mpu6050_set_acce_range(mpu6050_t *sensor, acel_range_t range)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
@@ -102,16 +125,25 @@ err_t mpu6050_set_gyro_range(mpu6050_t *sensor, gyro_range_t range)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
     // read first and do |=mode to preserve self-test?
-    mpu6050_write(sens, ACCEL_CONFIG, (uint8_t)range, 1);
+    mpu6050_write(sens, GYRO_CONFIG, (uint8_t)range, 1);
     return E_OK;
 }
 
-err_t mpu6050_get_id(mpu6050_t *sensor)
+err_t mpu6050_get_id(mpu6050_t *sensor,uint8_t *val )
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
-    uint8_t *val = malloc(sizeof(uint8_t));
     mpu6050_read(sens, WHO_AM_I, val, 1);
     return E_OK;
+}
+
+uint16_t mpu_get_temp(mpu6050_dev_t *sensor_dev)
+{
+    uint8_t t_0;
+    uint8_t t_1;
+    mpu6050_read(sensor_dev, TEMP_OUT_H, &t_1, 1);
+    mpu6050_read(sensor_dev, TEMP_OUT_L, &t_0, 1);
+    uint16_t t = (((uint16_t)t_1) << 8) | (uint16_t)t_0;
+    return t;
 }
 
 uint16_t mpu_get_acce_x(mpu6050_dev_t *sensor_dev)
@@ -191,8 +223,19 @@ err_t mpu6050_get_gyro_raw(mpu6050_t *sensor, gyro_raw_t *gyro_data)
     gyro_data->z = mpu_get_gyro_z(sens);
     return E_OK;
 }
-
-// err_t mpu6050_get_acce_sensitivity(mpu6050_t *sensor,float *acce_sensitivity);
+/**
+ For each full scale setting, the gyroscopes' sensitivity per
+ * LSB in GYRO_xOUT is shown in the table below:
+ *
+ * <pre>
+ * FS_SEL | Full Scale Range   | LSB Sensitivity
+ * -------+--------------------+----------------
+ * 0      | +/- 250 degrees/s  | 131 LSB/deg/s
+ * 1      | +/- 500 degrees/s  | 65.5 LSB/deg/s
+ * 2      | +/- 1000 degrees/s | 32.8 LSB/deg/s
+ * 3      | +/- 2000 degrees/s | 16.4 LSB/deg/s
+ * /
+ err_t mpu6050_get_acce_sensitivity(mpu6050_t *sensor,float *acce_sensitivity);
 // err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor,float *gyro_sensitivity);
 
 // err_t mpu6050_get_acce_range(mpu6050_t *sensor, acel_range *range);

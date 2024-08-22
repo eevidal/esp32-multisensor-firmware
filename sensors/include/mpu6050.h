@@ -38,6 +38,16 @@ typedef enum{
 
 } gyro_range_t;
 
+typedef enum {
+    DLPF_256HZ       = 0, /*Accel 260*/
+    DLPF_188HZ       = 1, /*Accel 184*/
+    DLPF_98HZ        = 2, /*Accel 94*/
+    DLPF_42HZ        = 3, /*Accel 44*/
+    DLPF_20HZ        = 4, /*Accel 21*/
+    DLPF_10HZ        = 5, /*Accel10*/
+    DLPF_5HZ         = 6, /*Accel5*/
+} dlpf_t;
+
 typedef struct {
     int16_t x;
     int16_t y;
@@ -75,15 +85,16 @@ typedef void * mpu6050_t;
 
 mpu6050_t *mpu6050_init(i2c_bus_t* i2c_bus);
 err_t mpu6050_delete(mpu6050_t *sensor);
-err_t mpu6050_get_id(mpu6050_t *sensor);
+err_t mpu6050_get_id(mpu6050_t *sensor, uint8_t *id);
 err_t mpu6050_setup_default(mpu6050_t* sensor);// mov to aplication layer
 err_t mpu6050_set_pwr_clock(mpu6050_t *sensor, mpu6050_pwr_clk_t mode);
+err_t mpu6050_set_sample_rate(mpu6050_t *sensor, int16_t rate);
+err_t mpu6050_set_acce_range(mpu6050_t *sensor, acel_range_t range);
+err_t mpu6050_set_gyro_range(mpu6050_t *sensor,  gyro_range_t range);
 err_t mpu6050_get_acce_raw(mpu6050_t *sensor,acce_raw_t *accel_data);
 err_t mpu6050_get_gyro_raw(mpu6050_t *sensor,gyro_raw_t *gyro_data);
 err_t mpu6050_get_acce_sensitivity(mpu6050_t *sensor,float *acce_sensitivity);
 err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor,float *gyro_sensitivity);
-err_t mpu6050_set_acce_range(mpu6050_t *sensor, acel_range_t range);
-err_t mpu6050_set_gyro_range(mpu6050_t *sensor,  gyro_range_t range);
 err_t mpu6050_get_acce_range(mpu6050_t *sensor, acel_range_t *range);
 err_t mpu6050_get_gyro_range(mpu6050_t *sensor,  gyro_range_t *range);
 err_t mpu6050_get_gyro(mpu6050_t sensor, float *ax, float *ay, float *az);

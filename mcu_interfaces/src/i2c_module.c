@@ -9,7 +9,7 @@
 #define I2C_MASTER_FREQ_HZ 400000
 
 #ifndef CONFIG_FREERTOS_HZ
-#define CONFIG_FREERTOS_HZ 100
+#define CONFIG_FREERTOS_HZ 1000
 #endif
 
 #define I2C_NUM I2C_NUM_0
@@ -50,21 +50,22 @@ err_t i2c_write(void *dev_handler, uint8_t reg_addr, uint8_t data, uint8_t lengt
     uint8_t reg_and_data[length + 1];
     reg_and_data[0] = reg_addr;
     reg_and_data[1] = data;
-    ESP_LOGI(tag, "Escribiendo en el device 0x%X 0x%X \n", reg_addr, data);
+    ESP_LOGI(tag, "Write on device 0x%X -> 0x%X \n", reg_addr, data);
     ESP_ERROR_CHECK(i2c_master_transmit((i2c_master_dev_handle_t)dev_handler, reg_and_data, length + 1, -1));
     return E_OK;
 };
 
 err_t i2c_read(void *dev_handler, uint8_t reg_addr, uint8_t *data, uint8_t length)
 {
-    uint8_t buf[1] = {reg_addr};
-    uint8_t buffer[1];
+    uint8_t buf[1];
+    buf[0] = reg_addr;
+    uint8_t buffer[length];
     i2c_master_dev_handle_t dev = *(i2c_master_dev_handle_t *)dev_handler;
-
-    ESP_ERROR_CHECK(i2c_master_transmit_receive(dev, buf, 1, buffer, 1, -1));
-    *data = buffer[0];
-    ESP_LOGI(tag, "Leyendo en el device 0x%X 0x%X \n", reg_addr, *data);
-
+    ESP_ERROR_CHECK(i2c_master_transmit_receive(dev, buf, 1, buffer, length, -1));
+    memcpy(data, buffer, length);
+    // *data = buffer[0];
+    ESP_LOGD(tag, "Read from device 0x%X -> 0x%X \n", reg_addr, buffer);
+    ESP_LOGD(tag, "Read from device 0x%X -> 0x%X \n", reg_addr, *data);
     return E_OK;
 };
 

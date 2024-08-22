@@ -38,7 +38,7 @@ static void imu_task(void * sens);
 w_i2c_config_t i2c_params = {
     .sda_num = GPIO_NUM_21,
     .scl_num = GPIO_NUM_22,
-    .clk_speed = 400000, //40Kz
+    .clk_speed = 100000, // 100KHz
 }; 
 
 
@@ -130,13 +130,14 @@ void app_main(void)
 {
     mpu6050_t * sensor = (mpu6050_t *)sens;
     mpu6050_setup_default(sensor);
+    uint8_t * val;
     acce_raw_t *acce = malloc(sizeof(acce_raw_t));
     while (true) { 
         mpu6050_get_acce_raw(sensor, acce);
         printf("acce x:%X, y:%X, z:%X\n", acce->x, acce->y, acce->z);
        // mpu6050_get_gyro(sensor, &gyro);
         //printf("gyro x:%.2f, y:%.2f, z:%.2f\n", gyro.x, gyro.y, gyro.z);*/
-      //  mpu6050_get_id(sensor);
+        mpu6050_get_id(sensor,val);
         vTaskDelay(pdMS_TO_TICKS(300)); 
     }
 } 
