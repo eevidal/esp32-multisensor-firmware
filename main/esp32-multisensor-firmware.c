@@ -54,12 +54,13 @@ void app_main(void)
 
     ESP_LOGI(dtag, "Creando Tareas\n");
     xTaskCreate( &ultrasonic_task, "Ultrasonic",2048,(void *)sensor_u, 5, &ultrasonic_task_handle);
-    xTaskCreate( &gesture_task, "Gesture",2048,(void *)sensor_a, 4, &gesture_task_handle);
     xTaskCreate( &imu_task, "Position",2048,(void *)sensor_m, 5, &imu_task_handle);
+    xTaskCreate( &gesture_task, "Gesture",2048,(void *)sensor_a, 4, &gesture_task_handle);
+    
 
     configASSERT(ultrasonic_task_handle);
     configASSERT(gesture_task_handle);
-   // configASSERT(imu_task_handle);
+    configASSERT(imu_task_handle);
 
    while(1) vTaskDelay(1000);
    
@@ -104,7 +105,7 @@ void app_main(void)
     ESP_LOGI(dtaga, "Iniciando Engine de Gestos\n");
   //  apds9960_diagnose(sensor);
     apds9960_gesture_init(sensor);
-    apds9960_diagnose(sensor);
+  //  apds9960_diagnose(sensor);
     apds9960_set_timeout(sensor, 300);
     uint8_t gesture = 0;
     while(1) {
@@ -130,14 +131,14 @@ void app_main(void)
 {
     mpu6050_t * sensor = (mpu6050_t *)sens;
     mpu6050_setup_default(sensor);
-    uint8_t * val;
+    uint8_t val=0;
     acce_raw_t *acce = malloc(sizeof(acce_raw_t));
     while (true) { 
         mpu6050_get_acce_raw(sensor, acce);
         printf("acce x:%X, y:%X, z:%X\n", acce->x, acce->y, acce->z);
        // mpu6050_get_gyro(sensor, &gyro);
         //printf("gyro x:%.2f, y:%.2f, z:%.2f\n", gyro.x, gyro.y, gyro.z);*/
-        mpu6050_get_id(sensor,val);
+        mpu6050_get_id(sensor,&val);
         vTaskDelay(pdMS_TO_TICKS(300)); 
     }
 } 

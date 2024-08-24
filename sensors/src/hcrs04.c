@@ -35,7 +35,7 @@ hcrs04_t* hcrs04_create(uint8_t trigger_pin, uint8_t echo_pin, int timeout){
     sensor->echo_pin = echo_pin;
     sensor->trigger_pin = trigger_pin; 
     sensor->timeout = timeout > 0 ? timeout : PING_TIMEOUT;
-    sensor->mutex = mutex_init();
+//    sensor->mutex = mutex_init();
  
     gpio_set(sensor->echo_pin, GPIO_INPUT);
     gpio_set(sensor->trigger_pin, GPIO_OUTPUT);  

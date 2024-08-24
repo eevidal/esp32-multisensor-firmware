@@ -5,7 +5,7 @@
 #include "time_module.h"
 
 
-#define MAX_CLK 400000
+#define MAX_CLK 100000
 
 
 typedef struct
@@ -47,8 +47,7 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus)
     i2c_dev_t* dev;
     dev = i2c_add_master_device( APDS9960_I2C_ADDRESS,  MAX_CLK, i2c_bus);
     if (dev == NULL)
-        printf("Algo salio mal seteando handler i2c\n");
-    
+        return NULL;
     sens->i2c_dev_hadler = dev;
     sens->enable = 0x00;
     sens->status = 0x00;

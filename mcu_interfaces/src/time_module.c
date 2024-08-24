@@ -6,35 +6,28 @@
 #include "freertos/timers.h"
 #include "esp_timer.h"
 
-
 #ifndef TARGET_IS_ESP32
 #define TARGET_IS_ESP32 1
 #endif
 
 #ifndef CONFIG_FREERTOS_HZ
-#define CONFIG_FREERTOS_HZ 100  
+#define CONFIG_FREERTOS_HZ 100
 #endif
 
 #if TARGET_IS_ESP32
-void delay_us(int time){
-  //  ets_delay_us(time);
-
-    esp_rom_delay_us(time);
-
+void delay_us(int time)
+{
+   esp_rom_delay_us(time);
 };
 
-uint64_t now(void){
-   // return esp_timer_get_time();
-    return esp_timer_get_time();
-   
+uint64_t now(void)
+{
+
+   return esp_timer_get_time();
 };
 
-uint64_t elapsed_time(uint64_t start_time){
-   return ( esp_timer_get_time() - start_time);
-
+uint64_t elapsed_time(uint64_t start_time)
+{
+   return (esp_timer_get_time() - start_time);
 };
 #endif
-
-
-
-

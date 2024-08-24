@@ -62,10 +62,10 @@ err_t i2c_read(void *dev_handler, uint8_t reg_addr, uint8_t *data, uint8_t lengt
     uint8_t buffer[length];
     i2c_master_dev_handle_t dev = *(i2c_master_dev_handle_t *)dev_handler;
     ESP_ERROR_CHECK(i2c_master_transmit_receive(dev, buf, 1, buffer, length, -1));
-    memcpy(data, buffer, length);
-    // *data = buffer[0];
-    ESP_LOGD(tag, "Read from device 0x%X -> 0x%X \n", reg_addr, buffer);
-    ESP_LOGD(tag, "Read from device 0x%X -> 0x%X \n", reg_addr, *data);
+    //memcpy(data, buffer, length);
+    *data = buffer[0];
+    ESP_LOGD(tag, "Read from device 0x%X -> 0x%X \n", (int)reg_addr, buffer[0]);
+    ESP_LOGD(tag, "Read from device 0x%X -> 0x%X \n", (int)reg_addr, *data);
     return E_OK;
 };
 

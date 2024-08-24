@@ -223,20 +223,84 @@ err_t mpu6050_get_gyro_raw(mpu6050_t *sensor, gyro_raw_t *gyro_data)
     gyro_data->z = mpu_get_gyro_z(sens);
     return E_OK;
 }
-/**
+/* 
+ For each full scale setting, the accelerometer' sensitivity per
+  LSB in ACCE_xOUT is shown in the table below:
+ 
+  <pre>
+  FS_SEL | Full Scale Range   | LSB Sensitivity
+  -------+--------------------+----------------
+  0      | +/- 2g             | 16384 LSB/g
+  1      | +/- 4g             | 8192 LSB/g
+  2      | +/- 8g             | 4096 LSB/g
+  3      | +/- 16g            | 2048 LSB/g
+  
+ */
+
+err_t mpu6050_get_acce_sensitivity(mpu6050_t sensor, float *acce_sensitivity)
+{
+    mpu6050_dev_t *sens = (mpu6050_dev_t *) sensor;
+    uint8_t acce_fs;
+    mpu6050_read(sens, ACCEL_CONFIG, &acce_fs,1);
+    acce_fs = (acce_fs >> 3) & 0x03;
+    switch (acce_fs) {
+    case ACCE_2G:
+        *acce_sensitivity = 16384;
+        break;
+    case ACCE_4G:
+        *acce_sensitivity = 8192;
+        break;
+    case ACCE_8G:
+        *acce_sensitivity = 4096;
+        break;
+    case ACCE_16G:
+        *acce_sensitivity = 2048;
+        break;
+    default:
+        break;
+    }
+    return E_OK;
+}
+
+/* 
  For each full scale setting, the gyroscopes' sensitivity per
- * LSB in GYRO_xOUT is shown in the table below:
- *
- * <pre>
- * FS_SEL | Full Scale Range   | LSB Sensitivity
- * -------+--------------------+----------------
- * 0      | +/- 250 degrees/s  | 131 LSB/deg/s
- * 1      | +/- 500 degrees/s  | 65.5 LSB/deg/s
- * 2      | +/- 1000 degrees/s | 32.8 LSB/deg/s
- * 3      | +/- 2000 degrees/s | 16.4 LSB/deg/s
- * /
- err_t mpu6050_get_acce_sensitivity(mpu6050_t *sensor,float *acce_sensitivity);
+  LSB in GYRO_xOUT is shown in the table below:
+ 
+  <pre>
+  FS_SEL | Full Scale Range   | LSB Sensitivity
+  -------+--------------------+----------------
+  0      | +/- 250 degrees/s  | 131 LSB/deg/s
+  1      | +/- 500 degrees/s  | 65.5 LSB/deg/s
+  2      | +/- 1000 degrees/s | 32.8 LSB/deg/s
+  3      | +/- 2000 degrees/s | 16.4 LSB/deg/s
+  
+ */
+
 // err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor,float *gyro_sensitivity);
+err_t mpu6050_get_gyro_sensitivity(mpu6050_t sensor, float *gyro_sensitivity)
+{
+    mpu6050_dev_t *sens = (mpu6050_dev_t *) sensor;
+    uint8_t gyro_fs;
+    mpu6050_read(sens, GYRO_CONFIG, &gyro_fs,1);
+    gyro_fs = (gyro_fs >> 3) & 0x03;
+    switch (gyro_fs) {
+    case GYRO_250DPS:
+        *gyro_sensitivity = 131;
+        break;
+    case GYRO_500DPS:
+        *gyro_sensitivity = 65.5;
+        break;
+    case GYRO_1000DPS:
+        *gyro_sensitivity = 32.8;
+        break;
+    case GYRO_2000DPS:
+        *gyro_sensitivity = 16.4;
+        break;
+    default:
+        break;
+    }
+    return E_OK;
+}
 
 // err_t mpu6050_get_acce_range(mpu6050_t *sensor, acel_range *range);
 // err_t mpu6050_get_gyro_range(mpu6050_t *sensor, gyro_range *range);
