@@ -237,7 +237,7 @@ err_t mpu6050_get_gyro_raw(mpu6050_t *sensor, gyro_raw_t *gyro_data)
   
  */
 
-err_t mpu6050_get_acce_sensitivity(mpu6050_t sensor, float *acce_sensitivity)
+err_t mpu6050_get_acce_sensitivity(mpu6050_t *sensor, float *acce_sensitivity)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *) sensor;
     uint8_t acce_fs;
@@ -277,7 +277,7 @@ err_t mpu6050_get_acce_sensitivity(mpu6050_t sensor, float *acce_sensitivity)
  */
 
 // err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor,float *gyro_sensitivity);
-err_t mpu6050_get_gyro_sensitivity(mpu6050_t sensor, float *gyro_sensitivity)
+err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor, float *gyro_sensitivity)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *) sensor;
     uint8_t gyro_fs;

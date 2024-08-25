@@ -6,7 +6,7 @@
 #include "esp_log.h"
 #include "driver/gpio.h"
 #include "driver/i2c_master.h"
-
+#include <esp32/rom/ets_sys.h>
 #include "time_module.h"
 #include "hcrs04.h"
 #include "apds9960.h"
@@ -37,7 +37,7 @@ static void imu_task(void * sens);
 //i2c
 w_i2c_config_t i2c_params = {
     .sda_num = GPIO_NUM_21,
-    .scl_num = GPIO_NUM_22,
+    .scl_num = 22,//GPIO_NUM_22,
     .clk_speed = 100000, // 100KHz
 }; 
 
@@ -131,15 +131,17 @@ void app_main(void)
 {
     mpu6050_t * sensor = (mpu6050_t *)sens;
     mpu6050_setup_default(sensor);
-    uint8_t val=0;
+    uint8_t* id = malloc(sizeof(uint8_t));
     acce_raw_t *acce = malloc(sizeof(acce_raw_t));
+    gyro_raw_t *gyro = malloc(sizeof(gyro_raw_t));
     while (true) { 
+        mpu6050_get_id(sensor, id);
+        ESP_LOGI(dtagm, "ID %X", (int)id);
         mpu6050_get_acce_raw(sensor, acce);
         printf("acce x:%X, y:%X, z:%X\n", acce->x, acce->y, acce->z);
-       // mpu6050_get_gyro(sensor, &gyro);
-        //printf("gyro x:%.2f, y:%.2f, z:%.2f\n", gyro.x, gyro.y, gyro.z);*/
-        mpu6050_get_id(sensor,&val);
-        vTaskDelay(pdMS_TO_TICKS(300)); 
+        mpu6050_get_gyro_raw(sensor, gyro);
+        printf("gyro x:%X, y:%X, z:%X\n", gyro->x, gyro->y, gyro->z);
+            vTaskDelay(pdMS_TO_TICKS(300)); 
     }
 } 
  

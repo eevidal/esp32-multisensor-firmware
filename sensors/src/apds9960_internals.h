@@ -8,7 +8,7 @@
 #define  PILT           0x89
 #define  PIHT           0x8B
 #define  PERS           0x8C   //Persistence filter 
-#define  CONFIG1        0x8D  //proximity and color/ACL
+#define  CONFIG1        0x8D   //proximity and color/ACL
 #define  PPULSE         0x8E
 #define  CONTROL        0x8F
 #define  CONFIG2        0x90

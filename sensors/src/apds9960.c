@@ -503,27 +503,24 @@ err_t apds9960_set_als_clear_int(apds9960_t *sensor, uint8_t aiclear)
 uint8_t apds9960_gesture_valid(apds9960_t *sensor)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-     uint8_t *data = malloc(sizeof(uint8_t));
-    apds9960_read(sens, GSTATUS, data, 1);
-    sens->gstatus = *data;
-    free(data);
+     uint8_t data ;
+    apds9960_read(sens, GSTATUS, &data, 1);
+    sens->gstatus = data;
     return sens->gstatus;
 }
 
-uint8_t apds9960_get_status(apds9960_t *sensor)
+err_t apds9960_get_status(apds9960_t *sensor, uint8_t *data)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    uint8_t *data = malloc(sizeof(uint8_t));
     apds9960_read(sens, ENABLE, data, 1);
-    return *data;
+    return E_OK;
 }
 
-uint8_t apds9960_get_id(apds9960_t *sensor)
+err_t apds9960_get_id(apds9960_t *sensor, uint8_t *data)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    uint8_t *data = malloc(sizeof(uint8_t));
     apds9960_read(sens, ID, data, 1);
-    return *data;
+    return E_OK;
 }
 
 
@@ -557,7 +554,8 @@ uint8_t apds9960_read_gesture(apds9960_t *sensor)
         if (!valid)
         {
             gesture = FAR;
-            printf("NONE");
+            printf("FAR");
+            free(cant);
             return E_OK;
         }
         delay_us(30);
@@ -593,6 +591,7 @@ uint8_t apds9960_read_gesture(apds9960_t *sensor)
         if (up_down_diff == 0 && left_right_diff == 0)
         {
             gesture = NONE;
+            free(cant);
             return gesture;
         }
         printf("GESture %d\n", (int)gesture);
@@ -601,6 +600,7 @@ uint8_t apds9960_read_gesture(apds9960_t *sensor)
         if (gesture || elapsed_time(t) > sens->timeout)
         {
             apds9960_reset_counts(sensor);
+            free(cant);
             return gesture;
         }
     }

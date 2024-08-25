@@ -141,8 +141,7 @@ typedef enum
 
 /**Gesture Exit Persistence. When a number of consecutive “gesture end” occurrences become
 equal or greater to the GEPERS value, the Gesture state machine is exited.
-FIELD VALUEPERSISTENCE
- Gesture Exit Persistence */
+Gesture Exit Persistence */
 
 typedef enum
 {
@@ -155,12 +154,11 @@ typedef enum
 
 /**Gesture FIFO Threshold. This value is compared with the FIFO Level (i.e. the number of UDLR
 datasets) to generate an interrupt (if enabled).*/
-/** Gesture FIFO Threshold. */
 typedef enum
 {
-    APDS9960_GFIFOTH_1 = 0x00, /**< Interrupt is generated after 1 dataset is added to FIFO */
-    APDS9960_GFIFOTH_4 = 0x40, /**< Interrupt is generated after 4 datasets are added to FIFO */
-    APDS9960_GFIFOTH_8 = 0x80, /**< Interrupt is generated after 8 datasets are added to FIFO */
+    APDS9960_GFIFOTH_1  = 0x00, /**< Interrupt is generated after 1 dataset is added to FIFO */
+    APDS9960_GFIFOTH_4  = 0x40, /**< Interrupt is generated after 4 datasets are added to FIFO */
+    APDS9960_GFIFOTH_8  = 0x80, /**< Interrupt is generated after 8 datasets are added to FIFO */
     APDS9960_GFIFOTH_16 = 0xC0  /**< Interrupt is generated after 16 datasets are added to FIFO */
 } apds9960_gfifoth_t;
 
@@ -175,9 +173,9 @@ typedef enum
 
 typedef enum
 {
-    APDS9960_GDIM_ALL = 0x00,  /**< Both pairs are active.  */
-    APDS9960_GDIM_UD = 0x01,  /**< Only the UP-DOWN pair is active.  */
-    APDS9960_AGDIM_LR = 0x02, /**< Only the LEFT-RIGHT pair is active. */
+    APDS9960_GDIM_ALL   = 0x00,  /**< Both pairs are active.  */
+    APDS9960_GDIM_UD    = 0x01,  /**< Only the UP-DOWN pair is active.  */
+    APDS9960_AGDIM_LR   = 0x02, /**< Only the LEFT-RIGHT pair is active. */
     APDS9960_AGAIN_UDLR = 0x03  /**< Both pairs are active.  */
 } apds9960_gdims_t;
 
@@ -211,7 +209,7 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus);
 err_t apds9960_delete(apds9960_t *sensor); // RNF.4
 
 
-
+err_t apds9960_get_id(apds9960_t *sensor, uint8_t *data);
 /**
  * Enables the specified engine or mode on the APDS9960 sensor.
  *
