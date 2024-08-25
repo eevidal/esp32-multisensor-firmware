@@ -72,5 +72,5 @@ count when FIFO_COUNT_H (Register 72) is read*/
 /**This register is used to verify the identity of the device. The default value of the register is 0x68.*/
 #define WHO_AM_I     0x75
 
-#define MPU6050_I2C_ADDRESS    0x68 
+#define MPU6050_I2C_ADDRESS    0x68u 
 #define MAX_CLK      100000  //400KHz

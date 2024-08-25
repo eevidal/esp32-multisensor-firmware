@@ -198,7 +198,7 @@ typedef enum
  * @param i2c_bus Pointer to the I2C bus to use.
  * @return A pointer to the initialized APDS9960 sensor, or NULL on error.
  */
-apds9960_t *apds9960_init(i2c_bus_t *i2c_bus);
+apds9960_t apds9960_init(i2c_bus_t *i2c_bus);
 
 /**
  * Deallocates memory and resources associated with an APDS9960 sensor.
@@ -206,10 +206,10 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus);
  * @param sensor Pointer to the APDS9960 sensor to be deleted.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_delete(apds9960_t *sensor); // RNF.4
+err_t apds9960_delete(apds9960_t sensor); // RNF.4
 
 
-err_t apds9960_get_id(apds9960_t *sensor, uint8_t *data);
+err_t apds9960_get_id(apds9960_t sensor,  uint8_t *const data);
 /**
  * Enables the specified engine or mode on the APDS9960 sensor.
  *
@@ -217,7 +217,7 @@ err_t apds9960_get_id(apds9960_t *sensor, uint8_t *data);
  * @param mode The engine or mode to enable.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_enable_engine(apds9960_t *sensor, apds9960_mode_t mode);
+err_t apds9960_enable_engine(apds9960_t sensor, apds9960_mode_t mode);
 
 
 /**
@@ -227,7 +227,7 @@ err_t apds9960_enable_engine(apds9960_t *sensor, apds9960_mode_t mode);
  * @param mode The engine or mode to disable.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_disable_engine(apds9960_t *sensor, apds9960_mode_t mode);
+err_t apds9960_disable_engine(apds9960_t sensor, apds9960_mode_t mode);
 
 /**
  * @brief Sets the time in low power mode between gesture detections
@@ -249,7 +249,7 @@ err_t apds9960_set_wait_time(apds9960_t sensor, uint8_t time);
  * @param high The high threshold value for the ALS interrupt.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_als_threshold(apds9960_t *sensor, uint16_t low, uint16_t high);
+err_t apds9960_set_als_threshold(apds9960_t sensor, uint16_t low, uint16_t high);
 
 /**
  * Sets the proximity threshold and persistence values for the APDS9960 sensor.
@@ -259,7 +259,7 @@ err_t apds9960_set_als_threshold(apds9960_t *sensor, uint16_t low, uint16_t high
  * @param persistence The proximity interrupt persistence level (0-7).
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_proximity_threshold(apds9960_t *sensor, uint8_t threshold, uint8_t persistence);
+err_t apds9960_set_proximity_threshold(apds9960_t sensor, uint8_t t_min,  uint8_t t_max, uint8_t persistence);
 
 /**
  * Sets the gesture threshold values for the APDS9960 sensor.
@@ -269,7 +269,7 @@ err_t apds9960_set_proximity_threshold(apds9960_t *sensor, uint8_t threshold, ui
  * @param gexth The gesture exit threshold value.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_gesture_threshold(apds9960_t *sensor, uint8_t gpenth, uint8_t gexth);
+err_t apds9960_set_gesture_threshold(apds9960_t sensor, uint8_t  gpenth, uint8_t  gexth);
 
 /**
  * Sets the gain for the APDS9960 sensor.
@@ -278,7 +278,7 @@ err_t apds9960_set_gesture_threshold(apds9960_t *sensor, uint8_t gpenth, uint8_t
  * @param again The desired gain value.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_again(apds9960_t *sensor, apds9960_again_t again);
+err_t apds9960_set_again(apds9960_t sensor, apds9960_again_t again);
 
 /**
  * Sets the gesture gain for the APDS9960 sensor.
@@ -287,7 +287,7 @@ err_t apds9960_set_again(apds9960_t *sensor, apds9960_again_t again);
  * @param ggain The desired gesture gain value.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_ggain(apds9960_t *sensor, apds9960_gain_t ggain);
+err_t apds9960_set_ggain(apds9960_t sensor, apds9960_gain_t ggain);
 
 /**
  * Sets the proximity gain for the APDS9960 sensor.
@@ -296,7 +296,7 @@ err_t apds9960_set_ggain(apds9960_t *sensor, apds9960_gain_t ggain);
  * @param pgain The desired proximity gain value.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_pgain(apds9960_t *sensor, apds9960_gain_t pgain);
+err_t apds9960_set_pgain(apds9960_t sensor, apds9960_gain_t pgain);
 
 /**
  * Sets the gesture LED drive current for the APDS9960 sensor.
@@ -305,7 +305,7 @@ err_t apds9960_set_pgain(apds9960_t *sensor, apds9960_gain_t pgain);
  * @param gldrive The desired gesture LED drive current.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_gldrive(apds9960_t *sensor, apds9960_ldrive_t gldrive);
+err_t apds9960_set_gldrive(apds9960_t sensor, apds9960_ldrive_t gldrive);
 
 
 /**
@@ -315,7 +315,7 @@ err_t apds9960_set_gldrive(apds9960_t *sensor, apds9960_ldrive_t gldrive);
  * @param gwtime The desired gesture wait time.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_gwtime(apds9960_t *sensor, apds9960_gwtime_t gwtime);
+err_t apds9960_set_gwtime(apds9960_t sensor, apds9960_gwtime_t gwtime);
 
 /**
  * Sets the wait time for the APDS9960 sensor.
@@ -324,7 +324,7 @@ err_t apds9960_set_gwtime(apds9960_t *sensor, apds9960_gwtime_t gwtime);
  * @param wtime The desired wait time value.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_wtime(apds9960_t *sensor, uint8_t wtime);
+err_t apds9960_set_wtime(apds9960_t sensor, uint8_t wtime);
 
 /**
  * Sets the integration time for the APDS9960 sensor.
@@ -333,7 +333,7 @@ err_t apds9960_set_wtime(apds9960_t *sensor, uint8_t wtime);
  * @param atime The desired integration time value.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_atime(apds9960_t *sensor, uint8_t atime);
+err_t apds9960_set_atime(apds9960_t sensor,  uint8_t atime);
 
 /**
  * Enables the long wait time mode for the APDS9960 sensor.
@@ -341,7 +341,7 @@ err_t apds9960_set_atime(apds9960_t *sensor, uint8_t atime);
  * @param sensor Pointer to the APDS9960 sensor device.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_enable_wlong(apds9960_t *sensor);
+err_t apds9960_enable_wlong(apds9960_t sensor);
 
 /**
  * Disables the long wait time mode for the APDS9960 sensor.
@@ -349,7 +349,7 @@ err_t apds9960_enable_wlong(apds9960_t *sensor);
  * @param sensor Pointer to the APDS9960 sensor device.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_disable_wlong(apds9960_t *sensor);
+err_t apds9960_disable_wlong(apds9960_t sensor);
 
 /**
  * Sets the proximity pulse length and count for the APDS9960 sensor.
@@ -359,7 +359,7 @@ err_t apds9960_disable_wlong(apds9960_t *sensor);
  * @param pulses The number of proximity pulses.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_proximity_pulse(apds9960_t *sensor, apds9960_pulse_len_t len, uint8_t pulses);
+err_t apds9960_set_proximity_pulse(apds9960_t sensor, apds9960_pulse_len_t len,  uint8_t pulses);
 
 /**
  * Sets the proximity saturation interrupt mode for the APDS9960 sensor.
@@ -368,7 +368,7 @@ err_t apds9960_set_proximity_pulse(apds9960_t *sensor, apds9960_pulse_len_t len,
  * @param sat The desired proximity saturation interrupt mode.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_proximity_sat_int_(apds9960_t *sensor, apds9960_psat_int_t sat);
+err_t apds9960_set_proximity_sat_int_(apds9960_t sensor, apds9960_psat_int_t sat);
 
 /**
  * Sets the proximity clear interrupt mode for the APDS9960 sensor.
@@ -377,7 +377,7 @@ err_t apds9960_set_proximity_sat_int_(apds9960_t *sensor, apds9960_psat_int_t sa
  * @param clear The desired proximity clear interrupt mode.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_proximity_clear_int_(apds9960_t *sensor, apds9960_pclear_int_t clear);
+err_t apds9960_set_proximity_clear_int_(apds9960_t sensor, apds9960_pclear_int_t clear);
 
 /**
  * Sets the LED boost mode for the APDS9960 sensor.
@@ -386,7 +386,7 @@ err_t apds9960_set_proximity_clear_int_(apds9960_t *sensor, apds9960_pclear_int_
  * @param boost The desired LED boost mode.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_ledboost(apds9960_t *sensor, apds9960_ledboost_t boost);
+err_t apds9960_set_ledboost(apds9960_t sensor, apds9960_ledboost_t boost);
 
 /**
  * Sets the upper right proximity offset for the APDS9960 sensor.
@@ -395,7 +395,7 @@ err_t apds9960_set_ledboost(apds9960_t *sensor, apds9960_ledboost_t boost);
  * @param offset The desired upper right proximity offset value.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_poffset_ur(apds9960_t *sensor, uint8_t offset);
+err_t apds9960_set_poffset_ur(apds9960_t sensor,const uint8_t *const offset);
 
 /**
  * Sets the proximity comparator mode for the APDS9960 sensor.
@@ -404,7 +404,7 @@ err_t apds9960_set_poffset_ur(apds9960_t *sensor, uint8_t offset);
  * @param pcmd_val The desired proximity comparator mode.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_proximity_pcmp(apds9960_t *sensor, apds9960_pcmp_t pcmd_val);
+err_t apds9960_set_proximity_pcmp(apds9960_t sensor, apds9960_pcmp_t pcmd_val);
 
 /**
  * Sets the proximity saturation interrupt mode for the APDS9960 sensor.
@@ -413,7 +413,7 @@ err_t apds9960_set_proximity_pcmp(apds9960_t *sensor, apds9960_pcmp_t pcmd_val);
  * @param sai_val The desired proximity saturation interrupt mode.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_proximity_sai(apds9960_t *sensor, apds9960_psai_t sai_val);
+err_t apds9960_set_proximity_sai(apds9960_t sensor, apds9960_psai_t sai_val);
 
 /**
  * Sets the proximity mask for the APDS9960 sensor.
@@ -422,7 +422,7 @@ err_t apds9960_set_proximity_sai(apds9960_t *sensor, apds9960_psai_t sai_val);
  * @param mask The desired proximity mask.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_proximity_mask(apds9960_t *sensor, apds9960_pmask_t mask);
+err_t apds9960_set_proximity_mask(apds9960_t sensor, apds9960_pmask_t mask);
 
 /**
  * Sets the gesture exit mask for the APDS9960 sensor.
@@ -431,7 +431,7 @@ err_t apds9960_set_proximity_mask(apds9960_t *sensor, apds9960_pmask_t mask);
  * @param mask The desired gesture exit mask.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_gestrure_gexmsk(apds9960_t *sensor, apds9960_gexmsk_t mask);
+err_t apds9960_set_gestrure_gexmsk(apds9960_t sensor, apds9960_gexmsk_t mask);
 
 /**
  * Sets the gesture FIFO threshold for the APDS9960 sensor.
@@ -440,7 +440,7 @@ err_t apds9960_set_gestrure_gexmsk(apds9960_t *sensor, apds9960_gexmsk_t mask);
  * @param fifoth The desired gesture FIFO threshold.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_gestrure_fifoth(apds9960_t *sensor, apds9960_gfifoth_t fifoth);
+err_t apds9960_set_gestrure_fifoth(apds9960_t sensor, apds9960_gfifoth_t fifoth);
 
 /**
  * Sets the gesture exit persistence for the APDS9960 sensor.
@@ -449,7 +449,7 @@ err_t apds9960_set_gestrure_fifoth(apds9960_t *sensor, apds9960_gfifoth_t fifoth
  * @param gexper The desired gesture exit persistence.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_gestrure_gexpers(apds9960_t *sensor, apds9960_gexpers_t gexper);
+err_t apds9960_set_gestrure_gexpers(apds9960_t sensor, apds9960_gexpers_t gexper);
 
 /**
  * Sets the gesture offset values for the APDS9960 sensor.
@@ -461,7 +461,7 @@ err_t apds9960_set_gestrure_gexpers(apds9960_t *sensor, apds9960_gexpers_t gexpe
  * @param offset_right The offset value for the right gesture.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_gestrure_offsets(apds9960_t *sensor, uint8_t offset_up, uint8_t offset_down, uint8_t offset_left, uint8_t offset_right);
+err_t apds9960_set_gestrure_offsets(apds9960_t sensor,const uint8_t *const offset_up, const uint8_t *const offset_down, const uint8_t *const offset_left, const uint8_t *const offset_right);
 
 /**
  * Sets the gesture pulse length and count for the APDS9960 sensor.
@@ -471,7 +471,7 @@ err_t apds9960_set_gestrure_offsets(apds9960_t *sensor, uint8_t offset_up, uint8
  * @param pulses The number of gesture pulses.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_gesture_pulse(apds9960_t *sensor, apds9960_pulse_len_t len, uint8_t pulses);
+err_t apds9960_set_gesture_pulse(apds9960_t sensor, apds9960_pulse_len_t len, uint8_t pulses);
 
 /**
  * Sets the gesture dimension mode for the APDS9960 sensor.
@@ -480,7 +480,7 @@ err_t apds9960_set_gesture_pulse(apds9960_t *sensor, apds9960_pulse_len_t len, u
  * @param gdim The desired gesture dimension mode.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_gesture_gdims(apds9960_t *sensor, apds9960_gdims_t gdim);
+err_t apds9960_set_gesture_gdims(apds9960_t sensor, apds9960_gdims_t gdim);
 
 /**
  * Enables the gesture interrupt for the APDS9960 sensor.
@@ -488,7 +488,7 @@ err_t apds9960_set_gesture_gdims(apds9960_t *sensor, apds9960_gdims_t gdim);
  * @param sensor Pointer to the APDS9960 sensor device.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_gesture_int_on(apds9960_t *sensor);
+err_t apds9960_set_gesture_int_on(apds9960_t sensor);
 
 /**
  * Disables the gesture interrupt for the APDS9960 sensor.
@@ -496,7 +496,7 @@ err_t apds9960_set_gesture_int_on(apds9960_t *sensor);
  * @param sensor Pointer to the APDS9960 sensor device.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_gesture_int_off(apds9960_t *sensor);
+err_t apds9960_set_gesture_int_off(apds9960_t sensor);
 
 /**
  * Sets the force interrupt register for the APDS9960 sensor.
@@ -505,7 +505,7 @@ err_t apds9960_set_gesture_int_off(apds9960_t *sensor);
  * @param iforce The value to write to the force interrupt register.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_force_interrupt(apds9960_t *sensor, uint8_t iforce);
+err_t apds9960_set_force_interrupt(apds9960_t sensor, const uint8_t *const iforce);
 
 /**
  * Sets the proximity clear interrupt register for the APDS9960 sensor.
@@ -514,7 +514,7 @@ err_t apds9960_set_force_interrupt(apds9960_t *sensor, uint8_t iforce);
  * @param piclear The value to write to the proximity clear interrupt register.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_proximity_clear_int(apds9960_t *sensor, uint8_t piclear);
+err_t apds9960_set_proximity_clear_int(apds9960_t sensor, const uint8_t *const piclear);
 
 /**
  * Sets the color clear interrupt register for the APDS9960 sensor.
@@ -523,7 +523,7 @@ err_t apds9960_set_proximity_clear_int(apds9960_t *sensor, uint8_t piclear);
  * @param ciclear The value to write to the color clear interrupt register.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_color_clear_int(apds9960_t *sensor, uint8_t ciclear);
+err_t apds9960_set_color_clear_int(apds9960_t sensor, const uint8_t *const ciclear);
 
 /**
  * Sets the ALS clear interrupt register for the APDS9960 sensor.
@@ -532,7 +532,7 @@ err_t apds9960_set_color_clear_int(apds9960_t *sensor, uint8_t ciclear);
  * @param aiclear The value to write to the ALS clear interrupt register.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_set_als_clear_int(apds9960_t *sensor, uint8_t aiclear);
+err_t apds9960_set_als_clear_int(apds9960_t sensor, const uint8_t *const aiclear);
 
 /**
  * Checks if a valid gesture has been detected by the APDS9960 sensor.
@@ -540,14 +540,14 @@ err_t apds9960_set_als_clear_int(apds9960_t *sensor, uint8_t aiclear);
  * @param sensor Pointer to the APDS9960 sensor device.
  * @return 1 if a valid gesture is detected, 0 otherwise.
  */
-uint8_t apds9960_gesture_valid(apds9960_t *sensor);
+uint8_t apds9960_gesture_valid(apds9960_t sensor);
 
 /**
  * Resets the gesture count registers of the APDS9960 sensor.
  *
  * @param sensor Pointer to the APDS9960 sensor device.
  */
-void apds9960_reset_counts(apds9960_t *sensor);
+void apds9960_reset_counts(apds9960_t sensor);
 
 /**
  * Reads and interprets gesture data from the APDS9960 sensor.
@@ -559,7 +559,7 @@ void apds9960_reset_counts(apds9960_t *sensor);
  * @param gesture Pointer to store the detected gesture.
  * @return E_OK on success, error code otherwise.
  */
-uint8_t apds9960_read_gesture(apds9960_t *sensor);
+uint8_t apds9960_read_gesture(apds9960_t sensor);
 
 /**
  * Reads the raw proximity data from the APDS9960 sensor.
@@ -568,7 +568,7 @@ uint8_t apds9960_read_gesture(apds9960_t *sensor);
  * @param proximity Pointer to store the read proximity data.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_read_raw_proximity(apds9960_t *sensor, uint8_t *proximity);
+err_t apds9960_read_raw_proximity(apds9960_t sensor, uint8_t *proximity);
 
 /**
  * Reads color data from the APDS9960 sensor.
@@ -578,7 +578,7 @@ err_t apds9960_read_raw_proximity(apds9960_t *sensor, uint8_t *proximity);
  * @param color_data Pointer to store the read color data.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_read_color(apds9960_t *sensor, uint8_t data, uint16_t *color_data);
+err_t apds9960_read_color(apds9960_t sensor, uint8_t data, uint16_t *color_data);
 
 /**
  * Reads the red, green, blue, and clear color data from the APDS9960 sensor.
@@ -590,7 +590,7 @@ err_t apds9960_read_color(apds9960_t *sensor, uint8_t data, uint16_t *color_data
  * @param c Pointer to store the clear color data.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint16_t *b, uint16_t *c);
+err_t apds9960_get_color_data(apds9960_t sensor, uint16_t *r, uint16_t *g, uint16_t *b, uint16_t *c);
 
 /**
  * Initializes the APDS9960 sensor for gesture detection.
@@ -600,14 +600,14 @@ err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint
  * @param sensor Pointer to the APDS9960 sensor device.
  * @return E_OK on success, error code otherwise.
  */
-err_t apds9960_gesture_init(apds9960_t *sensor);
+err_t apds9960_gesture_init(apds9960_t sensor);
 
-err_t apds9960_set_timeout(apds9960_t *sensor, uint64_t timeout);
-void apds9960_diagnose(apds9960_t *sensor);
+err_t apds9960_set_timeout(apds9960_t sensor, uint64_t timeout);
+void apds9960_diagnose(apds9960_t sensor);
 /**NOT IMPLEMENTED YET*/
-err_t apds9960_read_proximity(apds9960_t *sensor, uint8_t *proximity);
-err_t apds9960_get_ambient_light(apds9960_t *sensor, uint16_t *l);
-err_t apds9960_get_again(apds9960_t *sensor, uint8_t *again);
-err_t apds9960_get_ggain(apds9960_t *sensor, uint8_t *ggain);
-err_t apds9960_get_pgain(apds9960_t *sensor, uint8_t *pgain);
+err_t apds9960_read_proximity(apds9960_t sensor, uint8_t *proximity);
+err_t apds9960_get_ambient_light(apds9960_t sensor, uint16_t *l);
+err_t apds9960_get_again(apds9960_t sensor, uint8_t *again);
+err_t apds9960_get_ggain(apds9960_t sensor, uint8_t *ggain);
+err_t apds9960_get_pgain(apds9960_t sensor, uint8_t *pgain);
 #endif

@@ -1,5 +1,5 @@
 /* APDS-9960 register addresses */
-#define APDS9960_I2C_ADDRESS    0x39
+#define APDS9960_I2C_ADDRESS    0x39u
 
 #define  ENABLE    0x80             /**Enable register*/
 #define  ID        0x92             /**Id device register*/

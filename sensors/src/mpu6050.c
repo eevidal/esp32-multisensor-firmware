@@ -49,14 +49,14 @@ err_t mpu6050_delete(mpu6050_t *sensor)
  * @param len Number of bytes to write.
  * @return Error code returned by the underlying I2C write operation.
  */
-err_t mpu6050_write(mpu6050_dev_t *sensor, uint8_t addr, uint8_t buf, uint8_t len)
+err_t mpu6050_write(mpu6050_dev_t *sensor, const uint8_t addr,const uint8_t *const buf, const uint8_t len)
 {
     if (sensor->i2c_dev_hadler == NULL)
     {
-        printf("12c dev hadler no inicializado");
+        printf("12c dev hadler no inicializado\n");
         return E_FAIL;
     }
-    i2c_dev_t *handler = *sensor->i2c_dev_hadler;
+    i2c_dev_t *handler = sensor->i2c_dev_hadler;
     return (i2c_write(handler, addr, buf, len));
 }
 
@@ -69,7 +69,7 @@ err_t mpu6050_write(mpu6050_dev_t *sensor, uint8_t addr, uint8_t buf, uint8_t le
  * @param len Number of bytes to read.
  * @return Error code returned by the underlying I2C read operation.
  */
-err_t mpu6050_read(mpu6050_dev_t *sensor, uint8_t addr, uint8_t *buf, uint8_t len)
+err_t mpu6050_read(mpu6050_dev_t *sensor, const uint8_t addr,  uint8_t *buf, const uint8_t len)
 {
     return (i2c_read(sensor->i2c_dev_hadler, addr, buf, len));
 }
@@ -85,8 +85,8 @@ err_t mpu6050_setup_default(mpu6050_t *sensor)
 err_t mpu6050_set_pwr_clock(mpu6050_t *sensor, mpu6050_pwr_clk_t mode)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
-
-    mpu6050_write(sens, PWR_MGMT_1, (uint8_t)mode, 1);
+    uint8_t m = mode;
+    mpu6050_write(sens, PWR_MGMT_1, &mode, 1);
     return E_OK;
 }
 
@@ -97,7 +97,7 @@ err_t mpu6050_set_dlpf(mpu6050_t *sensor, dlpf_t filter)
     mpu6050_read(sens, CONFIG, &config, 1);
     config &= 0b11111000;
     config |= filter;
-    mpu6050_write(sens, CONFIG, config, 1);
+    mpu6050_write(sens, CONFIG, &config, 1);
     return E_OK;
 }
 
@@ -109,7 +109,7 @@ err_t mpu6050_set_sample_rate(mpu6050_t *sensor, int16_t rate){
         rate = 1000;
     uint8_t smprt_div;
     smprt_div = (1000 / rate ) - 1;
-    mpu6050_write(sens, SMPLRT_DIV, smprt_div, 1);
+    mpu6050_write(sens, SMPLRT_DIV, &smprt_div, 1);
     return E_OK;
 }
 
@@ -117,7 +117,8 @@ err_t mpu6050_set_acce_range(mpu6050_t *sensor, acel_range_t range)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
     // read first and do |=mode to preserve self-test?
-    mpu6050_write(sens, ACCEL_CONFIG, (uint8_t)range, 1);
+    uint8_t r = range;
+    mpu6050_write(sens, ACCEL_CONFIG, &r, 1);
     return E_OK;
 }
 
@@ -125,11 +126,12 @@ err_t mpu6050_set_gyro_range(mpu6050_t *sensor, gyro_range_t range)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
     // read first and do |=mode to preserve self-test?
-    mpu6050_write(sens, GYRO_CONFIG, (uint8_t)range, 1);
+    uint8_t r = range;
+    mpu6050_write(sens, GYRO_CONFIG, &r, 1);
     return E_OK;
 }
 
-err_t mpu6050_get_id(mpu6050_t *sensor,uint8_t *val )
+err_t mpu6050_get_id(mpu6050_t *sensor, uint8_t *const val )
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
     mpu6050_read(sens, WHO_AM_I, val, 1);

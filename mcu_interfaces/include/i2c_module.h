@@ -61,7 +61,7 @@ i2c_dev_t * i2c_add_master_device( uint16_t dev_addr, uint32_t cl_speed, i2c_bus
 
 uint32_t i2c_get_clk(i2c_dev_t *dev);
 
-err_t i2c_read(void * dev_handler, uint8_t reg_addr, uint8_t *data, uint8_t length);
+err_t i2c_read(void *dev_handler, const uint8_t reg_addr, uint8_t *data, const uint8_t length);
 
 
 /**
@@ -75,7 +75,7 @@ err_t i2c_read(void * dev_handler, uint8_t reg_addr, uint8_t *data, uint8_t leng
  * @param length The number of bytes to write.
  * @return E_OK on success, error code otherwise.
  */
-err_t i2c_write(void * dev_handler, uint8_t reg_addr, uint8_t data, uint8_t length);
+err_t i2c_write(void *dev_handler, const uint8_t reg_addr, const uint8_t *const data, const uint8_t length);
 
 
 /**

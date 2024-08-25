@@ -4,13 +4,15 @@
 #include "freertos/timers.h"
 #include "esp_system.h"
 #include "esp_log.h"
+#include "esp32/rom/ets_sys.h"
 #include "driver/gpio.h"
-#include "driver/i2c_master.h"
-#include <esp32/rom/ets_sys.h>
+#include "driver/i2c.h"
+#include <soc/gpio_num.h>
 #include "time_module.h"
 #include "hcrs04.h"
 #include "apds9960.h"
 #include "mpu6050.h"
+#include "esp_idf.h"
 
 
 #define ECHO_PIN GPIO_NUM_4
@@ -130,13 +132,15 @@ void app_main(void)
   static void imu_task(void * sens)
 {
     mpu6050_t * sensor = (mpu6050_t *)sens;
+  
     mpu6050_setup_default(sensor);
-    uint8_t* id = malloc(sizeof(uint8_t));
+ 
+    uint8_t id = 0;
     acce_raw_t *acce = malloc(sizeof(acce_raw_t));
     gyro_raw_t *gyro = malloc(sizeof(gyro_raw_t));
     while (true) { 
-        mpu6050_get_id(sensor, id);
-        ESP_LOGI(dtagm, "ID %X", (int)id);
+        mpu6050_get_id(sensor, &id);
+        ESP_LOGI(dtagm, "ID %X", id);
         mpu6050_get_acce_raw(sensor, acce);
         printf("acce x:%X, y:%X, z:%X\n", acce->x, acce->y, acce->z);
         mpu6050_get_gyro_raw(sensor, gyro);
