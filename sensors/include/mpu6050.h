@@ -97,8 +97,8 @@ err_t mpu6050_get_acce_sensitivity(mpu6050_t *sensor,float *acce_sensitivity);
 err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor,float *gyro_sensitivity);
 err_t mpu6050_get_acce_range(mpu6050_t *sensor, acel_range_t *range);
 err_t mpu6050_get_gyro_range(mpu6050_t *sensor,  gyro_range_t *range);
-err_t mpu6050_get_gyro(mpu6050_t sensor, float *ax, float *ay, float *az);
-err_t mpu6050_get_vel(mpu6050_t sensor, float *gx, float *gy, float *gz);
+err_t mpu6050_get_gyro(mpu6050_t * sensor, mpu6050_gyro_t *gyros);
+err_t mpu6050_get_acce(mpu6050_t * sensor, mpu6050_acce_t *accel);
 err_t mpu6050_get_orientation(mpu6050_t sensor, float *roll, float *pitch, float *yaw);
 
 #endif

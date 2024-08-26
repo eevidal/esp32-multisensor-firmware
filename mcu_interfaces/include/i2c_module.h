@@ -97,4 +97,6 @@ err_t i2c_del_master_device(void * dev_handler);
  * @return E_OK on success, error code otherwise.
  */
 err_t i2c_deinit(void * bus_handler);
+
+
 #endif

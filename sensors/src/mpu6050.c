@@ -56,7 +56,7 @@ err_t mpu6050_write(mpu6050_dev_t *sensor, uint8_t addr, uint8_t buf, uint8_t le
         printf("12c dev hadler no inicializado");
         return E_FAIL;
     }
-    i2c_dev_t *handler = *sensor->i2c_dev_hadler;
+    i2c_dev_t *handler = sensor->i2c_dev_hadler;
     return (i2c_write(handler, addr, buf, len));
 }
 
@@ -276,7 +276,6 @@ err_t mpu6050_get_acce_sensitivity(mpu6050_t *sensor, float *acce_sensitivity)
   
  */
 
-// err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor,float *gyro_sensitivity);
 err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor, float *gyro_sensitivity)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *) sensor;
@@ -302,9 +301,31 @@ err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor, float *gyro_sensitivity)
     return E_OK;
 }
 
-// err_t mpu6050_get_acce_range(mpu6050_t *sensor, acel_range *range);
-// err_t mpu6050_get_gyro_range(mpu6050_t *sensor, gyro_range *range);
-// err_t mpu6050_get_gyro(mpu6050_t sensor, float *ax, float *ay, float *az);
+
+err_t mpu6050_get_gyro(mpu6050_t *sensor, mpu6050_gyro_t *gyros){
+    gyro_raw_t *gyro = malloc(sizeof(gyro_raw_t));
+    float sensitivity;
+    mpu6050_get_gyro_raw(sensor, gyro);
+    mpu6050_get_gyro_sensitivity(sensor, &sensitivity);
+    gyros->x = gyro->x /sensitivity;
+    gyros->y = gyro->y /sensitivity;
+    gyros->z = gyro->z /sensitivity;
+    return E_OK;
+}
+
+err_t mpu6050_get_acce(mpu6050_t *sensor, mpu6050_acce_t *accel){
+    acce_raw_t *acce = malloc(sizeof(acce_raw_t));
+    float sensitivity;
+    mpu6050_get_acce_raw(sensor, acce);
+    mpu6050_get_acce_sensitivity(sensor, &sensitivity);
+    accel->x = acce->x /sensitivity;
+    accel->y = acce->y /sensitivity;
+    accel->z = acce->z /sensitivity;
+    return E_OK;
+
+}
+
+
 
 // err_t mpu6050_get_vel(mpu6050_t sensor, float *gx, float *gy, float *gz);
 // err_t mpu6050_get_orientation(mpu6050_t sensor, float *roll, float *pitch, float *yaw);

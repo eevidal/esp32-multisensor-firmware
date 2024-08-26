@@ -209,7 +209,7 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus);
 err_t apds9960_delete(apds9960_t *sensor); // RNF.4
 
 
-err_t apds9960_get_id(apds9960_t *sensor, uint8_t *data);
+err_t apds9960_get_id(apds9960_t*sensor,uint8_t *val );
 /**
  * Enables the specified engine or mode on the APDS9960 sensor.
  *
@@ -540,7 +540,7 @@ err_t apds9960_set_als_clear_int(apds9960_t *sensor, uint8_t aiclear);
  * @param sensor Pointer to the APDS9960 sensor device.
  * @return 1 if a valid gesture is detected, 0 otherwise.
  */
-uint8_t apds9960_gesture_valid(apds9960_t *sensor);
+err_t apds9960_gesture_valid(apds9960_t *sensor, uint8_t *data);
 
 /**
  * Resets the gesture count registers of the APDS9960 sensor.
@@ -559,7 +559,7 @@ void apds9960_reset_counts(apds9960_t *sensor);
  * @param gesture Pointer to store the detected gesture.
  * @return E_OK on success, error code otherwise.
  */
-uint8_t apds9960_read_gesture(apds9960_t *sensor);
+err_t apds9960_read_gesture(apds9960_t *sensor, uint8_t *gesture);
 
 /**
  * Reads the raw proximity data from the APDS9960 sensor.
@@ -604,6 +604,8 @@ err_t apds9960_gesture_init(apds9960_t *sensor);
 
 err_t apds9960_set_timeout(apds9960_t *sensor, uint64_t timeout);
 void apds9960_diagnose(apds9960_t *sensor);
+
+err_t apds9960_get_status(apds9960_t *sensor, uint8_t *data);
 /**NOT IMPLEMENTED YET*/
 err_t apds9960_read_proximity(apds9960_t *sensor, uint8_t *proximity);
 err_t apds9960_get_ambient_light(apds9960_t *sensor, uint16_t *l);

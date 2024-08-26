@@ -98,7 +98,7 @@ err_t apds9960_write(apds9960_dev_t *sensor, uint8_t addr, uint8_t buf, uint8_t 
         printf("12c dev hadler no inicializado");
         return E_FAIL;
     }
-    i2c_dev_t * handler = *sensor->i2c_dev_hadler;
+    i2c_dev_t * handler = sensor->i2c_dev_hadler;
     return (i2c_write(handler, addr, buf, len));
 }
 
@@ -500,29 +500,32 @@ err_t apds9960_set_als_clear_int(apds9960_t *sensor, uint8_t aiclear)
     return (apds9960_write(sens, AICLEAR, aiclear, 1));
 }
 
-uint8_t apds9960_gesture_valid(apds9960_t *sensor)
+err_t apds9960_gesture_valid(apds9960_t *sensor, uint8_t *data)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-     uint8_t data ;
-    apds9960_read(sens, GSTATUS, &data, 1);
-    sens->gstatus = data;
-    return sens->gstatus;
+   
+    apds9960_read(sens, GSTATUS, data, 1);
+    sens->gstatus = *data;
+ 
+    return E_OK;
 }
 
+err_t apds9960_get_status(apds9960_t *sensor, uint8_t *data)
 err_t apds9960_get_status(apds9960_t *sensor, uint8_t *data)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
     apds9960_read(sens, ENABLE, data, 1);
     return E_OK;
-}
-
-err_t apds9960_get_id(apds9960_t *sensor, uint8_t *data)
-{
-    apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    apds9960_read(sens, ID, data, 1);
     return E_OK;
 }
 
+
+err_t apds9960_get_id(apds9960_t*sensor,uint8_t *val )
+{
+   apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
+   apds9960_read(sens, ID, val, 1);
+    return E_OK;
+}
 
 void apds9960_reset_counts(apds9960_t *sensor)
 {
@@ -533,13 +536,13 @@ void apds9960_reset_counts(apds9960_t *sensor)
     sens->right_cnt = 0;
 }
 
-uint8_t apds9960_read_gesture(apds9960_t *sensor)
+err_t apds9960_read_gesture(apds9960_t *sensor, uint8_t *gesture)
 {
    
-    uint8_t *cant = malloc(sizeof(uint8_t));
+    uint8_t cant = 0;
     uint8_t buf[4];
      uint64_t t;
-    uint8_t gesture = 0;
+
     uint8_t valid = 0;
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
     if (sensor == NULL){ 
@@ -550,18 +553,17 @@ uint8_t apds9960_read_gesture(apds9960_t *sensor)
     {
         int up_down_diff = 0;
         int left_right_diff = 0;
-        valid=apds9960_gesture_valid(sensor);
+        apds9960_gesture_valid(sensor, &valid);
         if (!valid)
         {
-            gesture = FAR;
-            printf("FAR");
-            free(cant);
+            printf("gesture no valid\n");
+            *gesture = FAR;
             return E_OK;
         }
         delay_us(30);
-        apds9960_read(sens, GFLVL, cant, 1);
+        apds9960_read(sens, GFLVL, &cant, 1);
         apds9960_read(sens, GFIFO_U, buf, 4); // page read
-        printf("GFLV, %d\n", *cant);
+        printf("GFLV, %d\n", cant);
         printf("GFIFO, %X\n", (int)buf);
 
         if (abs((int)buf[0] - (int)buf[1]) > 13)
@@ -571,37 +573,34 @@ uint8_t apds9960_read_gesture(apds9960_t *sensor)
             left_right_diff += (int)buf[2] - (int)buf[3];
 
         printf("left_right_diff %d ",left_right_diff);
-         printf("  up_down_diff %d ",  up_down_diff);
+        printf("  up_down_diff %d ",  up_down_diff);
 
         if (up_down_diff != 0)
         {
             if (up_down_diff < 0)
-                (sens->down_cnt > 0) ? gesture = UP : sens->up_cnt++;
+                (sens->down_cnt > 0) ? *gesture = UP : sens->up_cnt++;
             else
-                (sens->up_cnt > 0) ? gesture = DOWN : sens->down_cnt++;
+                (sens->up_cnt > 0) ? *gesture = DOWN : sens->down_cnt++;
         }
 
         if (left_right_diff != 0)
         {
             if (left_right_diff < 0)
-                (sens->right_cnt > 0) ? gesture = LEFT : sens->left_cnt++;
+                (sens->right_cnt > 0) ? *gesture = LEFT : sens->left_cnt++;
             else // if (left_right_diff > 0)
-                (sens->left_cnt > 0) ? gesture = RIGHT : sens->right_cnt++;
+                (sens->left_cnt > 0) ? *gesture = RIGHT : sens->right_cnt++;
         }
         if (up_down_diff == 0 && left_right_diff == 0)
         {
-            gesture = NONE;
-            free(cant);
-            return gesture;
+            *gesture = NONE;
+            return E_OK;
         }
-        printf("GESture %d\n", (int)gesture);
         if (up_down_diff != 0 || left_right_diff != 0)
             t = now();
-        if (gesture || elapsed_time(t) > sens->timeout)
+        if (*gesture || elapsed_time(t) > sens->timeout)
         {
             apds9960_reset_counts(sensor);
-            free(cant);
-            return gesture;
+            return E_OK;
         }
     }
 };
