@@ -1,9 +1,5 @@
-#define _LEGACY
 
 #include "freertos/FreeRTOS.h"
-
-
-
 
 #include "esp_err.h"
 #include "i2c_module.h"

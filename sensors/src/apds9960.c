@@ -510,7 +510,7 @@ err_t apds9960_gesture_valid(apds9960_t *sensor, uint8_t *data)
     return E_OK;
 }
 
-err_t apds9960_get_status(apds9960_t *sensor, uint8_t *data)
+
 err_t apds9960_get_status(apds9960_t *sensor, uint8_t *data)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
