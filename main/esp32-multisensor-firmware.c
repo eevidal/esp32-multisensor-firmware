@@ -44,7 +44,7 @@ void app_main(void)
 
     sensor_u = hcrs04_create(TRIGGER_PIN, ECHO_PIN, 6000);
 
-    i2c_bus = i2c_init_bus(&i2c_params);
+    i2c_bus  = i2c_init_bus(&i2c_params);
     sensor_a = apds9960_init(i2c_bus);
     sensor_m = mpu6050_init(i2c_bus);
 
@@ -81,14 +81,11 @@ void app_main(void)
 static void ultrasonic_task(void *sens)
 {
     hcrs04_t *sensor = (hcrs04_t *)sens;
-    //   static portMUX_TYPE mutex = portMUX_INITIALIZER_UNLOCKED;
     while (1)
     {
         float distance;
         ESP_LOGD(dtagu, "Obteniendo Distancia\n");
-        //  portENTER_CRITICAL_SAFE(&mutex);
         hcrs04_get_distance_m(sensor, &distance);
-        //     portEXIT_CRITICAL_SAFE(&mutex);
         ESP_LOGI(dtagu, "Distancia %0.5fcm\n", distance * 100);
         ESP_LOGD(dtagu, "tigger %d", hcrs04_echo_pin(sensor));
         vTaskDelay(pdMS_TO_TICKS(500));
@@ -102,7 +99,6 @@ static void gesture_task(void *sens)
     uint8_t val = 0;
     apds9960_get_id(sensor, &val);
     printf("ID apds9960 %X \n", val);
-    //  apds9960_diagnose(sensor);
     apds9960_gesture_init(sensor);
     apds9960_diagnose(sensor);
     apds9960_set_timeout(sensor, 400);
@@ -110,9 +106,7 @@ static void gesture_task(void *sens)
     while (1)
     {
         ESP_LOGD(dtaga, "Obteniendo Gesto\n");
-        //  portENTER_CRITICAL_SAFE(&mutex);
         apds9960_read_gesture(sensor, &gesture);
-        //     portEXIT_CRITICAL_SAFE(&mutex);
         if (gesture == DOWN)
         {
             printf("DOWN!\n");
@@ -156,10 +150,9 @@ static void imu_task(void *sens)
         printf("acce x:%X, y:%X, z:%X\n", acce->x, acce->y, acce->z);
         mpu6050_get_gyro_raw(sensor, gyro);
         printf("gyro x:%X, y:%X, z:%X\n", gyro->x, gyro->y, gyro->z);
+        
         mpu6050_get_id(sensor, &val);
-
-        mpu6050_get_acce(sensor, &accel);
-    
+        mpu6050_get_acce(sensor, &accel); 
         ESP_LOGI(dtagm, "acce_x:%.2f, acce_y:%.2f, acce_z:%.2f\n", accel.x, accel.y, accel.z);
 
         mpu6050_get_gyro(sensor, &gyros);

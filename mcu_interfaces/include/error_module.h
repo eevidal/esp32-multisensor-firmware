@@ -4,10 +4,8 @@
 
 
 #define  E_OK  0
-#define E_FAIL -1
+#define  E_FAIL -1
 
 typedef int err_t;
-
-
 
 #endif

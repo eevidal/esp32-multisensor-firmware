@@ -47,7 +47,6 @@ i2c_bus_t *i2c_init_bus(const w_i2c_config_t *params)
     ESP_ERROR_CHECK(i2c_driver_install(i2c_port, conf.mode, 0, 0, 0));
     i2c_master_t *bus_handle = malloc(sizeof(i2c_master_t));
     bus_handle->port = i2c_port; 
-   // ESP_ERROR_CHECK(i2c_new_master_bus(&conf, &bus_handle));
     return (i2c_bus_t *)bus_handle;
 };
 
@@ -60,15 +59,11 @@ err_t i2c_deinit(void *bus_handler)
 
 i2c_dev_t *i2c_add_master_device(uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t *bus_handle){
     i2c_master_dev_handle_t *handle = malloc(sizeof(i2c_master_dev_handle_t));
-   // i2c_master_t * bus = (i2c_master_t *)bus_handle;
     handle->port =((i2c_master_t*)bus_handle)->port;    
     handle->dev_addr = dev_addr << 1;
     return (i2c_dev_t *)handle;
 }
 
-/*err_t i2c_write_to_device(i2c_port_t i2c_num, uint8_t device_address,
-                                     const uint8_t* write_buffer, size_t write_size,
-                                     TickType_t ticks_to_wait)*/
 
 err_t i2c_write(void*sensor, uint8_t reg_addr, uint8_t  data, uint8_t length){
     i2c_master_dev_handle_t *sens = (i2c_master_dev_handle_t*)sensor;
@@ -149,14 +144,9 @@ err_t i2c_read(void *dev_handler, const uint8_t reg_addr, uint8_t *data, uint8_t
 {
     uint8_t tx_data[] = {reg_addr};
     uint8_t rx_data[length];
-    //nt8_t buffer[length];
     i2c_master_dev_handle_t dev = *(i2c_master_dev_handle_t *)dev_handler;
     ESP_ERROR_CHECK(i2c_master_transmit_receive(dev, tx_data, sizeof(tx_data), rx_data, length, -1));
-   // ESP_ERROR_CHECK(i2c_master_receive(dev,buf, (length+1), -1));
     memcpy(data, rx_data, length);
-
-    
-   // ESP_LOGD(tag, "Read from device 0x%X -> 0x%X \n", (int)reg_addr, buffer[0]);
     ESP_LOGD(tag, "Read from device 0x%X -> 0x%X \n", (int)reg_addr, *data);
     return E_OK;
 };

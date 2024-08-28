@@ -55,6 +55,15 @@ err_t gpio_send(uint8_t gpio_pin);
  * @return E_OK on success.
  */
 err_t gpio_stop(uint8_t gpio_pin);
+
+/**
+ * Reads the value of a GPIO pin.
+ *
+ * This function returns the current level of the specified GPIO pin.
+ *
+ * @param gpio_pin The GPIO pin number.
+ * @return The current level of the GPIO pin (0 for LOW, 1 for HIGH).
+ */
 int gpio_read(uint8_t gpio_pin);
 
 #endif
