@@ -235,7 +235,7 @@ err_t apds9960_set_gesture_threshold(apds9960_t *sensor, uint8_t gpenth, uint8_t
 err_t apds9960_set_again(apds9960_t *sensor, apds9960_again_t again)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    uint8_t temp = 0x03 & again;
+    uint8_t temp = 0x03 & again;  //revisar ++++
 
     temp |= sens->control;
     sens->control = temp;
