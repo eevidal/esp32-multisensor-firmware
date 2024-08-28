@@ -1,10 +1,9 @@
+#include <stdint.h>
 #include "esp_idf.h"
-
 #include "gpio_module.h"
 #include "driver/gpio.h"
 #include "esp_err.h"
 #include "freertos/FreeRTOS.h"
-#include <stdint.h>
 #include "esp_log.h"
 
 #define LOW 0

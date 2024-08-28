@@ -1,6 +1,5 @@
 
 #include "freertos/FreeRTOS.h"
-
 #include "esp_err.h"
 #include "i2c_module.h"
 #include "error_module.h"
@@ -18,16 +17,18 @@
 
 static const char *tag = "I2C Module:";
 
-#define  _LEGACY
+#define _LEGACY
 #ifdef _LEGACY
 
 #include "driver/i2c.h"
 
-typedef struct i2c_master_t{
+typedef struct i2c_master_t
+{
     int port;
-}i2c_master_t; 
+} i2c_master_t;
 
-typedef struct i2c_master_dev_handle_t{
+typedef struct i2c_master_dev_handle_t
+{
     int port;
     uint8_t dev_addr;
 } i2c_master_dev_handle_t;
@@ -46,7 +47,7 @@ i2c_bus_t *i2c_init_bus(const w_i2c_config_t *params)
     ESP_ERROR_CHECK(i2c_param_config(i2c_port, &conf));
     ESP_ERROR_CHECK(i2c_driver_install(i2c_port, conf.mode, 0, 0, 0));
     i2c_master_t *bus_handle = malloc(sizeof(i2c_master_t));
-    bus_handle->port = i2c_port; 
+    bus_handle->port = i2c_port;
     return (i2c_bus_t *)bus_handle;
 };
 
@@ -57,16 +58,17 @@ err_t i2c_deinit(void *bus_handler)
     return E_OK;
 };
 
-i2c_dev_t *i2c_add_master_device(uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t *bus_handle){
+i2c_dev_t *i2c_add_master_device(uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t *bus_handle)
+{
     i2c_master_dev_handle_t *handle = malloc(sizeof(i2c_master_dev_handle_t));
-    handle->port =((i2c_master_t*)bus_handle)->port;    
+    handle->port = ((i2c_master_t *)bus_handle)->port;
     handle->dev_addr = dev_addr << 1;
     return (i2c_dev_t *)handle;
 }
 
-
-err_t i2c_write(void*sensor, uint8_t reg_addr, uint8_t  data, uint8_t length){
-    i2c_master_dev_handle_t *sens = (i2c_master_dev_handle_t*)sensor;
+err_t i2c_write(void *sensor, uint8_t reg_addr, uint8_t data, uint8_t length)
+{
+    i2c_master_dev_handle_t *sens = (i2c_master_dev_handle_t *)sensor;
     if (sens == NULL)
         printf("NULL");
     uint8_t addr = sens->dev_addr;
@@ -83,8 +85,9 @@ err_t i2c_write(void*sensor, uint8_t reg_addr, uint8_t  data, uint8_t length){
     return E_OK;
 }
 
-err_t i2c_read(void *dev_handler,  uint8_t reg_addr, uint8_t *data, uint8_t length){
-    i2c_master_dev_handle_t* sens = (i2c_master_dev_handle_t*)dev_handler;
+err_t i2c_read(void *dev_handler, uint8_t reg_addr, uint8_t *data, uint8_t length)
+{
+    i2c_master_dev_handle_t *sens = (i2c_master_dev_handle_t *)dev_handler;
     uint8_t addr = sens->dev_addr;
     uint8_t port = sens->port;
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
@@ -98,7 +101,6 @@ err_t i2c_read(void *dev_handler,  uint8_t reg_addr, uint8_t *data, uint8_t leng
     ESP_ERROR_CHECK(i2c_master_cmd_begin(port, cmd, 1000 / portTICK_PERIOD_MS));
     i2c_cmd_link_delete(cmd);
     return E_OK;
-
 }
 
 #else
@@ -106,7 +108,7 @@ err_t i2c_read(void *dev_handler,  uint8_t reg_addr, uint8_t *data, uint8_t leng
 i2c_bus_t *i2c_init_bus(const w_i2c_config_t *params)
 {
     i2c_master_bus_config_t conf;
-    conf.i2c_port = I2C_NUM_0; // autoconfig
+    conf.i2c_port = I2C_NUM_0;             // autoconfig
     conf.clk_source = SOC_CPU_CLK_SRC_PLL; // I2C_CLK_SRC_DEFAULT;
     conf.sda_io_num = params->sda_num;
     conf.scl_io_num = params->scl_num;
