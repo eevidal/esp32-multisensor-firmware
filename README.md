@@ -21,14 +21,14 @@ El driver lecacy no puede cohexistir con el nuevo. El firmware está testeado y 
 Estructura de directorios:
 
 esp32-multisensor-firmware
-    ├── main : directorio con la aplicación principal
-    │   ├── esp32-multisensor-firmware.c
-    |── mcu_interfaces/  : directorio con los wrappers para el esp-idf
-    |   |── include/ : headers
-    │   |── src/     : código fuente
-    |── sensors/: directorio con los drivers
-    │    |── include/ : headers
-    |    |── src/     : código fuente de los drivers
+        ├── main : directorio con la aplicación principal
+        │   ├── esp32-multisensor-firmware.c
+        |── mcu_interfaces/  : directorio con los wrappers para el esp-idf
+        |   |── include/ : headers
+        │   |── src/     : código fuente
+        |── sensors/: directorio con los drivers
+        │    |── include/ : headers
+        |    |── src/     : código fuente de los drivers
      
 El código de los drivers que está en el directorio sensors está completamente desacoplado del esp-idf y
 de la placa esp32 e incluso del sistema operativo FreeRtos. Las llamadas a las funciones de librerías del idf necesarias para lograr la comunicación con los sensores, el manejo del tiempo o los mensajes se error se hacen a través de las interfaces provistas en el directorio mcu_interfaces. Las headers de este directorio también son agnósticas de la sdk, de modo que para portar el código de los drivers a otro sistema alcanza con reimplementar los prototipos de las funciones declaradas en el headers. 
