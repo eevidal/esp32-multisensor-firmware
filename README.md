@@ -20,7 +20,7 @@ El driver lecacy no puede cohexistir con el nuevo. El firmware está testeado y 
 
 Estructura de directorios:
 
-esp32-multisensor-firmware
+    esp32-multisensor-firmware
         ├── main : directorio con la aplicación principal
         │   ├── esp32-multisensor-firmware.c
         |── mcu_interfaces/  : directorio con los wrappers para el esp-idf
@@ -51,14 +51,14 @@ To facilitate interaction with IDF functionalities, custom wrappers were develop
 The legacy driver can't coexist with the new driver. Include i2c.h to use the legacy driver or the other two headers to use the new driver.
 
 
-esp32-multisensor-firmware
-    ├── main : folder with main application
-    │   ├── esp32-multisensor-firmware.c
-    |── mcu_interfaces/  : folder with idf wrappers
-    |   |── include/ : folder with headers 
-    │   |── src/     : folder source code of wrappers
-    |── sensors/: folder with the sensors drivers
-    │    |── include/ : folder with headers 
-    |    |── src/     : folder source code of the drivers
+    esp32-multisensor-firmware
+        ├── main : folder with main application
+        │   ├── esp32-multisensor-firmware.c
+        |── mcu_interfaces/  : folder with idf wrappers
+        |   |── include/ : folder with headers 
+        │   |── src/     : folder source code of wrappers
+        |── sensors/: folder with the sensors drivers
+        │    |── include/ : folder with headers 
+        |    |── src/     : folder source code of the drivers
      
 The driver code located in the sensors directory is completely decoupled from the ESP-IDF, the ESP32 board, and even the FreeRTOS operating system. Calls to IDF library functions required for sensor communication, time management, or error handling are made through interfaces provided in the mcu_interfaces directory. The headers in this directory are also SDK-agnostic, meaning that to port the driver code to another system, it is sufficient to reimplement the prototypes of the functions declared in the headers of mcu_interfaces.
