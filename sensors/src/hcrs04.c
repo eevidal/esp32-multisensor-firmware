@@ -2,10 +2,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
-
-
 #include "hcrs04.h"
-#include "mutex_module.h"
+//#include "mutex_module.h"
 #include "error_module.h"
 #include "gpio_module.h"
 #include "time_module.h"
@@ -26,7 +24,7 @@ typedef struct{
     int echo_pin;     /**< GPIO pin number for the echo input. */
     int trigger_pin;  /**< GPIO pin number for the trigger output. */
     int timeout; /**< Timeout value in microseconds for the sensor measurement. */
-    mutex_t mutex;
+ //   mutex_t mutex;
 } _hcrs04_dev_t;
 
 
@@ -51,8 +49,8 @@ int hcrs04_echo_pin(hcrs04_t *sensor)
 err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor, uint32_t *elapsed){
     _hcrs04_dev_t *sens = (_hcrs04_dev_t *) sensor;
     
-    if (sens->mutex == NULL) 
-        return E_FAIL;
+   // if (sens->mutex == NULL) 
+    //    return E_FAIL;
 
    
    // mutex_lock(sens->mutex ); //enter critical region    printf("envio trigger\n");
@@ -65,10 +63,8 @@ err_t hcrs04_send_pulse_and_wait(hcrs04_t *sensor, uint32_t *elapsed){
         volatile uint64_t init_time  = now();       
         while(!gpio_read(sens->echo_pin)&& (elapsed_time(init_time) <= sens->timeout)) ; // wait for the echo pin HIGH or timeout
         volatile uint64_t start_echo  = now();
-        volatile uint64_t stop_time = start_echo ;
-        while(gpio_read(sens->echo_pin) && (elapsed_time(init_time) <= TIMEOUT)) // wait for the echo pin LOW or timeout
-            stop_time = now();
-  //  mutex_unlock(sens->mutex ); 
+        while(gpio_read(sens->echo_pin) && (elapsed_time(start_echo) <= TIMEOUT)) // wait for the echo pin LOW or timeout
+        //  mutex_unlock(sens->mutex ); 
 
     *elapsed =  elapsed_time(start_echo);
    
