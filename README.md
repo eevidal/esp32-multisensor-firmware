@@ -48,8 +48,15 @@ The firmware design was structured to isolate sensor drivers from the ESP32 boar
 promoting a modular architecture.
 To facilitate interaction with IDF functionalities, custom wrappers were developed that encapsulate I2C communication, GPIO control, time management, and error handling operations. This abstraction layer simplifies the code and promotes the reuse of drivers developed on other platforms.
 
-The legacy driver can't coexist with the new driver. Include i2c.h to use the legacy driver or the other two headers to use the new driver.
+Regarding the ESP-IDF I2C API,
 
+ there's a new design (see [1]) which I believe is an improvement over the previous one, but for some reason it's not working as expected. Nevertheless, the wrapper code is included to use both the new API design and the legacy version.
+
+The legacy driver cannot coexist with the new one. The firmware has been tested and is working with the legacy version.
+
+[1]https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/i2c.html
+
+Folders structure:
 
     esp32-multisensor-firmware
         ├── main : folder with main application
