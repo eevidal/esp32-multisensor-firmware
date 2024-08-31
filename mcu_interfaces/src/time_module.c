@@ -22,7 +22,6 @@ void delay_us(int time)
 
 uint64_t now(void)
 {
-
    return esp_timer_get_time();
 };
 
