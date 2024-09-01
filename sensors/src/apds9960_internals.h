@@ -103,11 +103,18 @@ from any of the ALS/Color data registers.
 /**The CONFIG3 register is used to select which photodiodes are used for proximity. Two photodiodes are paired to provide signal. In proximity mode, UP and RIGHT photodiodes are connected forming a diode pair; similarly the DOWN and LEFT photodiodes form a diode pair.*/
 #define  CONFIG3        0x9F
 
-
-
 /**Color registers*/
 
-/**The ATIME register controls the internal integration time of ALS/Color analog to digital converters. Upon power up, the ADC integration time register is set to 0xFF.*/
+/**The ATIME register controls the internal integration time of ALS/Color analog to digital converters. Upon power up, the ADC integration time register is set to 0xFF.
+The maximum count (or saturation) value can be calculated based upon the integration time and the size of the count
+register (i.e. 16 bits). For ALS/Color, the maximum count will be the lesser of either:
+65535 (based on the 16 bit register size) or  The result of equation: CountMAX = 1025 x CYCLES
+  FIELD VALUE                 CYCLES      TIME (WLONG = 0)               MAX COUNT
+   0                            256             712 ms                     65535
+   = 256 – TIME / 2.78 ms       …               …
+   246                          10              27.8 ms                    10241 
+   255                          1               2.78 ms                    1025
+*/
 #define  ATIME          0x82
 /** The WTIME controls the amount of time in a low power mode between Proximity and/or ALS cycles. It is set 2.78ms increments unless the WLONG bit is asserted in which case the wait times are 12× longer. WTIME is programmed as a 2’s complement number. Upon power up, the wait time register is set to 0xFF.
  FIELD VALUE                 WAIT TIME       TIME (WLONG = 0)        TIME (WLONG = 1)
@@ -215,33 +222,3 @@ Finally, the host begins to read address 0xFC (page read), and continues to read
 
 /* On/Off definitions */
 #define APDS9960_OFF                       0
-
-/* Default values */
-#define DEFAULT_ATIME           219     // 103ms
-#define DEFAULT_WTIME           246     // 27ms
-#define DEFAULT_PROX_PPULSE     0x87    // 16us, 8 pulses
-#define DEFAULT_GESTURE_PPULSE  0x89    // 16us, 10 pulses
-#define DEFAULT_POFFSET_UR      0       // 0 offset
-#define DEFAULT_POFFSET_DL      0       // 0 offset      
-#define DEFAULT_CONFIG1         0x40    // No 12x wait (WTIME) factor
-#define DEFAULT_LDRIVE          LED_DRIVE_100MA
-#define DEFAULT_PGAIN           PGAIN_4X
-#define DEFAULT_AGAIN           AGAIN_4X
-#define DEFAULT_PILT            0       // Low proximity threshold
-#define DEFAULT_PIHT            50      // High proximity threshold
-#define DEFAULT_AILT            0xFFFF  // Force interrupt for calibration
-#define DEFAULT_AIHT            0
-#define DEFAULT_PERS            0x11    // 2 consecutive prox or ALS for int.
-#define DEFAULT_CONFIG2         0x01    // No saturation interrupts or LED boost  
-#define DEFAULT_CONFIG3         0       // Enable all photodiodes, no SAI
-#define DEFAULT_GPENTH          40      // Threshold for entering gesture mode
-#define DEFAULT_GEXTH           30      // Threshold for exiting gesture mode    
-#define DEFAULT_GCONF1          0x40    // 4 gesture events for int., 1 for exit
-#define DEFAULT_GGAIN           GGAIN_4X
-#define DEFAULT_GLDRIVE         LED_DRIVE_100MA
-#define DEFAULT_GWTIME          GWTIME_2_8MS
-#define DEFAULT_GOFFSET         0       // No offset scaling for gesture mode
-#define DEFAULT_GPULSE          0xC9    // 32us, 10 pulses
-#define DEFAULT_GCONF3          0       // All photodiodes active during gesture
-#define DEFAULT_GIEN            0       // Disable gesture interrupts
-

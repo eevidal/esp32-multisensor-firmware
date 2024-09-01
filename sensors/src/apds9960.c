@@ -187,8 +187,8 @@ err_t apds9960_set_proximity_threshold(apds9960_t *sensor, uint8_t threshold, ui
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
     apds9960_write(sens, PILT, (threshold & 0xFF), 1);
     apds9960_write(sens, PIHT, (threshold >> 8), 1);
-    if (persistence > 7)
-        persistence = 7;
+    if (persistence > 15)
+        persistence = 15;
     uint8_t prev_pers;
     apds9960_read(sens,PERS,&prev_pers,1);
     prev_pers |= (persistence << 4);
@@ -273,7 +273,8 @@ err_t apds9960_set_gwtime(apds9960_t *sensor, apds9960_gwtime_t gwtime)
 err_t apds9960_set_wtime(apds9960_t *sensor, uint8_t wtime)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    return (apds9960_write(sens, WTIME, wtime, 1));
+    uint8_t val = 256 - wtime / 2.78;
+    return (apds9960_write(sens, WTIME, val, 1));
 }
 
 // ATIME
@@ -284,7 +285,8 @@ err_t apds9960_set_atime(apds9960_t *sensor, uint8_t atime)
         printf("sensor no inicializado en atime\n");
         return E_FAIL;
     }
-    return (apds9960_write(sens, ATIME, atime, 1));
+    uint8_t val = 256 - atime / 2.78;
+    return (apds9960_write(sens, ATIME, val, 1));
 }
 
 // WLONG
@@ -312,7 +314,7 @@ err_t apds9960_set_proximity_pulse(apds9960_t *sensor, apds9960_pulse_len_t len,
         pulses = 64;
     pulses--;
     tmp = pulses | (uint8_t)len;
-    return (apds9960_write(sens, GPULSE, tmp, 1));
+    return (apds9960_write(sens, PPULSE, tmp, 1));
 }
 
 // CONFIG2
@@ -507,6 +509,7 @@ err_t apds9960_get_status(apds9960_t *sensor, uint8_t *data)
 err_t apds9960_get_id(apds9960_t*sensor,uint8_t *val )
 {
    apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
+   printf("get id \n");
    apds9960_read(sens, ID, val, 1);
     return E_OK;
 }
@@ -639,51 +642,53 @@ err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint
 
 void apds9960_diagnose(apds9960_t *sensor){
   
-    uint8_t *val = malloc(sizeof(uint8_t));
+    uint8_t val;
      apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
     for(uint8_t reg = 0x80; reg <= 0xAF; reg++) {
         if( (reg != 0x82) && \
+            (reg != 0x88) && \
             (reg != 0x8A) && \
             (reg != 0x91) && \
             (reg != 0xA8) && \
             (reg != 0xAC) && \
             (reg != 0xAD) )
-        {
-            i2c_read(sens->i2c_dev_hadler, reg, val,1);
-            printf("Register 0x%X value 0x%X \n",reg, *val);
-            *val = 0x00;
+        {   
+            i2c_read(sens->i2c_dev_hadler, reg, &val,1);
+            printf("Register 0x%X value 0x%X \n",reg, val);
+            val = 0x00;
         
-        }
+        } else printf("Avoid Register 0x%X\n",reg );
     }
-    free(val);
 
 }
 
 err_t apds9960_gesture_init(apds9960_t *sensor)
 {
     /* Set default values for ambient light and proximity registers */ 
-    apds9960_set_atime(sensor, 219); 
-    apds9960_set_wtime(sensor, 249);
+    apds9960_set_atime(sensor, 103); 
+    apds9960_set_wtime(sensor,27); 
     apds9960_set_again(sensor, APDS9960_AGAIN_4X);
-    apds9960_set_proximity_pulse(sensor,2,7);
-    apds9960_set_gesture_pulse(sensor,2,9);
-    
+    apds9960_set_proximity_pulse(sensor,APDS9960_LEN_16US,7);
+    apds9960_disable_wlong(sensor);  
+    apds9960_set_poffset_ur(sensor,0);
+    apds9960_set_poffset_dl(sensor,0);
+    apds9960_set_proximity_threshold(sensor,1 ,1);
+    apds9960_set_proximity_sat_int_(sensor,APDS9960_PSAT_OFF);
     apds9960_disable_engine(sensor, APDS9960_GESTURE);
     apds9960_disable_engine(sensor, APDS9960_PROXIMIMTY);
     apds9960_disable_engine(sensor, APDS9960_ALS);
     apds9960_disable_engine(sensor, APDS9960_AINT);
-    apds9960_disable_engine(sensor, APDS9960_PINT);
-    
+    apds9960_disable_engine(sensor, APDS9960_PINT);   
     apds9960_set_als_clear_int(sensor, 0);
     apds9960_enable_engine(sensor, APDS9960_POWER);
     apds9960_set_gesture_gdims(sensor, APDS9960_GDIM_ALL); 
     apds9960_set_gestrure_fifoth(sensor, APDS9960_GFIFOTH_4);
     apds9960_set_ggain(sensor,APDS9960_GAIN_4X); 
-    apds9960_set_gesture_threshold(sensor, 50,0); 
+    apds9960_set_gesture_threshold(sensor, 40,30); 
     apds9960_reset_counts(sensor);
     apds9960_set_ldrive(sensor, APDS9960_LDRIVE_100MA);
     apds9960_set_ledboost(sensor, APDS9960_LBOOST_100P);
-    apds9960_set_gwtime(sensor,APDS9960_GWTIME_2_8MS);
+    apds9960_set_gwtime(sensor,APDS9960_GWTIME_8_4MS);
     apds9960_set_gesture_pulse(sensor, APDS9960_LEN_32US, 8);
     apds9960_enable_engine(sensor, APDS9960_PROXIMIMTY);
     apds9960_enable_engine(sensor, APDS9960_GESTURE);

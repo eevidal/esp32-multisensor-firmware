@@ -74,11 +74,15 @@ err_t mpu6050_read(mpu6050_dev_t *sensor, uint8_t addr, uint8_t *buf, uint8_t le
     return (i2c_read(sensor->i2c_dev_hadler, addr, buf, len));
 }
 
+
 err_t mpu6050_setup_default(mpu6050_t *sensor)
 {
     mpu6050_set_pwr_clock(sensor, CLK_PLL_XGYRO_C);
-    mpu6050_set_acce_range(sensor, ACCE_2G);
-    mpu6050_set_gyro_range(sensor, GYRO_250DPS);
+    mpu6050_set_acce_range(sensor, ACCE_4G);
+    mpu6050_set_gyro_range(sensor, GYRO_500DPS);
+    mpu6050_set_dlpf(sensor,DLPF_42HZ);
+    mpu6050_set_sample_rate(sensor,10);
+
     return E_OK;
 }
 

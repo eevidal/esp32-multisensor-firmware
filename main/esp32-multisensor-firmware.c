@@ -5,7 +5,6 @@
 #include "esp_system.h"
 #include "esp_log.h"
 #include "driver/gpio.h"
-#include "driver/i2c_master.h"
 #include <esp32/rom/ets_sys.h>
 #include "time_module.h"
 #include "hcrs04.h"
@@ -88,7 +87,7 @@ static void ultrasonic_task(void *sens)
         hcrs04_get_distance_m(sensor, &distance);
         ESP_LOGI(dtagu, "Distancia %0.5fcm\n", distance * 100);
         ESP_LOGD(dtagu, "tigger %d", hcrs04_echo_pin(sensor));
-        vTaskDelay(pdMS_TO_TICKS(500));
+        vTaskDelay(pdMS_TO_TICKS(1500));
     }
 }
 
@@ -100,8 +99,8 @@ static void gesture_task(void *sens)
     apds9960_get_id(sensor, &val);
     printf("ID apds9960 %X \n", val);
     apds9960_gesture_init(sensor);
-    apds9960_diagnose(sensor);
-    apds9960_set_timeout(sensor, 400);
+  //  apds9960_diagnose(sensor);
+    apds9960_set_timeout(sensor, 40);
     uint8_t gesture = 0;
     while (1)
     {
@@ -146,18 +145,15 @@ static void imu_task(void *sens)
     mpu6050_gyro_t gyros;
     while (true)
     {
+         mpu6050_get_gyro_raw(sensor, gyro);
         mpu6050_get_acce_raw(sensor, acce);
         printf("acce x:%X, y:%X, z:%X\n", acce->x, acce->y, acce->z);
-        mpu6050_get_gyro_raw(sensor, gyro);
+       
         printf("gyro x:%X, y:%X, z:%X\n", gyro->x, gyro->y, gyro->z);
-        
-        mpu6050_get_id(sensor, &val);
         mpu6050_get_acce(sensor, &accel); 
         ESP_LOGI(dtagm, "acce_x:%.2f, acce_y:%.2f, acce_z:%.2f\n", accel.x, accel.y, accel.z);
-
         mpu6050_get_gyro(sensor, &gyros);
-
         ESP_LOGI(dtagm, "gyro_x:%.2f, gyro_y:%.2f, gyro_z:%.2f\n", gyros.x, gyros.y, gyros.z);
-        vTaskDelay(pdMS_TO_TICKS(700));
+        vTaskDelay(pdMS_TO_TICKS(3700));
     }
 }

@@ -88,6 +88,7 @@ err_t mpu6050_delete(mpu6050_t *sensor);
 err_t mpu6050_get_id(mpu6050_t *sensor, uint8_t *id);
 err_t mpu6050_setup_default(mpu6050_t* sensor);// mov to aplication layer
 err_t mpu6050_set_pwr_clock(mpu6050_t *sensor, mpu6050_pwr_clk_t mode);
+err_t mpu6050_set_dlpf(mpu6050_t *sensor, dlpf_t filter);
 err_t mpu6050_set_sample_rate(mpu6050_t *sensor, int16_t rate);
 err_t mpu6050_set_acce_range(mpu6050_t *sensor, acel_range_t range);
 err_t mpu6050_set_gyro_range(mpu6050_t *sensor,  gyro_range_t range);
