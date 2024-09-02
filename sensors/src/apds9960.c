@@ -551,17 +551,12 @@ err_t apds9960_read_gesture(apds9960_t *sensor, uint8_t *gesture)
         delay_us(30);
         apds9960_read(sens, GFLVL, &cant, 1);
         apds9960_read(sens, GFIFO_U, buf, 4); // page read
-        printf("GFLV, %d\n", cant);
-        printf("GFIFO, %X\n", (int)buf);
 
         if (abs((int)buf[0] - (int)buf[1]) > 13)
             up_down_diff += (int)buf[0] - (int)buf[1];
 
         if (abs((int)buf[2] - (int)buf[3]) > 13)
             left_right_diff += (int)buf[2] - (int)buf[3];
-
-        printf("left_right_diff %d ",left_right_diff);
-        printf("  up_down_diff %d ",  up_down_diff);
 
         if (up_down_diff != 0)
         {

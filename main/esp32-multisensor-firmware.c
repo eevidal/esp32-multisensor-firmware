@@ -35,7 +35,7 @@ static void imu_task(void *sens);
 w_i2c_config_t i2c_params = {
     .sda_num = GPIO_NUM_21,
     .scl_num = 22,       // GPIO_NUM_22,
-    .clk_speed = 100000, // 100KHz
+    .clk_speed = 400000, // 100KHz
 };
 
 void app_main(void)

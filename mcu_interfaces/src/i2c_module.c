@@ -17,7 +17,7 @@
 
 static const char *tag = "I2C Module:";
 
-#define _LEGACY
+//#define _LEGACY
 #ifdef _LEGACY
 
 
@@ -76,7 +76,7 @@ err_t i2c_write(void *sensor, uint8_t reg_addr, uint8_t data, uint8_t length)
     uint8_t port = sens->port;
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     ESP_ERROR_CHECK(i2c_master_start(cmd));
-    ESP_LOGI(tag, "Escribiendo en %X y registro %X\n", addr >> 1, reg_addr);
+    ESP_LOGD(tag, "Escribiendo en %X y registro %X\n", addr >> 1, reg_addr);
     ESP_ERROR_CHECK(i2c_master_write_byte(cmd, addr | I2C_MASTER_WRITE, true));
     ESP_ERROR_CHECK(i2c_master_write_byte(cmd, reg_addr, true));
     ESP_ERROR_CHECK(i2c_master_write(cmd, &data, length, I2C_MASTER_LAST_NACK));
@@ -109,14 +109,14 @@ err_t i2c_read(void *dev_handler, uint8_t reg_addr, uint8_t *data, uint8_t lengt
 i2c_bus_t *i2c_init_bus(const w_i2c_config_t *params)
 {
     i2c_master_bus_config_t conf;
-    conf.i2c_port = I2C_NUM_0;             // autoconfig
-    conf.clk_source = SOC_CPU_CLK_SRC_PLL; // I2C_CLK_SRC_DEFAULT;
+    conf.i2c_port = -1; //2C_NUM_0;             // autoconfig
+    conf.clk_source =  I2C_CLK_SRC_DEFAULT ; // I2C_CLK_SRC_DEFAULT;
     conf.sda_io_num = params->sda_num;
     conf.scl_io_num = params->scl_num;
     conf.glitch_ignore_cnt = 7;
     conf.intr_priority = 0;
-    conf.trans_queue_depth = 16;
-    conf.flags.enable_internal_pullup = true;
+    conf.trans_queue_depth = 0;
+    conf.flags.enable_internal_pullup = false;
     i2c_master_bus_handle_t bus_handle;
     ESP_ERROR_CHECK(i2c_new_master_bus(&conf, &bus_handle));
     return (i2c_bus_t *)bus_handle;
@@ -126,8 +126,10 @@ i2c_dev_t *i2c_add_master_device(uint16_t dev_addr, uint32_t cl_speed, i2c_bus_t
 {
     i2c_device_config_t cfg;
     cfg.dev_addr_length = I2C_ADDR_BIT_LEN_7;
-    cfg.device_address = dev_addr;
+    cfg.device_address = dev_addr>>1;
     cfg.scl_speed_hz = cl_speed;
+    printf("speed %d ", (int)cl_speed);
+    cfg.flags.disable_ack_check = 0;
     i2c_master_dev_handle_t *handle = malloc(sizeof(i2c_master_dev_handle_t));
     ESP_ERROR_CHECK(i2c_master_bus_add_device(((i2c_master_bus_handle_t)bus_handle), &cfg, handle));
     return (i2c_dev_t *)handle;
