@@ -35,16 +35,16 @@ the register is read*/
 #define ACCEL_ZOUT_L 0x40
 
 /**These registers store the most recent temperature sensor measurement.*/
-#define TEMP_OUT_H   0x65
-#define TEMP_OUT_L   0x66
+#define TEMP_OUT_H   0x41
+#define TEMP_OUT_L   0x42
 
 /**These registers store the most recent gyroscope measurements*/
-#define GYRO_XOUT_H  0x67
-#define GYRO_XOUT_L  0x68 
-#define GYRO_YOUT_H  0x69
-#define GYRO_YOUT_L  0x70
-#define GYRO_ZOUT_H  0x71
-#define GYRO_ZOUT_L  0x72
+#define GYRO_XOUT_H  0x43
+#define GYRO_XOUT_L  0x44
+#define GYRO_YOUT_H  0x45
+#define GYRO_YOUT_L  0x46
+#define GYRO_ZOUT_H  0x47
+#define GYRO_ZOUT_L  0x48
 
 /**This register allows the user to enable and disable the FIFO buffer, I2C Master Mode, and primary
 I2C interface. The FIFO buffer, I2C Master, sensor signal paths and sensor registers can also be

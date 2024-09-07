@@ -81,7 +81,7 @@ err_t mpu6050_setup_default(mpu6050_t *sensor)
     mpu6050_set_acce_range(sensor, ACCE_4G);
     mpu6050_set_gyro_range(sensor, GYRO_500DPS);
     mpu6050_set_dlpf(sensor,DLPF_42HZ);
-    mpu6050_set_sample_rate(sensor,10);
+    mpu6050_set_sample_rate(sensor,100);
 
     return E_OK;
 }

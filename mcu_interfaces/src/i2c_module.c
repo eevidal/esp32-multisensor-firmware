@@ -17,7 +17,7 @@
 
 static const char *tag = "I2C Module:";
 
-//#define _LEGACY
+#define _LEGACY
 #ifdef _LEGACY
 
 
