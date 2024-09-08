@@ -529,7 +529,7 @@ err_t apds9960_read_gesture(apds9960_t *sensor, uint8_t *gesture)
    
     uint8_t cant = 0;
     uint8_t buf[4];
-     uint64_t t;
+    uint64_t t;
 
     uint8_t valid = 0;
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
@@ -545,7 +545,7 @@ err_t apds9960_read_gesture(apds9960_t *sensor, uint8_t *gesture)
         if (!valid)
         {
             printf("gesture no valid\n");
-            *gesture = FAR;
+            gesture = FAR;
             return E_OK;
         }
         delay_us(30);
@@ -575,12 +575,12 @@ err_t apds9960_read_gesture(apds9960_t *sensor, uint8_t *gesture)
         }
         if (up_down_diff == 0 && left_right_diff == 0)
         {
-            *gesture = NONE;
+            gesture = NONE;
             return E_OK;
         }
         if (up_down_diff != 0 || left_right_diff != 0)
             t = now();
-        if (*gesture || elapsed_time(t) > sens->timeout)
+        if (gesture || elapsed_time(t) > sens->timeout)
         {
             apds9960_reset_counts(sensor);
             return E_OK;
@@ -595,36 +595,6 @@ err_t apds9960_read_raw_proximity(apds9960_t *sensor, uint8_t *proximity)
 }
 
 
-err_t apds9960_read_color(apds9960_t *sensor, uint8_t data,  uint16_t *color_data)
-{
-    uint8_t read_data[2];
-    apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    switch (data)
-    {
-    case CDATA:
-        apds9960_read(sens, CDATAL, &read_data[0], 1);
-        apds9960_read(sens, CDATAH, &read_data[1], 1);
-        break;
-    case RDATA:
-        apds9960_read(sens, RDATAL, &read_data[0], 1);
-        apds9960_read(sens, RDATAH, &read_data[1], 1);
-        break;
-    case GDATA:
-        apds9960_read(sens, GDATAL, &read_data[0], 1);
-        apds9960_read(sens, GDATAH, &read_data[1], 1);
-        break;
-    case BDATA:
-        apds9960_read(sens, BDATAL, &read_data[0], 1);
-        apds9960_read(sens, BDATAH, &read_data[1], 1);
-        break;
-    default:
-        break;
-    } 
-    uint16_t aux = 0x0000 | (uint16_t)read_data[1];
-    *color_data = (aux << 8) | (uint16_t)read_data[0];
-
-    return E_OK;
-}
 
 err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint16_t *b, uint16_t *c)
 {
@@ -691,5 +661,47 @@ err_t apds9960_gesture_init(apds9960_t *sensor)
 }
 // Private Functions
 
+/**
+ * Reads color data from the APDS9960 sensor.
+ *
+ * @param sensor Pointer to the APDS9960 sensor device.
+ * @param data Specifies the color data to read (CDATA, RDATA, GDATA, or BDATA).
+ * @param color_data Pointer to store the read color data.
+ * @return E_OK on success.
+ */
+err_t apds9960_read_color(apds9960_t *sensor, uint8_t data,  uint16_t *color_data)
+{
+    uint8_t read_data[2];
+    apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
+    switch (data)
+    {
+    case CDATA:
+        apds9960_read(sens, CDATAL, &read_data[0], 1);
+        apds9960_read(sens, CDATAH, &read_data[1], 1);
+        break;
+    case RDATA:
+        apds9960_read(sens, RDATAL, &read_data[0], 1);
+        apds9960_read(sens, RDATAH, &read_data[1], 1);
+        break;
+    case GDATA:
+        apds9960_read(sens, GDATAL, &read_data[0], 1);
+        apds9960_read(sens, GDATAH, &read_data[1], 1);
+        break;
+    case BDATA:
+        apds9960_read(sens, BDATAL, &read_data[0], 1);
+        apds9960_read(sens, BDATAH, &read_data[1], 1);
+        break;
+    default:
+        break;
+    } 
+    uint16_t aux = 0x0000 | (uint16_t)read_data[1];
+    *color_data = (aux << 8) | (uint16_t)read_data[0];
+
+    return E_OK;
+}
+
+
 err_t apds9960_calculate_lux(apds9960_t sensor, uint16_t r,
                              uint16_t g, uint16_t b, uint16_t *l);
+
+

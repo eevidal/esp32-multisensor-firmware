@@ -9,7 +9,8 @@
 #include "time_module.h"
 #include "i2c_module.h"
 
-#define IMU 
+#define OPTICS
+#define COLOR 
 #ifdef ULTRASONIC
 #include "hcrs04.h"
 #define ECHO_PIN GPIO_NUM_4
@@ -131,7 +132,7 @@ static void ultrasonic_task(void *sens)
 }
 #endif
 
-#ifdef OPTICS
+#ifdef GESTURE
 static void gesture_task(void *sens)
 {
     apds9960_t *sensor = (apds9960_t *)sens;
@@ -168,6 +169,37 @@ static void gesture_task(void *sens)
             printf("FAR!\n");
         }
         vTaskDelay(pdMS_TO_TICKS(600));
+    }
+};
+
+#endif
+
+
+#ifdef COLOR
+static void gesture_task(void *sens)
+{
+    apds9960_t *sensor = (apds9960_t *)sens;
+    ESP_LOGI(dtaga, "Iniciando Engine de Color\n");
+    uint8_t val = 0;
+    uint16_t ambient_light = 0;
+    uint16_t red_light = 0;
+    uint16_t green_light = 0;
+    uint16_t blue_light = 0;
+    apds9960_get_id(sensor, &val);
+    printf("ID apds9960 %X \n", val);
+    apds9960_gesture_init(sensor);
+  //  apds9960_diagnose(sensor);
+    apds9960_set_timeout(sensor, 40);
+    while (1)
+    {
+        ESP_LOGD(dtaga, "Obteniendo Gesto\n");
+        apds9960_get_color_data(sensor, &red_light, &green_light, &blue_light, &ambient_light);
+
+        printf("Ambient :%d!\n", ambient_light);
+        printf("Red :%d!\n", red_light);
+        printf("Geen :%d!\n", green_light);
+        printf("Blue :%d!\n", blue_light);
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 };
 
