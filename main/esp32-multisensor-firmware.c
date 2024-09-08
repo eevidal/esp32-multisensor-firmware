@@ -10,7 +10,7 @@
 #include "i2c_module.h"
 
 #define OPTICS
-#define COLOR 
+#define GESTURE
 #ifdef ULTRASONIC
 #include "hcrs04.h"
 #define ECHO_PIN GPIO_NUM_4

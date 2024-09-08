@@ -142,25 +142,25 @@ err_t apds9960_disable_engine(apds9960_t *sensor, apds9960_mode_t mode)
     switch (mode)
     {
     case APDS9960_POWER:
-        sens->enable &= ~PON;
+        sens->enable &= ~PON | 0x40;
         break;
     case APDS9960_ALS:
-        sens->enable &= ~AEN;
+        sens->enable &= ~AEN| 0x40;
         break;
     case APDS9960_PROXIMIMTY:
-        sens->enable &= ~PEN;
+        sens->enable &= ~PEN| 0x40;
         break;
     case APDS9960_WAIT:
-        sens->enable &= ~WEN;
+        sens->enable &= ~WEN| 0x40;
         break;
     case APDS9960_AINT:
-        sens->enable &= ~AIEN;
+        sens->enable &= ~AIEN| 0x40;
         break;
     case APDS9960_PINT:
-        sens->enable &= ~PIEN;
+        sens->enable &= ~PIEN| 0x40;
         break;
     case APDS9960_GESTURE:
-        sens->enable &= ~GEN;
+        sens->enable &= ~GEN | 0x40;
         break;
     case APDS9960_ALL:
         sens->enable &= 0x40;
@@ -545,7 +545,7 @@ err_t apds9960_read_gesture(apds9960_t *sensor, uint8_t *gesture)
         if (!valid)
         {
             printf("gesture no valid\n");
-            gesture = FAR;
+            *gesture = FAR;
             return E_OK;
         }
         delay_us(30);
@@ -575,12 +575,12 @@ err_t apds9960_read_gesture(apds9960_t *sensor, uint8_t *gesture)
         }
         if (up_down_diff == 0 && left_right_diff == 0)
         {
-            gesture = NONE;
+            *gesture = NONE;
             return E_OK;
         }
         if (up_down_diff != 0 || left_right_diff != 0)
             t = now();
-        if (gesture || elapsed_time(t) > sens->timeout)
+        if (*gesture || elapsed_time(t) > sens->timeout)
         {
             apds9960_reset_counts(sensor);
             return E_OK;
@@ -639,11 +639,8 @@ err_t apds9960_gesture_init(apds9960_t *sensor)
     apds9960_set_poffset_dl(sensor,0);
     apds9960_set_proximity_threshold(sensor,1 ,1);
     apds9960_set_proximity_sat_int_(sensor,APDS9960_PSAT_OFF);
-    apds9960_disable_engine(sensor, APDS9960_GESTURE);
-    apds9960_disable_engine(sensor, APDS9960_PROXIMIMTY);
-    apds9960_disable_engine(sensor, APDS9960_ALS);
-    apds9960_disable_engine(sensor, APDS9960_AINT);
-    apds9960_disable_engine(sensor, APDS9960_PINT);   
+    apds9960_disable_engine(sensor, APDS9960_ALL);
+   
     apds9960_set_als_clear_int(sensor, 0);
     apds9960_enable_engine(sensor, APDS9960_POWER);
     apds9960_set_gesture_gdims(sensor, APDS9960_GDIM_ALL); 
