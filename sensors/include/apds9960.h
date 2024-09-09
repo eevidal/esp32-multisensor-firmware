@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "i2c_module.h"
+#include "error_module.h"
+#include "time_module.h"
+
 
 typedef void *apds9960_t;
 
@@ -575,15 +578,6 @@ err_t apds9960_read_gesture(apds9960_t *sensor, uint8_t *gesture);
  */
 err_t apds9960_read_raw_proximity(apds9960_t *sensor, uint8_t *proximity);
 
-/**
- * Reads color data from the APDS9960 sensor.
- *
- * @param sensor Pointer to the APDS9960 sensor device.
- * @param data Specifies the color data to read (CDATA, RDATA, GDATA, or BDATA).
- * @param color_data Pointer to store the read color data.
- * @return E_OK on success.
- */
-err_t apds9960_read_color(apds9960_t *sensor, uint8_t data, uint16_t *color_data);
 
 /**
  * Reads the red, green, blue, and clear color data from the APDS9960 sensor.

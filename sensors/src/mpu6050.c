@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include "mpu6050.h"
 #include "mpu6050_internals.h"
-#include "error_module.h"
-#include "time_module.h"
+
 
 typedef struct
 {

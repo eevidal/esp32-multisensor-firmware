@@ -53,7 +53,7 @@ i2c_bus_t *i2c_bus = NULL;
 w_i2c_config_t i2c_params = {
     .sda_num = GPIO_NUM_21,
     .scl_num = 22,       // GPIO_NUM_22,
-    .clk_speed = 400000, // 100KHz
+    .clk_speed = 400000, // 400KHz
 };
 
 

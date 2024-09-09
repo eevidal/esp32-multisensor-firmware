@@ -4,9 +4,7 @@
 
 #include "hcrs04.h"
 //#include "mutex_module.h"
-#include "error_module.h"
-#include "gpio_module.h"
-#include "time_module.h"
+
 
 #define PING_TIMEOUT   6000 // ms
 #define DSOUND_SPEED 2.91*2   // mm / micros

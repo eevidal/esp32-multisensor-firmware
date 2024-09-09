@@ -2,6 +2,7 @@
 #define _MPU_6050_H_
 
 #include "error_module.h"
+#include "time_module.h"
 #include "i2c_module.h"
 
 typedef void* mpu6050_t;

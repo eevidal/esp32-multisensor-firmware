@@ -2,6 +2,8 @@
 #define _HCRS04_H_
 
 #include "error_module.h"
+#include "gpio_module.h"
+#include "time_module.h"
 #include <stdint.h>
 
 typedef void * hcrs04_t;
