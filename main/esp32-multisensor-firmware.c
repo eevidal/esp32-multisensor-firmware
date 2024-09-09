@@ -6,6 +6,7 @@
 #include "esp_log.h"
 #include "driver/gpio.h"
 #include <esp32/rom/ets_sys.h>
+#include "soc/esp32/include/soc/gpio_num.h"
 #include "time_module.h"
 #include "i2c_module.h"
 
@@ -52,7 +53,7 @@ static const char *dtag = "Main";
 i2c_bus_t *i2c_bus = NULL;
 w_i2c_config_t i2c_params = {
     .sda_num = GPIO_NUM_21,
-    .scl_num = 22,       // GPIO_NUM_22,
+    .scl_num = GPIO_NUM_22,
     .clk_speed = 400000, // 400KHz
 };
 
