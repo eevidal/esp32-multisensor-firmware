@@ -309,6 +309,7 @@ err_t mpu6050_get_gyro(mpu6050_t *sensor, mpu6050_gyro_t *gyros){
     gyros->x = gyro->x /sensitivity;
     gyros->y = gyro->y /sensitivity;
     gyros->z = gyro->z /sensitivity;
+    free(gyro);
     return E_OK;
 }
 
@@ -320,6 +321,7 @@ err_t mpu6050_get_acce(mpu6050_t *sensor, mpu6050_acce_t *accel){
     accel->x = acce->x /sensitivity;
     accel->y = acce->y /sensitivity;
     accel->z = acce->z /sensitivity;
+    free(acce);
     return E_OK;
 
 }
