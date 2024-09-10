@@ -67,11 +67,11 @@ void app_main(void)
     #ifdef OPTICS
     i2c_bus  = i2c_init_bus(&i2c_params);
 
-    sensor_a = apds9960_init(i2c_bus);
+    sensor_a = apds9960_create(i2c_bus);
     #endif
 
     #ifdef IMU
-				i2c_bus  = i2c_init_bus(&i2c_params);
+	i2c_bus  = i2c_init_bus(&i2c_params);
     sensor_m = mpu6050_init(i2c_bus);
     #endif
 
@@ -141,8 +141,7 @@ static void gesture_task(void *sens)
     uint8_t val = 0;
     apds9960_get_id(sensor, &val);
     printf("ID apds9960 %X \n", val);
-    apds9960_gesture_init(sensor);
-  //  apds9960_diagnose(sensor);
+    apds9960_gesture_enable(sensor);
     apds9960_set_timeout(sensor, 40);
     uint8_t gesture = 0;
     while (1)
@@ -188,8 +187,8 @@ static void gesture_task(void *sens)
     uint16_t blue_light = 0;
     apds9960_get_id(sensor, &val);
     printf("ID apds9960 %X \n", val);
-    apds9960_gesture_init(sensor);
-  //  apds9960_diagnose(sensor);
+    apds9960_init(sensor);
+    apds9960_color_enable(sensor);
     apds9960_set_timeout(sensor, 40);
     while (1)
     {

@@ -462,7 +462,24 @@ err_t apds9960_set_gesture_int_off(apds9960_t *sensor)
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
      uint8_t prev_gconfig;
     apds9960_read(sens,GCONF4,&prev_gconfig,1);
-    prev_gconfig &= 0b11111101;
+    prev_gconfig &= 0b00000001; //preserve gmode
+    return (apds9960_write(sens, GCONF4, prev_gconfig, 1));
+}
+
+err_t apds9960_set_gesture_gmode_on(apds9960_t *sensor)
+{
+    apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
+    uint8_t prev_gconfig;
+    apds9960_read(sens,GCONF4,&prev_gconfig,1);
+    prev_gconfig |= 0b00000001;
+    return (apds9960_write(sens, GCONF4, prev_gconfig, 1));
+}
+err_t apds9960_set_gesture_gmode_off(apds9960_t *sensor)
+{
+    apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
+     uint8_t prev_gconfig;
+    apds9960_read(sens,GCONF4,&prev_gconfig,1);
+    prev_gconfig &= 0b00000010; //preserve gien
     return (apds9960_write(sens, GCONF4, prev_gconfig, 1));
 }
 
@@ -657,30 +674,81 @@ err_t apds9960_init(apds9960_t *sensor)
     apds9960_set_gesture_threshold(sensor, 40,30); 
     //gconfig1
     apds9960_set_gestrure_fifoth(sensor, APDS9960_GFIFOTH_4);
-    apds9960_set_gestrure_gexmsk(sensor,APDS9960_ALL);
+    apds9960_set_gestrure_gexmsk(sensor,APDS9960_GEXMSK_ALL);
     apds9960_set_gestrure_gexpers(sensor,APDS9960_GEXPERS_1);
     //gconfig2
     apds9960_set_ggain(sensor,APDS9960_GAIN_4X); 
     apds9960_set_gldrive(sensor, APDS9960_LDRIVE_100MA);
-    apds9960_set_gwtime(sensor,APDS9960_GWTIME_8_4MS);
+    apds9960_set_gwtime(sensor,APDS9960_GWTIME_2_8MS);
 
     apds9960_set_gestrure_offsets(sensor,0,0,0,0);
-    apds9960_set_gesture_pulse(sensor, APDS9960_LEN_32US, 8);
+    apds9960_set_gesture_pulse(sensor, APDS9960_LEN_16US, 10);
     //gconfig3
     apds9960_set_gesture_gdims(sensor, APDS9960_GDIM_ALL); 
     //gconfig4
     apds9960_set_gesture_int_off(sensor);
+    apds9960_set_gesture_gmode_off(sensor);
 
     return E_OK;
 }
 
 err_t apds9960_gesture_enable(apds9960_t *sensor)
 {
-   
+     /* Enable gesture mode
+       Set ENABLE to 0 (power off)
+       Set GWTIME to 0xFF
+       Set AUX to LED_BOOST_300
+       Enable PON, WEN, PEN, GEN in ENABLE 
+    */
+    apds9960_reset_counts(sensor);
+    apds9960_set_wtime(sensor,0xFF); 
+    apds9960_set_gesture_pulse(sensor, APDS9960_LEN_16US, 10);
+    apds9960_set_ledboost(sensor, APDS9960_LBOOST_300P);
+    apds9960_set_gesture_int_off(sensor); //no interruptions
+    apds9960_set_gesture_gmode_on(sensor);
+    apds9960_enable_engine(sensor, APDS9960_POWER); 
+    apds9960_enable_engine(sensor, APDS9960_WAIT);
+    apds9960_enable_engine(sensor, APDS9960_PROXIMIMTY);
+    apds9960_enable_engine(sensor, APDS9960_GESTURE); 
+    return E_OK;
+}
+
+err_t apds9960_gesture_disable(apds9960_t *sensor){
+    apds9960_set_gesture_gmode_off(sensor);
+    apds9960_disable_engine(sensor, APDS9960_GESTURE); 
+    return E_OK;
+
+}
+
+err_t apds9960_color_enable(apds9960_t *sensor){      
+    /* Set default gain, interrupts, enable power, and enable sensor */
+    apds9960_set_again(sensor, APDS9960_AGAIN_4X);
+    apds9960_disable_engine(sensor, APDS9960_AINT);
+    apds9960_enable_engine(sensor, APDS9960_POWER); 
+    apds9960_enable_engine(sensor,APDS9960_ALS); 
+    return E_OK;
+}
+
+err_t apds9960_color_disable(apds9960_t *sensor){
+     apds9960_disable_engine(sensor,APDS9960_ALS); 
+    return E_OK;
+
+}
+
+err_t apds9960_proximity_enable(apds9960_t *sensor){      
+    /* Set default gain, LED, interrupts, enable power, and enable sensor */
+    apds9960_set_pgain(sensor, APDS9960_GAIN_4X);
+    apds9960_set_ldrive(sensor, APDS9960_LDRIVE_100MA);
+    apds9960_disable_engine(sensor, APDS9960_PINT);
     apds9960_enable_engine(sensor, APDS9960_POWER); 
     apds9960_enable_engine(sensor, APDS9960_PROXIMIMTY);
-    apds9960_enable_engine(sensor, APDS9960_GESTURE);
     return E_OK;
+}
+
+err_t apds9960_proximity_disable(apds9960_t *sensor){
+    apds9960_disable_engine(sensor, APDS9960_PROXIMIMTY);
+    return E_OK;
+
 }
 
 // Private Functions

@@ -606,7 +606,14 @@ err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint
  * @param sensor Pointer to the APDS9960 sensor device.
  * @return E_OK on success.
  */
-err_t apds9960_gesture_init(apds9960_t *sensor);
+err_t apds9960_gesture_enable(apds9960_t *sensor);
+err_t apds9960_gesture_disable(apds9960_t *sensor);
+
+err_t apds9960_color_enable(apds9960_t *sensor);
+err_t apds9960_color_disable(apds9960_t *sensor);
+
+err_t apds9960_proximity_enable(apds9960_t *sensor);
+err_t apds9960_proximity_disable(apds9960_t *sensor);
 
 err_t apds9960_set_timeout(apds9960_t *sensor, uint64_t timeout);
 
