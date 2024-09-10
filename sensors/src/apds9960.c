@@ -23,7 +23,7 @@ typedef struct
 
 } apds9960_dev_t;
 
-apds9960_t *apds9960_init(i2c_bus_t *i2c_bus)
+apds9960_t *apds9960_create(i2c_bus_t *i2c_bus)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)malloc(sizeof(apds9960_dev_t));
     if ((void *)sens == NULL || (void *)i2c_bus == NULL)
@@ -626,7 +626,7 @@ void apds9960_diagnose(apds9960_t *sensor){
 }
 
 
-err_t apds9960_setup(apds9960_t *sensor)
+err_t apds9960_init(apds9960_t *sensor)
 {
     /*disable all features*/
      apds9960_disable_engine(sensor, APDS9960_ALL);

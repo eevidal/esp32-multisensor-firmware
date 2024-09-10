@@ -196,13 +196,20 @@ typedef enum
 
 
 /**
- * Initializes an APDS9960 sensor for use with an I2C bus.
+ * Create an APDS9960 sensor for use with an I2C bus.
  *
  * @param i2c_bus Pointer to the I2C bus to use.
  * @return A pointer to the initialized APDS9960 sensor, or NULL on error.
  */
-apds9960_t *apds9960_init(i2c_bus_t *i2c_bus);
+apds9960_t *apds9960_create(i2c_bus_t *i2c_bus);
 
+/**
+ * @brief 
+ * 
+ * @param sensor Pointer to the APDS9960 sensor to be deleted.
+ * @return E_OK on success.
+ */
+err_t apds9960_init(apds9960_t *sensor);
 /**
  * Deallocates memory and resources associated with an APDS9960 sensor.
  *
