@@ -6,12 +6,12 @@
 #include "esp_log.h"
 #include "driver/gpio.h"
 #include <esp32/rom/ets_sys.h>
-#include "soc/esp32/include/soc/gpio_num.h"
+//#include "soc/esp32/include/soc/gpio_num.h"
 #include "time_module.h"
 #include "i2c_module.h"
 
-#define OPTICS
-#define GESTURE
+#define IMU
+//#define GESTURE
 #ifdef ULTRASONIC
 #include "hcrs04.h"
 #define ECHO_PIN GPIO_NUM_4

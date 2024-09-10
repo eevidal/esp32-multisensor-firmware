@@ -267,12 +267,13 @@ err_t apds9960_set_als_threshold(apds9960_t *sensor, uint16_t low, uint16_t high
  * Sets the proximity threshold and persistence values for the APDS9960 sensor.
  *
  * @param sensor Pointer to the APDS9960 sensor device.
- * @param threshold The proximity threshold value.
+ * @param low The proximity threshold low value.
+ * @param high The proximity threshold high value.
  * @param persistence The proximity interrupt persistence level (0-7).
  * @return E_OK on success.
  */
-err_t apds9960_set_proximity_threshold(apds9960_t *sensor, uint8_t threshold, uint8_t persistence);
 
+err_t apds9960_set_proximity_threshold(apds9960_t *sensor, uint8_t low, uint8_t high, uint8_t persistence);
 /**
  * Sets the gesture threshold values for the APDS9960 sensor.
  *
