@@ -26,8 +26,6 @@
 #include "mpu6050.h"
 #endif
 
-
-
 #ifdef OPTICS
 TaskHandle_t gesture_task_handle = NULL;
 apds9960_t sensor_a = NULL;
@@ -47,7 +45,6 @@ static const char *dtagu = "Ultrasonic";
 static void ultrasonic_task(void *sens);
 #endif
 
-
 static const char *dtag = "Main";
 
 i2c_bus_t *i2c_bus = NULL;
@@ -57,66 +54,65 @@ w_i2c_config_t i2c_params = {
     .clk_speed = 400000, // 400KHz
 };
 
-
 void app_main(void)
 {
-    #ifdef ULTRASONIC
+#ifdef ULTRASONIC
     sensor_u = hcrs04_create(TRIGGER_PIN, ECHO_PIN, 6000);
-    #endif
+#endif
 
-    #ifdef OPTICS
-    i2c_bus  = i2c_init_bus(&i2c_params);
-
+#ifdef OPTICS
+    i2c_bus = i2c_init_bus(&i2c_params);
     sensor_a = apds9960_create(i2c_bus);
-    #endif
+#endif
 
-    #ifdef IMU
-	i2c_bus  = i2c_init_bus(&i2c_params);
+#ifdef IMU
+    i2c_bus = i2c_init_bus(&i2c_params);
     sensor_m = mpu6050_create(i2c_bus);
-    #endif
+#endif
 
     ESP_LOGI(dtag, "Creando Tareas\n");
-    #ifdef ULTRASONIC
-				xTaskCreate(&ultrasonic_task, "Ultrasonic", 2048, (void *)sensor_u, 5, &ultrasonic_task_handle);
-    #endif
-				#ifdef IMU
+    
+#ifdef ULTRASONIC
+    xTaskCreate(&ultrasonic_task, "Ultrasonic", 2048, (void *)sensor_u, 5, &ultrasonic_task_handle);
+    configASSERT(ultrasonic_task_handle);
+#endif
+#ifdef IMU
     xTaskCreate(&imu_task, "Position", 2048, (void *)sensor_m, 5, &imu_task_handle);
-    #endif
-    #ifdef OPTICS
+    configASSERT(imu_task_handle);
+#endif
+#ifdef OPTICS
     xTaskCreate(&gesture_task, "Gesture", 2048, (void *)sensor_a, 6, &gesture_task_handle);
-    #endif
-
-  //  configASSERT(ultrasonic_task_handle);
- //   configASSERT(gesture_task_handle);
- //   configASSERT(imu_task_handle);
+    configASSERT(gesture_task_handle);
+#endif
 
     while (1)
         vTaskDelay(1000);
 
-    #ifdef ULTRASONIC
+#ifdef ULTRASONIC
     if (ultrasonic_task_handle != NULL)
     {
         ESP_LOGI(dtagu, "DELETING...");
         vTaskDelete(ultrasonic_task_handle);
     }
-	#endif
-	#ifdef OPTICS
+#endif
+#ifdef OPTICS
     if (gesture_task_handle != NULL)
     {
         ESP_LOGI(dtaga, "DELETING...");
         vTaskDelete(gesture_task_handle);
     }
-	#endif
-	#ifdef IMU
+#endif
+#ifdef IMU
     if (imu_task_handle != NULL)
     {
         ESP_LOGI(dtagm, "DELETING...");
         vTaskDelete(imu_task_handle);
     }
-	#endif
+#endif
 }
-/* **********************************************************/
 
+
+/*******************TASK*****************************************/
 #ifdef ULTRASONIC
 static void ultrasonic_task(void *sens)
 {
@@ -174,7 +170,6 @@ static void gesture_task(void *sens)
 
 #endif
 
-
 #ifdef COLOR
 static void gesture_task(void *sens)
 {
@@ -202,7 +197,6 @@ static void gesture_task(void *sens)
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 };
-
 #endif
 
 #ifdef IMU
@@ -221,13 +215,13 @@ static void imu_task(void *sens)
     mpu6050_gyro_t gyros;
     while (true)
     {
-  
+
         mpu6050_get_acce_raw(sensor, acce);
         printf("acce x:%X, y:%X, z:%X\n", acce->x, acce->y, acce->z);
         mpu6050_get_gyro_raw(sensor, gyro);
         printf("gyro x:%X, y:%X, z:%X\n", gyro->x, gyro->y, gyro->z);
-						
-        mpu6050_get_acce(sensor, &accel); 
+
+        mpu6050_get_acce(sensor, &accel);
         ESP_LOGI(dtagm, "acce_x:%.2f, acce_y:%.2f, acce_z:%.2f\n", accel.x, accel.y, accel.z);
         mpu6050_get_gyro(sensor, &gyros);
         ESP_LOGI(dtagm, "gyro_x:%.2f, gyro_y:%.2f, gyro_z:%.2f\n", gyros.x, gyros.y, gyros.z);
