@@ -251,9 +251,6 @@ err_t apds9960_disable_engine(apds9960_t *sensor, apds9960_mode_t mode);
  * @param time
  * @return err_t
  */
-
-
-
 err_t apds9960_set_wait_time(apds9960_t sensor, uint8_t time);
 
 /**
@@ -599,7 +596,7 @@ err_t apds9960_read_raw_proximity(apds9960_t *sensor, uint8_t *proximity);
 err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint16_t *b, uint16_t *c);
 
 /**
- * Initializes the APDS9960 sensor for gesture detection.
+ * Enables the APDS9960 sensor for gesture detection.
  *
  * This function configures the sensor with default settings for gesture detection.
  *
@@ -607,12 +604,46 @@ err_t apds9960_get_color_data(apds9960_t *sensor, uint16_t *r, uint16_t *g, uint
  * @return E_OK on success.
  */
 err_t apds9960_gesture_enable(apds9960_t *sensor);
+/**
+ * Disables the gesture engine
+ *
+ * @param sensor Pointer to the APDS9960 sensor device.
+ * @return E_OK on success.
+ */
 err_t apds9960_gesture_disable(apds9960_t *sensor);
 
+/**
+ * Enables the APDS9960 sensor for color detection.
+ *
+ * This function configures the sensor with default settings for color detection.
+ *
+ * @param sensor Pointer to the APDS9960 sensor device.
+ * @return E_OK on success.
+ */
 err_t apds9960_color_enable(apds9960_t *sensor);
+/**
+ * Disables the ALS/color engine
+ *
+ * @param sensor Pointer to the APDS9960 sensor device.
+ * @return E_OK on success.
+ */
 err_t apds9960_color_disable(apds9960_t *sensor);
 
+/**
+ * Enables the APDS9960 sensor for proximity detection.
+ *
+ * This function configures the sensor with default settings for proximity detection.
+ *
+ * @param sensor Pointer to the APDS9960 sensor device.
+ * @return E_OK on success.
+ */
 err_t apds9960_proximity_enable(apds9960_t *sensor);
+/**
+ * Disables the proximity engine
+ *
+ * @param sensor Pointer to the APDS9960 sensor device.
+ * @return E_OK on success.
+ */
 err_t apds9960_proximity_disable(apds9960_t *sensor);
 
 err_t apds9960_set_timeout(apds9960_t *sensor, uint64_t timeout);

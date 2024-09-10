@@ -10,21 +10,18 @@ typedef struct
     uint32_t i2c_clk;
 } mpu6050_dev_t;
 
-mpu6050_t *mpu6050_init(i2c_bus_t *i2c_bus)
+mpu6050_t *mpu6050_create(i2c_bus_t *i2c_bus)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)malloc(sizeof(mpu6050_dev_t));
     if ((void *)sens == NULL || (void *)i2c_bus == NULL)
         return NULL;
-
     sens->dev_addr = MPU6050_I2C_ADDRESS;
     sens->i2c_clk = MAX_CLK;
-
     i2c_dev_t *dev;
     dev = i2c_add_master_device(MPU6050_I2C_ADDRESS, MAX_CLK, i2c_bus);
     if (dev == NULL)
         printf("Algo salio mal seteando handler i2c\n");
     sens->i2c_dev_hadler = dev;
-
     return (mpu6050_t *)sens;
 }
 
@@ -74,14 +71,13 @@ err_t mpu6050_read(mpu6050_dev_t *sensor, uint8_t addr, uint8_t *buf, uint8_t le
 }
 
 
-err_t mpu6050_setup_default(mpu6050_t *sensor)
+err_t mpu6050_init(mpu6050_t *sensor)
 {
     mpu6050_set_pwr_clock(sensor, CLK_PLL_XGYRO_C);
     mpu6050_set_acce_range(sensor, ACCE_4G);
     mpu6050_set_gyro_range(sensor, GYRO_500DPS);
-    mpu6050_set_dlpf(sensor,DLPF_42HZ);
+    mpu6050_set_dlpf(sensor, DLPF_42HZ);
     mpu6050_set_sample_rate(sensor,100);
-
     return E_OK;
 }
 
@@ -329,6 +325,6 @@ err_t mpu6050_get_acce(mpu6050_t *sensor, mpu6050_acce_t *accel){
 }
 
 
-
+// TODO 
 // err_t mpu6050_get_vel(mpu6050_t sensor, float *gx, float *gy, float *gz);
 // err_t mpu6050_get_orientation(mpu6050_t sensor, float *roll, float *pitch, float *yaw);

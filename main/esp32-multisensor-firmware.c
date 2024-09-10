@@ -72,7 +72,7 @@ void app_main(void)
 
     #ifdef IMU
 	i2c_bus  = i2c_init_bus(&i2c_params);
-    sensor_m = mpu6050_init(i2c_bus);
+    sensor_m = mpu6050_create(i2c_bus);
     #endif
 
     ESP_LOGI(dtag, "Creando Tareas\n");
@@ -99,21 +99,21 @@ void app_main(void)
         ESP_LOGI(dtagu, "DELETING...");
         vTaskDelete(ultrasonic_task_handle);
     }
-				#endif
-				#ifdef OPTICS
+	#endif
+	#ifdef OPTICS
     if (gesture_task_handle != NULL)
     {
         ESP_LOGI(dtaga, "DELETING...");
         vTaskDelete(gesture_task_handle);
     }
-				#endif
-				#ifdef IMU
+	#endif
+	#ifdef IMU
     if (imu_task_handle != NULL)
     {
         ESP_LOGI(dtagm, "DELETING...");
         vTaskDelete(imu_task_handle);
     }
-				#endif
+	#endif
 }
 /* **********************************************************/
 
@@ -213,7 +213,7 @@ static void imu_task(void *sens)
     uint8_t val = 0;
     mpu6050_get_id(sensor, &val);
     printf("ID mpu6050 %X \n", val);
-    mpu6050_setup_default(sensor);
+    mpu6050_init(sensor);
 
     acce_raw_t *acce = malloc(sizeof(acce_raw_t));
     gyro_raw_t *gyro = malloc(sizeof(gyro_raw_t));
@@ -221,15 +221,15 @@ static void imu_task(void *sens)
     mpu6050_gyro_t gyros;
     while (true)
     {
-        mpu6050_get_gyro_raw(sensor, gyro);
+  
         mpu6050_get_acce_raw(sensor, acce);
         printf("acce x:%X, y:%X, z:%X\n", acce->x, acce->y, acce->z);
-       
+        mpu6050_get_gyro_raw(sensor, gyro);
         printf("gyro x:%X, y:%X, z:%X\n", gyro->x, gyro->y, gyro->z);
-								mpu6050_get_gyro(sensor, &gyros);
+						
         mpu6050_get_acce(sensor, &accel); 
         ESP_LOGI(dtagm, "acce_x:%.2f, acce_y:%.2f, acce_z:%.2f\n", accel.x, accel.y, accel.z);
-        
+        mpu6050_get_gyro(sensor, &gyros);
         ESP_LOGI(dtagm, "gyro_x:%.2f, gyro_y:%.2f, gyro_z:%.2f\n", gyros.x, gyros.y, gyros.z);
         vTaskDelay(pdMS_TO_TICKS(300));
     }
