@@ -41,7 +41,6 @@ apds9960_t *apds9960_init(i2c_bus_t *i2c_bus)
     sens->left_cnt = 0;
     sens->right_cnt = 0;
     sens->gest_cnt = 0;             
-
     return (apds9960_t)sens;
 }
 
@@ -182,11 +181,11 @@ err_t apds9960_set_als_threshold(apds9960_t *sensor, uint16_t low, uint16_t high
     return E_OK;
 }
 
-err_t apds9960_set_proximity_threshold(apds9960_t *sensor, uint8_t threshold, uint8_t persistence)
+err_t apds9960_set_proximity_threshold(apds9960_t *sensor, uint8_t low, uint8_t high, uint8_t persistence)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    apds9960_write(sens, PILT, (threshold & 0xFF), 1);
-    apds9960_write(sens, PIHT, (threshold >> 8), 1);
+    apds9960_write(sens, PILT, low , 1);
+    apds9960_write(sens, PIHT, high, 1);
     if (persistence > 15)
         persistence = 15;
     uint8_t prev_pers;
@@ -211,17 +210,16 @@ err_t apds9960_set_gesture_threshold(apds9960_t *sensor, uint8_t gpenth, uint8_t
 err_t apds9960_set_again(apds9960_t *sensor, apds9960_again_t again)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    uint8_t temp = 0x03 & again; 
     uint8_t prev_again;
     apds9960_read(sens,CONTROL,&prev_again,1);
-    temp |= prev_again;
-    return (apds9960_write(sens, CONTROL, temp, 1));
+    again |= prev_again;
+    return (apds9960_write(sens, CONTROL, again, 1));
 }
 
 err_t apds9960_set_pgain(apds9960_t *sensor, apds9960_gain_t pgain)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    uint8_t temp = 0x0C & pgain;
+    uint8_t temp = pgain << 2;
     uint8_t prev_pgain;
     apds9960_read(sens,CONTROL,&prev_pgain,1);
     temp |= prev_pgain;
@@ -231,7 +229,7 @@ err_t apds9960_set_pgain(apds9960_t *sensor, apds9960_gain_t pgain)
 err_t apds9960_set_ldrive(apds9960_t *sensor, apds9960_ldrive_t ldrive)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    uint8_t temp = 0xC0 & ldrive;
+    uint8_t temp = ldrive << 6;
     uint8_t prev_control;
     apds9960_read(sens,CONTROL,&prev_control,1);
     temp |= prev_control;
@@ -242,7 +240,7 @@ err_t apds9960_set_ldrive(apds9960_t *sensor, apds9960_ldrive_t ldrive)
 err_t apds9960_set_ggain(apds9960_t *sensor, apds9960_gain_t ggain)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    uint8_t temp = 0x60 & ggain;
+    uint8_t temp = ggain << 5;
     uint8_t prev_gconf2;
     apds9960_read(sens,GCONF2,&prev_gconf2,1);
     temp |= prev_gconf2;
@@ -252,7 +250,7 @@ err_t apds9960_set_ggain(apds9960_t *sensor, apds9960_gain_t ggain)
 err_t apds9960_set_gldrive(apds9960_t *sensor, apds9960_ldrive_t gldrive)
 {
     apds9960_dev_t *sens = (apds9960_dev_t *)sensor;
-    uint8_t temp = 0x14 & gldrive;
+    uint8_t temp = gldrive << 3;
     uint8_t prev_conf;
     apds9960_read(sens, GCONF2, &prev_conf,1);
     temp |= prev_conf;
@@ -334,7 +332,7 @@ err_t apds9960_set_proximity_clear_int_(apds9960_t *sensor, apds9960_pclear_int_
     uint8_t config2 = 0x00;
      uint8_t prev_conf;
     apds9960_read(sens, CONFIG2, &prev_conf,1);
-    config2 = clear| prev_conf;
+    config2 = clear  | prev_conf;
     return (apds9960_write(sens, CONFIG2, config2, 1));
 }
 
@@ -627,35 +625,64 @@ void apds9960_diagnose(apds9960_t *sensor){
 
 }
 
-err_t apds9960_gesture_init(apds9960_t *sensor)
+
+err_t apds9960_setup(apds9960_t *sensor)
 {
-    /* Set default values for ambient light and proximity registers */ 
+    /*disable all features*/
+     apds9960_disable_engine(sensor, APDS9960_ALL);
+    /* Set default values for ambient light and proximity registers */
     apds9960_set_atime(sensor, 103); 
     apds9960_set_wtime(sensor,27); 
-    apds9960_set_again(sensor, APDS9960_AGAIN_4X);
     apds9960_set_proximity_pulse(sensor,APDS9960_LEN_16US,7);
-    apds9960_disable_wlong(sensor);  
     apds9960_set_poffset_ur(sensor,0);
     apds9960_set_poffset_dl(sensor,0);
-    apds9960_set_proximity_threshold(sensor,1 ,1);
+    //config1
+    apds9960_disable_wlong(sensor);  
+    apds9960_set_proximity_threshold(sensor,0 ,50,2);
     apds9960_set_proximity_sat_int_(sensor,APDS9960_PSAT_OFF);
-    apds9960_disable_engine(sensor, APDS9960_ALL);
-   
-    apds9960_set_als_clear_int(sensor, 0);
-    apds9960_enable_engine(sensor, APDS9960_POWER);
-    apds9960_set_gesture_gdims(sensor, APDS9960_GDIM_ALL); 
-    apds9960_set_gestrure_fifoth(sensor, APDS9960_GFIFOTH_4);
-    apds9960_set_ggain(sensor,APDS9960_GAIN_4X); 
-    apds9960_set_gesture_threshold(sensor, 40,30); 
-    apds9960_reset_counts(sensor);
     apds9960_set_ldrive(sensor, APDS9960_LDRIVE_100MA);
+    apds9960_set_pgain(sensor, APDS9960_GAIN_4X);
+    apds9960_set_again(sensor, APDS9960_AGAIN_4X);
+    apds9960_set_als_threshold(sensor, 0, 0xFFFF);
+    //config2
     apds9960_set_ledboost(sensor, APDS9960_LBOOST_100P);
+    apds9960_set_proximity_sat_int_(sensor,APDS9960_PSAT_OFF);
+    apds9960_set_als_clear_int(sensor, APDS9960_PCLEAR_OFF);
+    //config3
+    apds9960_set_proximity_pcmp(sensor,APDS9960_PCMP_OFF);
+    apds9960_set_proximity_sai(sensor,APDS9960_PSAI_OFF);
+    apds9960_set_proximity_mask(sensor, APDS9960_PMASK_ALL);
+
+    /* Set default values for gesture sense registers */
+    apds9960_set_gesture_threshold(sensor, 40,30); 
+    //gconfig1
+    apds9960_set_gestrure_fifoth(sensor, APDS9960_GFIFOTH_4);
+    apds9960_set_gestrure_gexmsk(sensor,APDS9960_ALL);
+    apds9960_set_gestrure_gexpers(sensor,APDS9960_GEXPERS_1);
+    //gconfig2
+    apds9960_set_ggain(sensor,APDS9960_GAIN_4X); 
+    apds9960_set_gldrive(sensor, APDS9960_LDRIVE_100MA);
     apds9960_set_gwtime(sensor,APDS9960_GWTIME_8_4MS);
+
+    apds9960_set_gestrure_offsets(sensor,0,0,0,0);
     apds9960_set_gesture_pulse(sensor, APDS9960_LEN_32US, 8);
+    //gconfig3
+    apds9960_set_gesture_gdims(sensor, APDS9960_GDIM_ALL); 
+    //gconfig4
+    apds9960_set_gesture_int_off(sensor);
+
+    return E_OK;
+}
+
+err_t apds9960_gesture_enable(apds9960_t *sensor)
+{
+   
+    apds9960_enable_engine(sensor, APDS9960_POWER); 
     apds9960_enable_engine(sensor, APDS9960_PROXIMIMTY);
     apds9960_enable_engine(sensor, APDS9960_GESTURE);
     return E_OK;
 }
+
 // Private Functions
 
 /**

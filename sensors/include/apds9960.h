@@ -167,10 +167,10 @@ typedef enum
 
 typedef enum
 {
-    APDS9960_LBOOST_100P = 0x01, /**<  100%  -> Default */
-    APDS9960_LBOOST_150P = 0x11, /**<  150%   */
-    APDS9960_LBOOST_200P = 0x21, /**<  200%   */
-    APDS9960_LBOOST_300P = 0x31  /**<  300%   */
+    APDS9960_LBOOST_100P = 0x00, /**<  100%  -> Default */
+    APDS9960_LBOOST_150P = 0x10, /**<  150%   */
+    APDS9960_LBOOST_200P = 0x20, /**<  200%   */
+    APDS9960_LBOOST_300P = 0x30  /**<  300%   */
 } apds9960_ledboost_t;
 
 
