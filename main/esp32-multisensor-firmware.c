@@ -12,7 +12,8 @@
 
 #define IMU
 //#define GESTURE
-//#define OPTICS
+#define OPTICS
+#define COLOR
 #define ULTRASONIC
 #ifdef ULTRASONIC
 #include "hcrs04.h"
@@ -62,13 +63,14 @@ void app_main(void)
     sensor_u = hcrs04_create(TRIGGER_PIN, ECHO_PIN, 6000);
 #endif
 
+i2c_bus = i2c_init_bus(&i2c_params);
 #ifdef OPTICS
-    i2c_bus = i2c_init_bus(&i2c_params);
+  
     sensor_a = apds9960_create(i2c_bus);
 #endif
 
 #ifdef IMU
-    i2c_bus = i2c_init_bus(&i2c_params);
+
     sensor_m = mpu6050_create(i2c_bus);
 #endif
 

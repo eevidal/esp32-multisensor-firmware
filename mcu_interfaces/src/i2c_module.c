@@ -36,7 +36,7 @@ typedef struct i2c_master_dev_handle_t
 
 i2c_bus_t *i2c_init_bus(const w_i2c_config_t *params)
 {
-    int i2c_port = I2C_NUM_0;
+    int i2c_port = I2C_NUM;
     i2c_config_t conf;
     conf.mode = I2C_MODE_MASTER;
     conf.master.clk_speed = params->clk_speed;
@@ -46,7 +46,7 @@ i2c_bus_t *i2c_init_bus(const w_i2c_config_t *params)
     conf.scl_pullup_en = true;
     conf.clk_flags = 0;
     ESP_ERROR_CHECK(i2c_param_config(i2c_port, &conf));
-    ESP_ERROR_CHECK(i2c_driver_install(i2c_port, conf.mode, 0, 0, 0));
+    ESP_ERROR_CHECK(i2c_driver_install(i2c_port, conf.mode, 0, 0, 1));
     i2c_master_t *bus_handle = malloc(sizeof(i2c_master_t));
     bus_handle->port = i2c_port;
     return (i2c_bus_t *)bus_handle;
