@@ -107,19 +107,19 @@ typedef enum
 typedef enum
 {
     APDS9960_PMASK_ALL = 0b00000000,   /**< All enable*/
-    APDS9960_PMASK_R   = 0b00000100,   /**< R disable */
-    APDS9960_PMASK_L   = 0b00001000,   /**< L disable*/
-    APDS9960_PMASK_D   = 0b00010000,   /**< D disable*/
-    APDS9960_PMASK_U   = 0b00100000,   /**< U disable */
-    APDS9960_PMASK_LU  = 0b00101000,   /**< */
-    APDS9960_PMASK_LD  = 0b00011000,   /**< L and D disable*/
-    APDS9960_PMASK_LDU = 0b00111000,   /**< */
-    APDS9960_PMASK_RU  = 0b00100100,   /**< */
-    APDS9960_PMASK_RD  = 0b00010100,   /**< */
-    APDS9960_PMASK_RDU = 0b00101100,   /**< */
-    APDS9960_PMASK_RL  = 0b00001100,   /**< */
-    APDS9960_PMASK_RLU = 0b00001101,   /**< */
-    APDS9960_PMASK_RLD = 0b00111000,   /**< */
+    APDS9960_PMASK_R   = 0b00000001,   /**< R disable */
+    APDS9960_PMASK_L   = 0b00000010,   /**< L disable*/
+    APDS9960_PMASK_D   = 0b00000100,   /**< D disable*/
+    APDS9960_PMASK_U   = 0b00001000,   /**< U disable */
+    APDS9960_PMASK_LU  = 0b00001010,   /**< */
+    APDS9960_PMASK_LD  = 0b00000110,   /**< L and D disable*/
+    APDS9960_PMASK_LDU = 0b00001110,   /**< */
+    APDS9960_PMASK_RU  = 0b00001001,   /**< */
+    APDS9960_PMASK_RD  = 0b00000101,   /**< */
+    APDS9960_PMASK_RDU = 0b00001101,   /**< */
+    APDS9960_PMASK_RL  = 0b00000011,   /**< */
+    APDS9960_PMASK_RLU = 0b00001011,   /**< */
+    APDS9960_PMASK_RLD = 0b00000111,   /**< */
     APDS9960_PMASK_NONE = 0b00001111,  /**< All disable*/
 } apds9960_pmask_t;
 
@@ -135,11 +135,11 @@ typedef enum
     APDS9960_GEXMSK_LDU = 0b00111000,   /**< L, D and U detector data will not be included in sum*/
     APDS9960_GEXMSK_RU  = 0b00100100,   /**< R and U detector data will not be included in sum*/
     APDS9960_GEXMSK_RD  = 0b00010100,   /**< R and D detector data will not be included in sum*/
-    APDS9960_GEXMSK_RDU = 0b00101100,   /**< R, U and D detector data will not be included in sum*/
+    APDS9960_GEXMSK_RDU = 0b00110100,   /**< R, U and D detector data will not be included in sum*/
     APDS9960_GEXMSK_RL  = 0b00001100,   /**< L and R detector data will not be included in sum */
-    APDS9960_GEXMSK_RLU = 0b00001101,   /**< L, R and U detector data will not be included in sum*/
-    APDS9960_GEXMSK_RLD = 0b00111000,   /**< L, R and D detector data will not be included in sum*/
-    APDS9960_GEXMSK_NONE = 0b00001111,  /**< All UDLR detector data will not be included in sum*/
+    APDS9960_GEXMSK_RLU = 0b00101100,   /**< L, R and U detector data will not be included in sum*/
+    APDS9960_GEXMSK_RLD = 0b00011100,   /**< L, R and D detector data will not be included in sum*/
+    APDS9960_GEXMSK_NONE = 0b00111100,  /**< All UDLR detector data will not be included in sum*/
 } apds9960_gexmsk_t;
 
 /**Gesture Exit Persistence. When a number of consecutive “gesture end” occurrences become

@@ -682,7 +682,7 @@ err_t apds9960_init(apds9960_t *sensor)
     /* Set default values for ambient light and proximity registers */
     apds9960_set_atime(sensor, 103);
     apds9960_set_wtime(sensor, 27);
-    apds9960_set_proximity_pulse(sensor, APDS9960_LEN_16US, 7);
+    apds9960_set_proximity_pulse(sensor, APDS9960_LEN_8US, 8);
     apds9960_set_poffset_ur(sensor, 0);
     apds9960_set_poffset_dl(sensor, 0);
     // config1
@@ -733,6 +733,7 @@ err_t apds9960_gesture_enable(apds9960_t *sensor)
 {
     apds9960_reset_counts(sensor);
     apds9960_set_wtime(sensor, 0xFF);
+    apds9960_set_gwtime(sensor, APDS9960_GWTIME_2_8MS);
     apds9960_set_gesture_pulse(sensor, APDS9960_LEN_16US, 10);
     apds9960_set_ledboost(sensor, APDS9960_LBOOST_300P);
     apds9960_set_gesture_int_off(sensor); // no interruptions

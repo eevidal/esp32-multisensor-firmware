@@ -22,6 +22,7 @@ APERS   3:0   ALS Interrupt Persistence. Controls rate of Clear channel interrup
   Bit 1 (WLONG) Wait Long. When asserted, the wait cycle is increased by a factor 12x from that programmed in the WTIME register.
 */
 #define  CONFIG1        0x8D   
+
 /**The Proximity Pulse Count Register sets Pulse Width Modified current during a Proximity Pulse. 
 The proximity pulse count register bits set the number of pulses to be output on the LDR pin. 
 The Proximity Length register bits set the amount of time the LDR pin is sinking current during a proximity pulse.
