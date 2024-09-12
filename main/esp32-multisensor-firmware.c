@@ -12,6 +12,8 @@
 
 #define IMU
 //#define GESTURE
+//#define OPTICS
+#define ULTRASONIC
 #ifdef ULTRASONIC
 #include "hcrs04.h"
 #define ECHO_PIN GPIO_NUM_4
@@ -50,8 +52,8 @@ static const char *dtag = "Main";
 i2c_bus_t *i2c_bus = NULL;
 w_i2c_config_t i2c_params = {
     .sda_num = GPIO_NUM_21,
-    .scl_num = GPIO_NUM_22,
-    .clk_speed = 400000, // 400KHz
+    .scl_num = 22, //GPIO_NUM_22,
+    .clk_speed = 100000, // 100KHz
 };
 
 void app_main(void)
@@ -122,7 +124,7 @@ static void ultrasonic_task(void *sens)
         float distance;
         ESP_LOGD(dtagu, "Obteniendo Distancia\n");
         hcrs04_get_distance_m(sensor, &distance);
-        ESP_LOGI(dtagu, "Distancia %0.5fcm\n", distance * 100);
+        ESP_LOGI(dtagu, "Distancia %0.3fcm\n", distance * 100);
         ESP_LOGD(dtagu, "tigger %d", hcrs04_echo_pin(sensor));
         vTaskDelay(pdMS_TO_TICKS(1500));
     }
@@ -208,24 +210,16 @@ static void imu_task(void *sens)
     mpu6050_get_id(sensor, &val);
     printf("ID mpu6050 %X \n", val);
     mpu6050_init(sensor);
-
-    acce_raw_t *acce = malloc(sizeof(acce_raw_t));
-    gyro_raw_t *gyro = malloc(sizeof(gyro_raw_t));
     mpu6050_acce_t accel;
     mpu6050_gyro_t gyros;
     while (true)
     {
-
-        mpu6050_get_acce_raw(sensor, acce);
-        printf("acce x:%X, y:%X, z:%X\n", acce->x, acce->y, acce->z);
-        mpu6050_get_gyro_raw(sensor, gyro);
-        printf("gyro x:%X, y:%X, z:%X\n", gyro->x, gyro->y, gyro->z);
-
+        printf("-----------------------------------------------------\n");
         mpu6050_get_acce(sensor, &accel);
         ESP_LOGI(dtagm, "acce_x:%.2f, acce_y:%.2f, acce_z:%.2f\n", accel.x, accel.y, accel.z);
         mpu6050_get_gyro(sensor, &gyros);
         ESP_LOGI(dtagm, "gyro_x:%.2f, gyro_y:%.2f, gyro_z:%.2f\n", gyros.x, gyros.y, gyros.z);
-        vTaskDelay(pdMS_TO_TICKS(300));
+        vTaskDelay(pdMS_TO_TICKS(700));
     }
 }
 #endif

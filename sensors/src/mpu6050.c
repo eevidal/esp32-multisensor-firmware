@@ -73,7 +73,7 @@ err_t mpu6050_read(mpu6050_dev_t *sensor, uint8_t addr, uint8_t *buf, uint8_t le
 
 err_t mpu6050_init(mpu6050_t *sensor)
 {
-    mpu6050_set_pwr_clock(sensor, CLK_PLL_XGYRO_C);
+    mpu6050_set_pwr_clock(sensor, CLK_PLL_XGYRO);
     mpu6050_set_acce_range(sensor, ACCE_4G);
     mpu6050_set_gyro_range(sensor, GYRO_500DPS);
     mpu6050_set_dlpf(sensor, DLPF_42HZ);
@@ -115,7 +115,9 @@ err_t mpu6050_set_sample_rate(mpu6050_t *sensor, int16_t rate){
 err_t mpu6050_set_acce_range(mpu6050_t *sensor, acel_range_t range)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
-    // read first and do |=mode to preserve self-test?
+    uint8_t config;
+    mpu6050_read(sens,ACCEL_CONFIG, &config, 1);
+    range |= config;
     mpu6050_write(sens, ACCEL_CONFIG, (uint8_t)range, 1);
     return E_OK;
 }
@@ -123,7 +125,9 @@ err_t mpu6050_set_acce_range(mpu6050_t *sensor, acel_range_t range)
 err_t mpu6050_set_gyro_range(mpu6050_t *sensor, gyro_range_t range)
 {
     mpu6050_dev_t *sens = (mpu6050_dev_t *)sensor;
-    // read first and do |=mode to preserve self-test?
+    uint8_t config;
+    mpu6050_read(sens,GYRO_CONFIG, &config, 1);
+    range |= config;
     mpu6050_write(sens, GYRO_CONFIG, (uint8_t)range, 1);
     return E_OK;
 }
@@ -147,8 +151,8 @@ uint16_t mpu_get_temp(mpu6050_dev_t *sensor_dev)
 
 uint16_t mpu_get_acce_x(mpu6050_dev_t *sensor_dev)
 {
-    uint8_t x_0;
-    uint8_t x_1;
+    uint8_t x_0=0;
+    uint8_t x_1=0;
     mpu6050_read(sensor_dev, ACCEL_XOUT_H, &x_1, 1);
     mpu6050_read(sensor_dev, ACCEL_XOUT_L, &x_0, 1);
     uint16_t x = (((uint16_t)x_1) << 8) | (uint16_t)x_0;
@@ -157,8 +161,8 @@ uint16_t mpu_get_acce_x(mpu6050_dev_t *sensor_dev)
 
 uint16_t mpu_get_acce_y(mpu6050_dev_t *sensor_dev)
 {
-    uint8_t y_0;
-    uint8_t y_1;
+    uint8_t y_0=0;
+    uint8_t y_1=0;
     mpu6050_read(sensor_dev, ACCEL_YOUT_H, &y_1, 1);
     mpu6050_read(sensor_dev, ACCEL_YOUT_L, &y_0, 1);
     uint16_t y = (((uint16_t)y_1) << 8) | (uint16_t)y_0;
@@ -167,8 +171,8 @@ uint16_t mpu_get_acce_y(mpu6050_dev_t *sensor_dev)
 
 uint16_t mpu_get_acce_z(mpu6050_dev_t *sensor_dev)
 {
-    uint8_t z_0;
-    uint8_t z_1;
+    uint8_t z_0=0;
+    uint8_t z_1=0;
     mpu6050_read(sensor_dev, ACCEL_ZOUT_H, &z_1, 1);
     mpu6050_read(sensor_dev, ACCEL_ZOUT_L, &z_0, 1);
     uint16_t z = (((uint16_t)z_1) << 8) | (uint16_t)z_0;
@@ -186,8 +190,8 @@ err_t mpu6050_get_acce_raw(mpu6050_t *sensor, acce_raw_t *accel_data)
 
 uint16_t mpu_get_gyro_x(mpu6050_dev_t *sensor_dev)
 {
-    uint8_t x_0;
-    uint8_t x_1;
+    uint8_t x_0=0;
+    uint8_t x_1=0;
     mpu6050_read(sensor_dev, GYRO_XOUT_H, &x_1, 1);
     mpu6050_read(sensor_dev, GYRO_XOUT_L, &x_0, 1);
     uint16_t x = (((uint16_t)x_1) << 8) | (uint16_t)x_0;
@@ -241,7 +245,7 @@ err_t mpu6050_get_acce_sensitivity(mpu6050_t *sensor, float *acce_sensitivity)
     mpu6050_dev_t *sens = (mpu6050_dev_t *) sensor;
     uint8_t acce_fs;
     mpu6050_read(sens, ACCEL_CONFIG, &acce_fs,1);
-    acce_fs = (acce_fs >> 3) & 0x03;
+    acce_fs = acce_fs & 0x18;
     switch (acce_fs) {
     case ACCE_2G:
         *acce_sensitivity = 16384;
@@ -280,7 +284,7 @@ err_t mpu6050_get_gyro_sensitivity(mpu6050_t *sensor, float *gyro_sensitivity)
     mpu6050_dev_t *sens = (mpu6050_dev_t *) sensor;
     uint8_t gyro_fs;
     mpu6050_read(sens, GYRO_CONFIG, &gyro_fs,1);
-    gyro_fs = (gyro_fs >> 3) & 0x03;
+    gyro_fs = gyro_fs  & 0x18;
     switch (gyro_fs) {
     case GYRO_250DPS:
         *gyro_sensitivity = 131;

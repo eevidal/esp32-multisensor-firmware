@@ -73,4 +73,4 @@ count when FIFO_COUNT_H (Register 72) is read*/
 #define WHO_AM_I     0x75
 
 #define MPU6050_I2C_ADDRESS    0x68 
-#define MAX_CLK      400000  //400KHz
+#define MAX_CLK      100000  //100KHz

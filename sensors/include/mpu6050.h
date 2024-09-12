@@ -8,20 +8,13 @@
 typedef void* mpu6050_t;
 
 typedef enum{ 
-    CLK_INTERNAL_C    =  0x20, //Cicle
-    CLK_PLL_XGYRO_C   =  0x21,
-    CLK_PLL_YGYRO_C    = 0x22,
-    CLK_PLL_ZGYRO_C    = 0x23,
-    CLK_PLL_EXT32K_C   = 0x24,
-    CLK_PLL_EXT19M_C   = 0x25,
-    CLK_KEEP_RESET_C   = 0x27,
-    CLK_INTERNAL_S     = 0x40, //Sleep
-    CLK_PLL_XGYRO_S    = 0x41,
-    CLK_PLL_YGYRO_S    = 0x42,
-    CLK_PLL_ZGYRO_S    = 0x43,
-    CLK_PLL_EXT32K_S   = 0x44,
-    CLK_PLL_EXT19M_S   = 0x45,
-    CLK_KEEP_RESET_S   = 0x47
+    CLK_INTERNAL    =  0x00, 
+    CLK_PLL_XGYRO   =  0x01,
+    CLK_PLL_YGYRO    = 0x02,
+    CLK_PLL_ZGYRO    = 0x03,
+    CLK_PLL_EXT32K   = 0x04,
+    CLK_PLL_EXT19M   = 0x05,
+    CLK_KEEP_RESET   = 0x07,
 } mpu6050_pwr_clk_t;
 
 typedef enum{
@@ -32,10 +25,10 @@ typedef enum{
 } acel_range_t;
 
 typedef enum{
-    GYRO_250DPS  = 0,     /*!< Gyroscope full scale range is +/- 250 degree per second */
-    GYRO_500DPS  = 1,     /*!< Gyroscope full scale range is +/- 500 degree per second */
-    GYRO_1000DPS = 2,     /*!< Gyroscope full scale range is +/- 1000 degree per second */
-    GYRO_2000DPS = 3,     /*!< Gyroscope full scale range is +/- 2000 degree per second */
+    GYRO_250DPS  = 0x00,     /*!< Gyroscope full scale range is +/- 250 degree per second */
+    GYRO_500DPS  = 0x08,     /*!< Gyroscope full scale range is +/- 500 degree per second */
+    GYRO_1000DPS = 0x10,     /*!< Gyroscope full scale range is +/- 1000 degree per second */
+    GYRO_2000DPS = 0x18,     /*!< Gyroscope full scale range is +/- 2000 degree per second */
 
 } gyro_range_t;
 
