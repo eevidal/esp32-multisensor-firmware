@@ -11,9 +11,9 @@
 #include "i2c_module.h"
 
 #define IMU
-//#define GESTURE
+#define GESTURE
 #define OPTICS
-#define COLOR
+//#define COLOR
 #define ULTRASONIC
 #ifdef ULTRASONIC
 #include "hcrs04.h"
@@ -142,7 +142,7 @@ static void gesture_task(void *sens)
     apds9960_get_id(sensor, &val);
     printf("ID apds9960 %X \n", val);
     apds9960_gesture_enable(sensor);
-    apds9960_set_timeout(sensor, 40);
+    apds9960_set_timeout(sensor, 1);
     uint8_t gesture = 0;
     while (1)
     {
@@ -168,7 +168,11 @@ static void gesture_task(void *sens)
         {
             printf("FAR!\n");
         }
-        vTaskDelay(pdMS_TO_TICKS(600));
+         else if (gesture == NEAR)
+        {
+            printf("NEAR!\n");
+        }
+        vTaskDelay(pdMS_TO_TICKS(25));
     }
 };
 

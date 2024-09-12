@@ -734,8 +734,8 @@ err_t apds9960_gesture_enable(apds9960_t *sensor)
     apds9960_reset_counts(sensor);
     apds9960_set_wtime(sensor, 0xFF);
     apds9960_set_gwtime(sensor, APDS9960_GWTIME_2_8MS);
-    apds9960_set_gesture_pulse(sensor, APDS9960_LEN_16US, 10);
-    apds9960_set_ledboost(sensor, APDS9960_LBOOST_300P);
+    apds9960_set_gesture_pulse(sensor, APDS9960_LEN_8US, 10);
+    apds9960_set_ledboost(sensor, APDS9960_LBOOST_100P);
     apds9960_set_gesture_int_off(sensor); // no interruptions
     apds9960_set_gesture_gmode_on(sensor);
     apds9960_enable_engine(sensor, APDS9960_POWER);
